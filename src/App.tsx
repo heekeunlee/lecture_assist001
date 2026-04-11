@@ -1,17 +1,19 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ChevronLeft, ChevronRight, Presentation, Grid, Sparkles, MessageCircle, HelpCircle, Layers, List } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight, Presentation, Grid, Sparkles, MessageCircle, HelpCircle, Layers, List, FileText } from 'lucide-react';
 import questionsData from './data/questions.json';
 import curriculumData from './data/curriculum.json';
+import officialData from './data/official_plan.json';
 
 type TabType = 'faq' | 'curriculum';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<TabType>('faq');
-  const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [selectedId, setSelectedId] = useState<number | string | null>(null);
   const [isPresenting, setIsPresenting] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [theme, setTheme] = useState('dark');
+  const [showOfficial, setShowOfficial] = useState(false);
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
@@ -19,24 +21,26 @@ export default function App() {
 
   const toggleTheme = () => setTheme(prev => prev === 'light' ? 'dark' : 'light');
 
-  const openModal = (id: number) => {
+  const openModal = (id: number | string) => {
     setSelectedId(id);
-    const data = activeTab === 'faq' ? questionsData : curriculumData;
+    const data = activeTab === 'faq' ? questionsData : (showOfficial ? officialData : curriculumData);
     const index = data.findIndex((q: any) => q.id === id);
     setCurrentIndex(index);
   };
 
   const nextQuestion = () => {
-    const data = activeTab === 'faq' ? questionsData : curriculumData;
+    const data = activeTab === 'faq' ? questionsData : (showOfficial ? officialData : curriculumData);
     setCurrentIndex((prev) => (prev + 1) % data.length);
   };
 
   const prevQuestion = () => {
-    const data = activeTab === 'faq' ? questionsData : curriculumData;
+    const data = activeTab === 'faq' ? questionsData : (showOfficial ? officialData : curriculumData);
     setCurrentIndex((prev) => (prev - 1 + data.length) % data.length);
   };
 
-  const currentData = activeTab === 'faq' ? questionsData[currentIndex] : curriculumData[currentIndex];
+  const currentData = activeTab === 'faq' 
+    ? questionsData[currentIndex] 
+    : (showOfficial ? officialData[currentIndex] : curriculumData[currentIndex]);
 
   return (
     <div className="app-container">
@@ -44,7 +48,7 @@ export default function App() {
         <div className="nav-group">
           <button 
             className={`tab-button ${activeTab === 'faq' ? 'active' : ''}`} 
-            onClick={() => { setActiveTab('faq'); setSelectedId(null); }}
+            onClick={() => { setActiveTab('faq'); setSelectedId(null); setShowOfficial(false); }}
           >
             <HelpCircle size={18} /> 입문 FAQ
           </button>
@@ -72,7 +76,7 @@ export default function App() {
 
       <header>
         <motion.div
-          key={activeTab}
+          key={activeTab + (showOfficial ? '-official' : '')}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
         >
@@ -80,8 +84,16 @@ export default function App() {
             <Layers className="accent-color" size={32} />
             <span style={{ fontSize: '1.2rem', fontWeight: 600, color: 'var(--accent)' }}>Vibe Coding 101</span>
           </div>
-          <h1>{activeTab === 'faq' ? '입문자 FAQ 가이드' : '디스플레이 엔지니어 실무 로드맵'}</h1>
-          <p>{activeTab === 'faq' ? '비전공자를 위한 시원한 코딩 문답' : '조기 전력화를 위한 단계별 학습 과정'}</p>
+          <h1>
+            {activeTab === 'faq' 
+              ? '입문자 FAQ 가이드' 
+              : (showOfficial ? '정부 심사용 공식 강의계획서' : '디스플레이 엔지니어 실무 로드맵')}
+          </h1>
+          <p>
+            {activeTab === 'faq' 
+              ? '비전공자를 위한 시원한 코딩 문답' 
+              : (showOfficial ? '렛유인 KDC 승인 대기 공식 교안 데이터' : '조기 전력화를 위한 단계별 학습 과정')}
+          </p>
         </motion.div>
       </header>
 
@@ -104,32 +116,64 @@ export default function App() {
             ))}
           </div>
         ) : (
-          <motion.div 
-            className="table-container"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-          >
-            <table className="curriculum-table">
-              <thead>
-                <tr>
-                  <th style={{ width: '80px' }}>단계</th>
-                  <th style={{ width: '180px' }}>분류</th>
-                  <th>주제</th>
-                  <th>핵심 성과</th>
-                </tr>
-              </thead>
-              <tbody>
-                {curriculumData.map((c: any) => (
-                  <tr key={c.id} onClick={() => openModal(c.id)}>
-                    <td className="id-cell">{c.id}</td>
-                    <td><span className="cat-badge">{c.category}</span></td>
-                    <td className="title-cell">{c.title}</td>
-                    <td className="desc-cell">{c.description}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </motion.div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <button 
+                className={`toggle-button ${showOfficial ? 'active' : ''}`}
+                onClick={() => setShowOfficial(!showOfficial)}
+              >
+                {showOfficial ? <Sparkles size={16} /> : <FileText size={16} />}
+                {showOfficial ? '쉬운 표현으로 보기' : '공식 심사용 교안 보기'}
+              </button>
+            </div>
+
+            <motion.div 
+              key={showOfficial ? 'official' : 'easy'}
+              className="table-container"
+              initial={{ opacity: 0, x: showOfficial ? 20 : -20 }}
+              animate={{ opacity: 1, x: 0 }}
+            >
+              <table className="curriculum-table">
+                <thead>
+                  {showOfficial ? (
+                    <tr>
+                      <th style={{ width: '80px' }}>차시</th>
+                      <th style={{ width: '300px' }}>주제</th>
+                      <th>세부 강의 내용</th>
+                      <th style={{ width: '100px' }}>시간</th>
+                    </tr>
+                  ) : (
+                    <tr>
+                      <th style={{ width: '80px' }}>단계</th>
+                      <th style={{ width: '180px' }}>분류</th>
+                      <th>주제</th>
+                      <th>핵심 성과</th>
+                    </tr>
+                  )}
+                </thead>
+                <tbody>
+                  {(showOfficial ? officialData : curriculumData).map((c: any) => (
+                    <tr key={c.id} onClick={() => openModal(c.id)}>
+                      <td className="id-cell">{c.id}</td>
+                      {showOfficial ? (
+                        <>
+                          <td className="title-cell">{c.title}</td>
+                          <td className="desc-cell">{c.content}</td>
+                          <td><span className="time-badge">{c.time}</span></td>
+                        </>
+                      ) : (
+                        <>
+                          <td><span className="cat-badge">{c.category}</span></td>
+                          <td className="title-cell">{c.title}</td>
+                          <td className="desc-cell">{c.description}</td>
+                        </>
+                      )}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </motion.div>
+          </div>
         )}
       </main>
 
@@ -153,21 +197,38 @@ export default function App() {
 
               <div className="modal-inner">
                 <div className="badge" style={{ marginBottom: '2rem' }}>
-                  {activeTab === 'faq' ? `Question ${currentData.id}` : `Step ${currentData.id} • ${(currentData as any).category}`}
+                  {activeTab === 'faq' ? `Question ${currentData.id}` : `Step ${currentData.id}`}
+                  {showOfficial && ' • Official'}
                 </div>
                 
-                <h1 className="modal-title">{activeTab === 'faq' ? (currentData as any).question : (currentData as any).title}</h1>
+                <h1 className="modal-title">
+                  {activeTab === 'faq' 
+                    ? (currentData as any).question 
+                    : (currentData as any).title}
+                </h1>
                 
                 <div className="modal-section">
-                  <h3><MessageCircle size={14} /> {activeTab === 'faq' ? '시원한 답변' : '핵심 내용'}</h3>
+                  <h3>
+                    <MessageCircle size={14} /> 
+                    {activeTab === 'faq' ? '시원한 답변' : (showOfficial ? '세부 실습 내용' : '핵심 내용')}
+                  </h3>
                   <p className="highlight-text">
-                    {activeTab === 'faq' ? (currentData as any).answer : (currentData as any).description}
+                    {activeTab === 'faq' 
+                      ? (currentData as any).answer 
+                      : (showOfficial ? (currentData as any).content : (currentData as any).description)}
                   </p>
                 </div>
 
                 <div className="modal-section">
-                  <h3><Sparkles size={14} /> {activeTab === 'faq' ? '비법 비유' : '상세 설명'}</h3>
-                  <p className="normal-text">{activeTab === 'faq' ? (currentData as any).analogy : (currentData as any).details}</p>
+                  <h3>
+                    <Sparkles size={14} /> 
+                    {activeTab === 'faq' ? '비법 비유' : (showOfficial ? '학습 목표' : '상세 설명')}
+                  </h3>
+                  <p className="normal-text">
+                    {activeTab === 'faq' 
+                      ? (currentData as any).analogy 
+                      : (showOfficial ? `본 차시를 통해 디스플레이 도메인 기술과 AI 바이브 코딩을 결합한 ${currentData.id}단계 역량을 습득합니다.` : (currentData as any).details)}
+                  </p>
                 </div>
 
                 {activeTab === 'faq' && (
@@ -183,7 +244,7 @@ export default function App() {
                   <ChevronLeft size={24} />
                 </button>
                 <div className="page-indicator">
-                  {currentIndex + 1} / {activeTab === 'faq' ? questionsData.length : curriculumData.length}
+                  {currentIndex + 1} / {(activeTab === 'faq' ? questionsData : (showOfficial ? officialData : curriculumData)).length}
                 </div>
                 <button onClick={nextQuestion} className="nav-btn">
                   <ChevronRight size={24} />
@@ -195,139 +256,53 @@ export default function App() {
       </AnimatePresence>
 
       <style>{`
-        .nav-group {
-          display: flex;
-          gap: 12px;
-          align-items: center;
-        }
+        .nav-group { display: flex; gap: 12px; align-items: center; }
         .tab-button {
-          background: transparent;
-          border: none;
-          padding: 10px 20px;
-          border-radius: 14px;
-          cursor: pointer;
-          color: var(--text-secondary);
-          display: flex;
-          align-items: center;
-          gap: 10px;
-          font-weight: 600;
-          font-size: 0.95rem;
-          transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+          background: transparent; border: none; padding: 10px 20px; border-radius: 14px;
+          cursor: pointer; color: var(--text-secondary); display: flex; align-items: center;
+          gap: 10px; font-weight: 600; font-size: 0.95rem; transition: all 0.2s;
         }
-        .tab-button.active {
-          background: var(--bg-tertiary);
-          color: var(--accent);
-          box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        }
+        .tab-button.active { background: var(--bg-tertiary); color: var(--accent); }
         .icon-button {
-          background: var(--bg-tertiary);
-          border: 1px solid var(--border);
-          width: 44px;
-          height: 44px;
-          border-radius: 12px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          cursor: pointer;
-          color: var(--text-primary);
+          background: var(--bg-tertiary); border: 1px solid var(--border);
+          width: 44px; height: 44px; border-radius: 12px;
+          display: flex; align-items: center; justify-content: center; cursor: pointer;
         }
         .action-button {
-          background: var(--accent-gradient);
-          border: none;
-          padding: 0 24px;
-          height: 44px;
-          border-radius: 12px;
-          color: white;
-          font-weight: 600;
-          display: flex;
-          align-items: center;
-          gap: 10px;
-          cursor: pointer;
-          box-shadow: 0 4px 15px rgba(0, 113, 227, 0.3);
+          background: var(--accent-gradient); border: none; padding: 0 24px;
+          height: 44px; border-radius: 12px; color: white; font-weight: 600;
+          display: flex; align-items: center; gap: 10px; cursor: pointer;
         }
         
-        .card-desc {
-          color: var(--text-secondary);
-          font-size: 0.9rem;
-          margin-top: 1rem;
+        .toggle-button {
+          background: var(--bg-tertiary); border: 1px solid var(--border);
+          padding: 8px 16px; border-radius: 10px; color: var(--text-secondary);
+          display: flex; align-items: center; gap: 8px; font-weight: 600; cursor: pointer;
+          transition: all 0.2s;
         }
+        .toggle-button.active { background: var(--accent); color: white; border-color: var(--accent); }
 
-        .table-container {
-          background: var(--bg-tertiary);
-          border-radius: 24px;
-          border: 1px solid var(--border);
-          overflow: hidden;
-          box-shadow: var(--shadow);
-        }
-        .curriculum-table {
-          width: 100%;
-          border-collapse: collapse;
-          text-align: left;
-        }
-        .curriculum-table th {
-          background: var(--bg-secondary);
-          padding: 1.5rem 2rem;
-          font-size: 0.85rem;
-          color: var(--text-secondary);
-          text-transform: uppercase;
-          letter-spacing: 0.05em;
-        }
-        .curriculum-table td {
-          padding: 1.5rem 2rem;
-          border-bottom: 1px solid var(--border);
-          transition: background 0.2s;
-        }
-        .curriculum-table tr:last-child td { border: none; }
+        .table-container { background: var(--bg-tertiary); border-radius: 24px; border: 1px solid var(--border); overflow: hidden; }
+        .curriculum-table { width: 100%; border-collapse: collapse; text-align: left; }
+        .curriculum-table th { background: var(--bg-secondary); padding: 1.5rem 2rem; font-size: 0.85rem; color: var(--text-secondary); }
+        .curriculum-table td { padding: 1.5rem 2rem; border-bottom: 1px solid var(--border); }
         .curriculum-table tr { cursor: pointer; }
-        .curriculum-table tr:hover td {
-          background: rgba(0, 113, 227, 0.05);
-        }
-        .id-cell { font-weight: 700; color: var(--accent); font-family: 'Outfit'; }
-        .cat-badge {
-          background: var(--bg-secondary);
-          padding: 6px 14px;
-          border-radius: 8px;
-          font-size: 0.75rem;
-          font-weight: 700;
-          color: var(--text-secondary);
-          white-space: nowrap;
-          display: inline-block;
-        }
+        .curriculum-table tr:hover td { background: rgba(0, 113, 227, 0.05); }
+        .id-cell { font-weight: 700; color: var(--accent); }
+        .cat-badge, .time-badge { background: var(--bg-secondary); padding: 6px 14px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; white-space: nowrap; }
+        .time-badge { color: var(--accent); }
         .title-cell { font-weight: 600; font-size: 1.1rem; }
         .desc-cell { color: var(--text-secondary); }
 
-        .modal-inner { padding: 1rem; }
         .modal-title { font-size: 2.8rem; line-height: 1.1; margin-bottom: 3rem; }
         .highlight-text { font-size: 1.6rem; font-weight: 700; line-height: 1.3; }
         .normal-text { font-size: 1.1rem; line-height: 1.6; color: var(--text-secondary); }
         .modal-section { margin-bottom: 3rem; }
-        .modal-section h3 { 
-          display: flex; 
-          align-items: center; 
-          gap: 8px; 
-          font-size: 0.9rem; 
-          color: var(--accent); 
-          margin-bottom: 1rem; 
-          text-transform: uppercase;
-        }
-        .modal-close-btn {
-          position: absolute; top: 40px; right: 40px; 
-          background: var(--bg-secondary); border: none;
-          width: 44px; height: 44px; border-radius: 50%;
-          display: flex; align-items: center; justify-content: center;
-          cursor: pointer;
-        }
-        .modal-footer {
-          margin-top: 4rem; display: flex; justify-content: space-between; align-items: center;
-        }
-        .nav-btn {
-          background: var(--bg-secondary); border: none;
-          width: 56px; height: 56px; border-radius: 50%;
-          display: flex; align-items: center; justify-content: center;
-          cursor: pointer; transition: all 0.2s;
-        }
-        .nav-btn:hover { background: var(--border); transform: scale(1.1); }
-        .page-indicator { font-size: 1.1rem; font-weight: 700; font-family: 'Outfit'; }
+        .modal-section h3 { display: flex; align-items: center; gap: 8px; font-size: 0.9rem; color: var(--accent); margin-bottom: 1rem; }
+        .modal-close-btn { position: absolute; top: 40px; right: 40px; background: var(--bg-secondary); border: none; width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .modal-footer { margin-top: 4rem; display: flex; justify-content: space-between; align-items: center; }
+        .nav-btn { background: var(--bg-secondary); border: none; width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .page-indicator { font-size: 1.1rem; font-weight: 700; }
       `}</style>
 
       <footer style={{ marginTop: '8rem', textAlign: 'center', padding: '4rem 0', borderTop: '1px solid var(--border)', color: 'var(--text-secondary)' }}>

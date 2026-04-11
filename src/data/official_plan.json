@@ -1,0 +1,21 @@
+[
+  { "id": "1", "title": "AI 마인드셋 + Claude Pro 시작", "content": "바이브 코딩 철학 및 AI 개발 생태계 이해, Claude 프로젝트 생성", "time": "30분" },
+  { "id": "2", "title": "GitHub + Claude Code 환경 세팅", "content": "Git 버전 관리 이해, Claude Code CLI 설치 및 첫 Commit/Push", "time": "30분" },
+  { "id": "3", "title": "Claude Code Skills & 커스텀 자동화", "content": "커스텀 명령(Skills) 만들기, 프롬프트 심화 패턴(CoT, Few-shot) 학습", "time": "30분" },
+  { "id": "4", "title": "Claude Agent 모드 + CLI-Anything", "content": "병렬 에이전트 동작 원리, 기존 CLI 도구를 AI 에이전트로 전환", "time": "30분" },
+  { "id": "P1", "title": "[프로젝트1] 관심 분야 웹페이지 제작", "content": "본인의 디스플레이 관심 분야 소개 페이지 제작 및 GitHub Pages 배포", "time": "1주일" },
+  { "id": "5", "title": "Python Streamlit 앱 제작 & 배포", "content": "Streamlit 핵심 위젯 및 데이터 시각화, 도메인 계산기(PPI) 제작", "time": "30분" },
+  { "id": "6", "title": "R Shiny 대시보드 제작 & 배포", "content": "R Shiny 구조 이해 및 수율 트렌드 대시보드 제작/배포", "time": "30분" },
+  { "id": "7", "title": "Quarto 공정 분석 보고서 배포", "content": "Quarto(.qmd) 문서 구조 이해, AI 보조 분석 보고서 작성 및 자동화", "time": "30분" },
+  { "id": "8", "title": "Google AI Studio + Gemini API 챗봇", "content": "API Key 발급 및 .env 환경 변수 관리, 디스플레이 Q&A 챗봇 제작", "time": "30분" },
+  { "id": "9", "title": "AI 시뮬레이션 만들기", "content": "RGB 색역 시뮬레이터 등 픽셀 구조/포토공정 시각화 도구 자동 생성", "time": "30분" },
+  { "id": "10", "title": "배포 플랫폼 심화 (GitHub/Firebase 등)", "content": "다양한 웹앱 배포 플랫폼(Firebase, Netlify) 장단점 비교 및 실습", "time": "30분" },
+  { "id": "P2", "title": "[프로젝트2] 공정 시뮬레이터 앱", "content": "공정 시뮬레이터 또는 SECOM 데이터셋 활용 데이터 분석 앱 제작", "time": "1주일" },
+  { "id": "11", "title": "배포 플랫폼 10종 총정리", "content": "Vercel, Render, Railway 등 목적별 배포 전략 및 플랫폼 비교 실습", "time": "30분" },
+  { "id": "12", "title": "환경 관리 & 보안 & CI/CD", "content": ".gitignore/환경변수 보안 설정, GitHub Actions 자동 배포 구축", "time": "30분" },
+  { "id": "13", "title": "텔레그램 봇 기초 + Claude API 연결", "content": "Telegram Bot API 연동 및 디스플레이 공정 상담 봇 제작 기초", "time": "30분" },
+  { "id": "14", "title": "Gemini 봇 + 설비 알람 시스템", "content": "알람 봇 설계 패턴, 임계값 초과 시 자동 알림 전송 시스템 구축", "time": "30분" },
+  { "id": "15", "title": "종합 통합 실습 (60분)", "content": "Streamlit + Gemini API + 텔레그램 연동 전체 아키텍처 구현", "time": "60분" },
+  { "id": "16", "title": "최신 AI 트렌드 & 수료", "content": "디스플레이xAI 실제 활용 사례 확인 및 최종 로드맵 추천", "time": "30분" },
+  { "id": "P3", "title": "[프로젝트3] 나만의 AI 디스플레이 도구", "content": "자유 주제의 전체 스택 앱 제작 및 데모 발표 (수료 과제)", "time": "2주일" }
+]
