@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ChevronLeft, ChevronRight, Presentation, Grid, Sparkles, MessageCircle, HelpCircle, Layers, List, FileText, Target, TrendingUp, Clock, Award } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight, Presentation, Grid, Sparkles, MessageCircle, HelpCircle, Layers, List, FileText, Target, TrendingUp, Clock, Award, Download } from 'lucide-react';
 import questionsData from './data/questions.json';
 import curriculumData from './data/curriculum.json';
 import officialData from './data/official_plan.json';
@@ -198,6 +198,13 @@ export default function App() {
 
             <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '1rem' }}>
               <button 
+                className="toggle-button download-btn"
+                onClick={() => window.print()}
+              >
+                <Download size={16} />
+                <span>PDF 커리큘럼 다운로드</span>
+              </button>
+              <button 
                 className={`toggle-button ${showOfficial ? 'active' : ''}`}
                 onClick={() => setShowOfficial(!showOfficial)}
               >
@@ -371,6 +378,8 @@ export default function App() {
           transition: all 0.2s;
         }
         .toggle-button.active { background: var(--accent); color: white; border-color: var(--accent); }
+        .download-btn { background: #34c759; color: white; border: none; }
+        .download-btn:hover { background: #28a745; transform: translateY(-2px); }
 
         /* Visuals Style */
         .visuals-container { display: flex; flex-direction: column; gap: 3rem; margin-bottom: 2rem; }
@@ -446,6 +455,28 @@ export default function App() {
 
         .nav-btn { background: var(--bg-secondary); border: none; width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
         .page-indicator { font-size: 1.1rem; font-weight: 700; }
+
+        @media print {
+          @page { size: A4; margin: 1.5cm; }
+          body { background: white !important; color: black !important; }
+          .app-container { padding: 0 !important; width: 100% !important; max-width: 100% !important; border: none; }
+          nav, footer, .toggle-button, .download-btn, .icon-button, .action-button, .modal-close-btn { display: none !important; }
+          header { margin-bottom: 3rem !important; page-break-after: avoid; }
+          h1 { font-size: 2.8rem !important; margin-bottom: 0.5rem !important; color: #000 !important; -webkit-text-fill-color: #000 !important; }
+          .header-subtitle { font-size: 1.1rem !important; color: #444 !important; }
+          .visuals-container { margin-bottom: 3rem; break-inside: avoid; }
+          .roadmap-section { border: 1px solid #eee !important; padding: 1.5rem !important; }
+          .stats-grid { gap: 1rem !important; }
+          .stat-card { border: 1px solid #eee !important; padding: 1.2rem !important; }
+          .table-container { border: 1px solid #ddd !important; box-shadow: none !important; border-radius: 0; overflow: visible !important; width: 100%; margin-top: 2rem; }
+          .curriculum-table { width: 100% !important; border-collapse: collapse !important; }
+          .curriculum-table th { background: #f8f8f8 !important; border-bottom: 2px solid #ddd !important; color: #000 !important; padding: 1rem !important; font-size: 0.8rem !important; }
+          .curriculum-table td { border-bottom: 1px solid #eee !important; color: #333 !important; padding: 1rem !important; font-size: 0.85rem !important; }
+          .cat-badge, .time-badge, .project-id-badge { background: #f0f0f0 !important; color: #000 !important; border: 1px solid #ddd !important; display: inline-block !important; }
+          .p-tag { background: #d00 !important; color: white !important; padding: 2px 6px !important; }
+          .id-cell { color: #000 !important; font-weight: 800 !important; }
+          .title-cell { font-size: 1rem !important; font-weight: 700 !important; }
+        }
       `}</style>
 
       <footer style={{ marginTop: '8rem', textAlign: 'center', padding: '4rem 0', borderTop: '1px solid var(--border)', color: 'var(--text-secondary)' }}>
