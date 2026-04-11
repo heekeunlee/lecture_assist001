@@ -248,7 +248,6 @@ export default function App() {
                         {showOfficial ? (
                           <>
                             <td className="title-cell">
-                              {isProject && <span className="p-tag">🚀 PROJECT</span>}
                               {c.title}
                             </td>
                             <td className="desc-cell">{c.content}</td>
@@ -258,7 +257,6 @@ export default function App() {
                           <>
                             <td><span className="cat-badge">{c.category}</span></td>
                             <td className="title-cell">
-                              {isProject && <span className="p-tag">PROJECT</span>}
                               {c.title}
                             </td>
                             <td className="desc-cell">{c.description}</td>
@@ -459,24 +457,24 @@ export default function App() {
         .page-indicator { font-size: 1.1rem; font-weight: 700; }
 
         @media print {
-          @page { size: A4; margin: 1.5cm; }
-          body { background: white !important; color: black !important; }
-          .app-container { padding: 0 !important; width: 100% !important; max-width: 100% !important; border: none; }
+          @page { margin: 0; size: A4; }
+          html, body { margin: 0 !important; padding: 0 !important; -webkit-print-color-adjust: exact !important; }
+          body { background: white !important; color: black !important; padding: 2.5cm 2cm !important; }
+          .app-container { padding: 0 !important; width: 100% !important; max-width: 100% !important; border: none; margin: 0 !important; }
           nav, footer, .toggle-button, .download-btn, .icon-button, .action-button, .modal-close-btn { display: none !important; }
-          header { margin-bottom: 3rem !important; page-break-after: avoid; }
-          h1 { font-size: 2.8rem !important; margin-bottom: 0.5rem !important; color: #000 !important; -webkit-text-fill-color: #000 !important; }
-          .header-subtitle { font-size: 1.1rem !important; color: #444 !important; }
-          .visuals-container { margin-bottom: 3rem; break-inside: avoid; }
-          .roadmap-section { border: 1px solid #eee !important; padding: 1.5rem !important; }
-          .stats-grid { gap: 1rem !important; }
-          .stat-card { border: 1px solid #eee !important; padding: 1.2rem !important; }
-          .table-container { border: 1px solid #ddd !important; box-shadow: none !important; border-radius: 0; overflow: visible !important; width: 100%; margin-top: 2rem; }
+          header { margin-bottom: 4rem !important; text-align: center !important; }
+          h1 { font-size: 3rem !important; margin-bottom: 1rem !important; color: #000 !important; -webkit-text-fill-color: #000 !important; display: block !important; text-align: center !important; }
+          .header-subtitle { font-size: 1.3rem !important; color: #333 !important; display: block !important; margin-top: 1rem !important; text-align: center !important; }
+          .visuals-container { margin-bottom: 4rem; break-inside: avoid; }
+          .roadmap-section { border: 1px solid #ddd !important; padding: 2rem !important; margin-bottom: 3rem !important; }
+          .stats-grid { gap: 1.5rem !important; margin-bottom: 3rem !important; }
+          .stat-card { border: 1px solid #ddd !important; padding: 1.5rem !important; break-inside: avoid; }
+          .table-container { border: 1px solid #ccc !important; box-shadow: none !important; border-radius: 0; overflow: visible !important; width: 100%; margin-top: 3rem; }
           .curriculum-table { width: 100% !important; border-collapse: collapse !important; }
-          .curriculum-table th { background: #f8f8f8 !important; border-bottom: 2px solid #ddd !important; color: #000 !important; padding: 1rem !important; font-size: 0.8rem !important; }
-          .curriculum-table td { border-bottom: 1px solid #eee !important; color: #333 !important; padding: 1rem !important; font-size: 0.85rem !important; }
-          .cat-badge, .time-badge, .project-id-badge { background: #f0f0f0 !important; color: #000 !important; border: 1px solid #ddd !important; display: inline-block !important; }
-          .p-tag { background: #d00 !important; color: white !important; padding: 2px 6px !important; }
-          .id-cell { color: #000 !important; font-weight: 800 !important; }
+          .curriculum-table th { background: #f5f5f5 !important; border-bottom: 2px solid #ccc !important; color: #000 !important; padding: 1.2rem !important; font-size: 0.9rem !important; }
+          .curriculum-table td { border-bottom: 1px dotted #ccc !important; color: #111 !important; padding: 1.5rem 1.2rem !important; font-size: 1rem !important; }
+          .id-cell { color: #000 !important; font-weight: 900 !important; }
+          .cat-badge, .time-badge, .project-id-badge { background: #e8e8e8 !important; color: #000 !important; border: 1px solid #bbb !important; display: inline-block !important; border-radius: 4px !important; }
           .title-cell { font-size: 1rem !important; font-weight: 700 !important; }
         }
       `}</style>
