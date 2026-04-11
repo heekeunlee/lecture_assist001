@@ -248,7 +248,7 @@ export default function App() {
                         {showOfficial ? (
                           <>
                             <td className="title-cell">
-                              {isProject && <span className="p-tag">PROJECT</span>}
+                              {isProject && <span className="p-tag">🚀 PROJECT</span>}
                               {c.title}
                             </td>
                             <td className="desc-cell">{c.content}</td>
@@ -428,8 +428,10 @@ export default function App() {
           font-size: 0.7rem; display: inline-block; 
         }
         .p-tag { 
-          background: #ff3b30; color: white; padding: 2px 8px; border-radius: 4px; 
-          font-size: 0.65rem; font-weight: 800; margin-right: 8px; vertical-align: middle;
+          background: rgba(0, 113, 227, 0.1); color: var(--accent); padding: 4px 10px; border-radius: 8px; 
+          font-size: 0.7rem; font-weight: 800; margin-right: 12px; vertical-align: middle;
+          border: 1px solid rgba(0, 113, 227, 0.2);
+          letter-spacing: 0.05em;
         }
         .cat-badge, .time-badge { background: var(--bg-secondary); padding: 6px 14px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; white-space: nowrap; }
         .time-badge { color: var(--accent); }
