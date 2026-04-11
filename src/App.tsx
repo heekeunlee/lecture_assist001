@@ -202,7 +202,7 @@ export default function App() {
                 onClick={() => window.print()}
               >
                 <Download size={16} />
-                <span>PDF 커리큘럼 다운로드</span>
+                <span>{showOfficial ? '공식 커리큘럼 PDF 다운로드' : '실무 로드맵(쉬운 버전) PDF 다운로드'}</span>
               </button>
               <button 
                 className={`toggle-button ${showOfficial ? 'active' : ''}`}
