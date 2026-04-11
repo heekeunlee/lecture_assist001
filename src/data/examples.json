@@ -6,7 +6,7 @@
     "process": "이미지 로드 → 노이즈 제거 전처리 → CNN 기반 결함 분류 → 이상 부위 히트맵 생성",
     "impact": "수동 검수 대비 작업 시간 95% 단축 및 휴먼 에러 제로화",
     "icon": "Image",
-    "image": "/images/examples/aoi_wafer.png"
+    "image": "/images/examples/aoi_glass.png"
   },
   {
     "id": 2,
@@ -78,7 +78,7 @@
     "process": "불량 좌표 시각화 → 패턴 클러스터링 → 설비 로그 매칭 → 원인 공정 후보군 도출",
     "impact": "유형별 불량 원인 분석 속도 5배 향상",
     "icon": "Grid",
-    "image": "/images/examples/defect_heatmap.png"
+    "image": "/images/examples/defect_heatmap_glass.png"
   },
   {
     "id": 10,
