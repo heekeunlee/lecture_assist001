@@ -87,12 +87,12 @@ export default function App() {
           <h1>
             {activeTab === 'faq' 
               ? '입문자 FAQ 가이드' 
-              : (showOfficial ? '정부 심사용 공식 강의계획서' : '디스플레이 엔지니어 실무 로드맵')}
+              : (showOfficial ? 'Vibe Coding 공식 커리큘럼' : '디스플레이 엔지니어 실무 로드맵')}
           </h1>
           <p>
             {activeTab === 'faq' 
               ? '비전공자를 위한 시원한 코딩 문답' 
-              : (showOfficial ? '렛유인 KDC 승인 대기 공식 교안 데이터' : '조기 전력화를 위한 단계별 학습 과정')}
+              : (showOfficial ? 'AI와 함께 기술의 한계를 넘어서는 미래 엔지니어로의 도약' : '조기 전력화를 위한 단계별 학습 과정')}
           </p>
         </motion.div>
       </header>
@@ -123,7 +123,7 @@ export default function App() {
                 onClick={() => setShowOfficial(!showOfficial)}
               >
                 {showOfficial ? <Sparkles size={16} /> : <FileText size={16} />}
-                {showOfficial ? '쉬운 표현으로 보기' : '공식 심사용 교안 보기'}
+                {showOfficial ? '쉬운 표현으로 보기' : '공식 커리큘럼 보기'}
               </button>
             </div>
 
