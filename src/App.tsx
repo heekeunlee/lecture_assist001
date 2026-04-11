@@ -14,11 +14,11 @@ const CurriculumVisuals = () => {
       <div className="roadmap-section">
         <div className="section-label">Learning Journey Roadmap</div>
         <div className="roadmap-stepper">
-          {['마인드셋', '데이터 자동화', '그림의 힘', '퇴근 도우미', '가상 현실', '스마트 비서', '실전 투입'].map((stage, idx) => (
+          {['AI 마인드셋', '데이터 자동 분석', '실전 시각화', '자동 보고서', '의사결정 도구'].map((stage, idx) => (
             <div key={idx} className="step-item">
               <div className="step-node">{idx + 1}</div>
               <div className="step-label">{stage}</div>
-              {idx < 6 && <div className="step-line" />}
+              {idx < 4 && <div className="step-line" />}
             </div>
           ))}
         </div>
@@ -156,16 +156,16 @@ export default function App() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', marginBottom: '1rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', marginBottom: '1.5rem' }}>
             <Layers className="accent-color" size={32} />
-            <span style={{ fontSize: '1.2rem', fontWeight: 600, color: 'var(--accent)' }}>Vibe Coding 101</span>
+            <span style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--accent)', letterSpacing: '0.05em' }}>VIBE CODING 101</span>
           </div>
           <h1>
             {activeTab === 'faq' 
               ? '입문자 FAQ 가이드' 
               : (showOfficial ? 'Vibe Coding 공식 커리큘럼' : '디스플레이 엔지니어 실무 로드맵')}
           </h1>
-          <p>
+          <p className="header-subtitle">
             {activeTab === 'faq' 
               ? '비전공자를 위한 시원한 코딩 문답' 
               : (showOfficial ? 'AI와 함께 기술의 한계를 넘어서는 미래 엔지니어로의 도약' : '조기 전력화를 위한 단계별 학습 과정')}
@@ -434,6 +434,16 @@ export default function App() {
         .modal-section h3 { display: flex; align-items: center; gap: 8px; font-size: 0.9rem; color: var(--accent); margin-bottom: 1rem; }
         .modal-close-btn { position: absolute; top: 40px; right: 40px; background: var(--bg-secondary); border: none; width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
         .modal-footer { margin-top: 4rem; display: flex; justify-content: space-between; align-items: center; }
+        .header-subtitle { 
+          font-size: 1.5rem !important; 
+          font-weight: 700 !important; 
+          color: var(--text-primary) !important; 
+          opacity: 1 !important; 
+          letter-spacing: -0.01em;
+          margin-top: 1rem;
+          line-height: 1.4;
+        }
+
         .nav-btn { background: var(--bg-secondary); border: none; width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
         .page-indicator { font-size: 1.1rem; font-weight: 700; }
       `}</style>
