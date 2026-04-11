@@ -85,7 +85,7 @@ const CurriculumVisuals = () => {
 };
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<TabType>('faq');
+  const [activeTab, setActiveTab] = useState<TabType>('curriculum');
   const [selectedId, setSelectedId] = useState<number | string | null>(null);
   const [isPresenting, setIsPresenting] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -138,22 +138,22 @@ export default function App() {
       <nav style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4rem' }}>
         <div className="nav-group">
           <button 
-            className={`tab-button ${activeTab === 'faq' ? 'active' : ''}`} 
-            onClick={() => { setActiveTab('faq'); setSelectedId(null); setShowOfficial(false); }}
-          >
-            <HelpCircle size={18} /> 입문 FAQ
-          </button>
-          <button 
             className={`tab-button ${activeTab === 'curriculum' ? 'active' : ''}`} 
             onClick={() => { setActiveTab('curriculum'); setSelectedId(null); }}
           >
             <List size={18} /> 실무 커리큘럼
           </button>
           <button 
+            className={`tab-button ${activeTab === 'faq' ? 'active' : ''}`} 
+            onClick={() => { setActiveTab('faq'); setSelectedId(null); setShowOfficial(false); }}
+          >
+            <HelpCircle size={18} /> 바이브코딩 생기초 Q&A
+          </button>
+          <button 
             className={`tab-button ${activeTab === 'terminology' ? 'active' : ''}`} 
             onClick={() => { setActiveTab('terminology'); setSelectedId(null); }}
           >
-            <BookOpen size={18} /> 주요 용어
+            <BookOpen size={18} /> 업계 용어 사전 2000
           </button>
         </div>
         
@@ -182,14 +182,14 @@ export default function App() {
             <span style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--accent)', letterSpacing: '0.05em' }}>VIBE CODING 101</span>
           </div>
           <h1>
-            {activeTab === 'faq' 
-              ? '입문자 FAQ 가이드' 
-              : (activeTab === 'terminology' ? '엔지니어 용어 사전' : (showOfficial ? 'Vibe Coding 공식 커리큘럼' : '디스플레이 엔지니어 실무 로드맵'))}
+            {activeTab === 'curriculum' 
+              ? (showOfficial ? 'Vibe Coding 공식 커리큘럼' : '디스플레이 엔지니어 실무 로드맵')
+              : (activeTab === 'faq' ? '바이브코딩 생기초 Q&A' : '업계 용어 사전 2000')}
           </h1>
           <p className="header-subtitle">
-            {activeTab === 'faq' 
-              ? '비전공자를 위한 시원한 코딩 문답' 
-              : (activeTab === 'terminology' ? '실무에서 바로 만나는 핵심 가이드' : (showOfficial ? 'AI와 함께 기술의 한계를 넘어서는 미래 엔지니어로의 도약' : '조기 전력화를 위한 단계별 학습 과정'))}
+            {activeTab === 'curriculum'
+              ? (showOfficial ? 'AI와 함께 기술의 한계를 넘어서는 미래 엔지니어로의 도약' : '조기 전력화를 위한 단계별 학습 과정')
+              : (activeTab === 'faq' ? '비전공자를 위한 시원한 코딩 문답' : '실무에서 바로 만나는 엔지니어 핵심 가이드')}
           </p>
         </motion.div>
       </header>
