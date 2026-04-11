@@ -113,7 +113,7 @@ export default function App() {
               <thead>
                 <tr>
                   <th style={{ width: '80px' }}>단계</th>
-                  <th style={{ width: '150px' }}>분류</th>
+                  <th style={{ width: '180px' }}>분류</th>
                   <th>주제</th>
                   <th>핵심 성과</th>
                 </tr>
@@ -285,11 +285,13 @@ export default function App() {
         .id-cell { font-weight: 700; color: var(--accent); font-family: 'Outfit'; }
         .cat-badge {
           background: var(--bg-secondary);
-          padding: 4px 12px;
+          padding: 6px 14px;
           border-radius: 8px;
           font-size: 0.75rem;
           font-weight: 700;
           color: var(--text-secondary);
+          white-space: nowrap;
+          display: inline-block;
         }
         .title-cell { font-weight: 600; font-size: 1.1rem; }
         .desc-cell { color: var(--text-secondary); }
