@@ -220,29 +220,42 @@ export default function App() {
             ))}
           </div>
         ) : activeTab === 'examples' ? (
-          <div className="examples-grid">
+          <div className="examples-showcase">
             {examplesData.map((ex: any, idx) => {
               const iconMap: any = { Image, Target, FileText, TrendingUp, Award, Layers, Sparkles, Zap, Grid, Clock };
               const IconComp = iconMap[ex.icon] || Sparkles;
+              const isEven = idx % 2 === 0;
 
               return (
                 <motion.div 
                   key={ex.id}
-                  className="example-card"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: idx * 0.05 }}
+                  className={`example-item ${isEven ? 'row' : 'row-reverse'}`}
+                  initial={{ opacity: 0, x: isEven ? -50 : 50 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true, margin: "-100px" }}
+                  transition={{ duration: 0.6, ease: "easeOut" }}
                 >
-                  <div className="example-header">
-                    <div className="example-icon-wrapper">
-                      <IconComp size={24} />
+                  <div className="example-visual">
+                    <div className="example-icon-large">
+                      <IconComp size={64} />
                     </div>
-                    <span className="case-id">CASE {ex.id}</span>
+                    <div className="case-badge">CASE {ex.id}</div>
                   </div>
-                  <h3 className="example-title">{ex.title}</h3>
-                  <p className="example-desc">{ex.desc}</p>
-                  <div className="example-goal">
-                    <strong>학습 성과:</strong> {ex.goal}
+
+                  <div className="example-info">
+                    <h2 className="example-title-large">{ex.title}</h2>
+                    <p className="example-full-desc">{ex.desc}</p>
+                    
+                    <div className="example-detail-split">
+                      <div className="detail-section">
+                        <h4><Layers size={16} /> 분석 프로세스</h4>
+                        <p className="process-text">{ex.process}</p>
+                      </div>
+                      <div className="detail-section">
+                        <h4><Target size={16} /> 기대 효과</h4>
+                        <div className="impact-tag">{ex.impact}</div>
+                      </div>
+                    </div>
                   </div>
                 </motion.div>
               );
@@ -622,24 +635,34 @@ export default function App() {
         .pagination .nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
         .pagination .page-indicator { font-family: var(--font-main); font-weight: 700; color: var(--text-primary); }
 
-        /* Examples Styles */
-        .examples-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 2rem; }
-        .example-card { 
-          background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: 24px; padding: 2.5rem;
-          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: flex; flex-direction: column; gap: 1.2rem;
+        /* Showcase Styles */
+        .examples-showcase { display: flex; flex-direction: column; gap: 6rem; padding: 2rem 0; }
+        .example-item { display: flex; align-items: center; gap: 4rem; min-height: 400px; }
+        .example-item.row { flex-direction: row; }
+        .example-item.row-reverse { flex-direction: row-reverse; }
+        
+        .example-visual { 
+          flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+          background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: 40px; padding: 4rem;
+          min-width: 300px; position: relative; overflow: hidden;
         }
-        .example-card:hover { transform: translateY(-8px); border-color: var(--accent); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2); }
-        .example-header { display: flex; justify-content: space-between; align-items: center; }
-        .example-icon-wrapper { 
-          width: 52px; height: 52px; background: rgba(0, 113, 227, 0.1); color: var(--accent);
-          border-radius: 14px; display: flex; align-items: center; justify-content: center;
-        }
-        .case-id { font-size: 0.75rem; font-weight: 800; color: var(--text-secondary); letter-spacing: 0.1em; }
-        .example-title { font-size: 1.4rem; font-weight: 800; line-height: 1.3; color: var(--text-primary); }
-        .example-desc { font-size: 1rem; line-height: 1.6; color: var(--text-secondary); flex-grow: 1; }
-        .example-goal { 
-          font-size: 0.9rem; padding: 1rem; background: var(--bg-secondary); border-radius: 12px;
-          color: var(--text-primary); line-height: 1.5; border-left: 4px solid var(--accent);
+        .example-icon-large { color: var(--accent); margin-bottom: 2rem; filter: drop-shadow(0 0 20px rgba(0,113,227,0.4)); }
+        .case-badge { font-family: var(--font-main); font-weight: 900; color: var(--text-secondary); opacity: 0.3; font-size: 1rem; letter-spacing: 0.2rem; }
+        
+        .example-info { flex: 1.5; display: flex; flex-direction: column; gap: 1.5rem; }
+        .example-title-large { font-size: 2.2rem; font-weight: 800; color: var(--text-primary); line-height: 1.2; letter-spacing: -0.02em; }
+        .example-full-desc { font-size: 1.1rem; line-height: 1.8; color: var(--text-secondary); }
+        
+        .example-detail-split { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 1rem; }
+        .detail-section { background: var(--bg-secondary); padding: 1.5rem; border-radius: 20px; border: 1px solid var(--border); }
+        .detail-section h4 { font-size: 0.85rem; font-weight: 800; color: var(--accent); margin-bottom: 0.8rem; display: flex; align-items: center; gap: 6px; text-transform: uppercase; }
+        .process-text { font-size: 0.95rem; line-height: 1.5; color: var(--text-secondary); }
+        .impact-tag { font-size: 1rem; font-weight: 700; color: var(--text-primary); background: rgba(0, 113, 227, 0.1); padding: 10px 15px; border-radius: 10px; border-left: 4px solid var(--accent); }
+
+        @media screen and (max-width: 1024px) {
+          .example-item, .example-item.row-reverse { flex-direction: column; text-align: center; gap: 2rem; }
+          .example-detail-split { grid-template-columns: 1fr; }
+          .example-title-large { font-size: 1.8rem; }
         }
 
         @media print {
@@ -647,7 +670,7 @@ export default function App() {
           html, body { margin: 0 !important; padding: 0 !important; -webkit-print-color-adjust: exact !important; }
           body { background: white !important; color: black !important; padding: 2.5cm 2cm !important; }
           .app-container { padding: 0 !important; width: 100% !important; max-width: 100% !important; border: none; margin: 0 !important; }
-          nav, footer, .toggle-button, .download-btn, .print-btn, .icon-button, .action-button, .modal-close-btn, .terminology-container, .examples-grid { display: none !important; }
+          nav, footer, .toggle-button, .download-btn, .print-btn, .icon-button, .action-button, .modal-close-btn, .terminology-container, .examples-showcase { display: none !important; }
           header { margin-bottom: 4rem !important; text-align: center !important; }
           h1 { font-size: 3rem !important; margin-bottom: 1rem !important; color: #000 !important; -webkit-text-fill-color: #000 !important; display: block !important; text-align: center !important; }
           .header-subtitle { font-size: 1.3rem !important; color: #333 !important; display: block !important; margin-top: 1rem !important; text-align: center !important; }
