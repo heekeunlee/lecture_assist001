@@ -93,6 +93,8 @@ export default function App() {
   const [showOfficial, setShowOfficial] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [activeTermCat, setActiveTermCat] = useState('전체');
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 30;
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
@@ -127,6 +129,9 @@ export default function App() {
     (t.term.toLowerCase().includes(searchTerm.toLowerCase()) || 
      t.desc.toLowerCase().includes(searchTerm.toLowerCase()))
   ).sort((a, b) => a.term.localeCompare(b.term));
+
+  const pageCount = Math.ceil(filteredTerms.length / itemsPerPage);
+  const currentTerms = filteredTerms.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   return (
     <div className="app-container">
@@ -299,7 +304,7 @@ export default function App() {
                 <button 
                   key={cat} 
                   className={`term-cat-btn ${activeTermCat === cat ? 'active' : ''}`}
-                  onClick={() => setActiveTermCat(cat)}
+                  onClick={() => { setActiveTermCat(cat); setCurrentPage(1); }}
                 >
                   {cat}
                 </button>
@@ -313,18 +318,38 @@ export default function App() {
                 placeholder={`${activeTermCat} 분야 용어 검색...`} 
                 className="terminology-search"
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }}
               />
             </div>
 
+            {pageCount > 1 && (
+              <div className="pagination">
+                <button 
+                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))} 
+                  disabled={currentPage === 1} 
+                  className="nav-btn"
+                >
+                  <ChevronLeft size={20} />
+                </button>
+                <span className="page-indicator">{currentPage} / {pageCount}</span>
+                <button 
+                  onClick={() => setCurrentPage(p => Math.min(pageCount, p + 1))} 
+                  disabled={currentPage === pageCount} 
+                  className="nav-btn"
+                >
+                  <ChevronRight size={20} />
+                </button>
+              </div>
+            )}
+
             <div className="terminology-grid">
-              {filteredTerms.map((t, idx) => (
+              {currentTerms.map((t, idx) => (
                 <motion.div 
                   key={t.term}
                   className="term-card"
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: Math.min(idx * 0.01, 1) }}
+                  transition={{ delay: Math.min(idx * 0.01, 0.5) }}
                 >
                   <div className="term-header">
                     <span className="term-cat-tag">{t.category}</span>
@@ -555,6 +580,11 @@ export default function App() {
         .term-full { font-size: 0.9rem; font-weight: 600; color: var(--text-primary); margin-bottom: 1rem; opacity: 0.8; }
         .term-desc { font-size: 0.95rem; line-height: 1.6; color: var(--text-secondary); }
         .no-results { text-align: center; padding: 4rem; color: var(--text-secondary); font-weight: 600; }
+
+        .pagination { display: flex; align-items: center; justify-content: center; gap: 1.5rem; margin-bottom: 2rem; }
+        .pagination .nav-btn { width: 44px; height: 44px; }
+        .pagination .nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+        .pagination .page-indicator { font-family: var(--font-main); font-weight: 700; color: var(--text-primary); }
 
         @media print {
           @page { margin: 0; size: A4; }
