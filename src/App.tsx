@@ -92,6 +92,7 @@ export default function App() {
   const [theme, setTheme] = useState('dark');
   const [showOfficial, setShowOfficial] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+  const [activeTermCat, setActiveTermCat] = useState('전체');
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
@@ -122,9 +123,10 @@ export default function App() {
     : (activeTab === 'curriculum' ? (showOfficial ? officialData[currentIndex] : curriculumData[currentIndex]) : null);
 
   const filteredTerms = terminologyData.filter(t => 
-    t.term.toLowerCase().includes(searchTerm.toLowerCase()) || 
-    t.desc.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+    (activeTermCat === '전체' || t.category === activeTermCat) &&
+    (t.term.toLowerCase().includes(searchTerm.toLowerCase()) || 
+     t.desc.toLowerCase().includes(searchTerm.toLowerCase()))
+  ).sort((a, b) => a.term.localeCompare(b.term));
 
   return (
     <div className="app-container">
@@ -292,11 +294,23 @@ export default function App() {
           </div>
         ) : (
           <div className="terminology-container">
+            <div className="terminology-nav">
+              {['전체', '디스플레이', '공정', '데이터 처리', '코딩'].map(cat => (
+                <button 
+                  key={cat} 
+                  className={`term-cat-btn ${activeTermCat === cat ? 'active' : ''}`}
+                  onClick={() => setActiveTermCat(cat)}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
+
             <div className="search-wrapper">
               <Search className="search-icon" size={20} />
               <input 
                 type="text" 
-                placeholder="찾으시는 용어나 약어를 검색하세요..." 
+                placeholder={`${activeTermCat} 분야 용어 검색...`} 
                 className="terminology-search"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -310,10 +324,10 @@ export default function App() {
                   className="term-card"
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: idx * 0.02 }}
+                  transition={{ delay: Math.min(idx * 0.01, 1) }}
                 >
                   <div className="term-header">
-                    <span className="term-cat">{t.category}</span>
+                    <span className="term-cat-tag">{t.category}</span>
                     <h2 className="term-word">{t.term}</h2>
                   </div>
                   <div className="term-full">{t.full}</div>
@@ -514,6 +528,14 @@ export default function App() {
 
         /* Terminology Styles */
         .terminology-container { display: flex; flex-direction: column; gap: 2rem; }
+        .terminology-nav { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-bottom: 0.5rem; }
+        .term-cat-btn {
+          background: var(--bg-secondary); border: 1px solid var(--border); padding: 8px 18px; border-radius: 100px;
+          color: var(--text-secondary); font-size: 0.85rem; font-weight: 700; cursor: pointer; transition: all 0.2s;
+        }
+        .term-cat-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
+        .term-cat-btn:hover:not(.active) { background: var(--border); }
+
         .search-wrapper { position: relative; max-width: 500px; margin: 0 auto 2rem; width: 100%; }
         .search-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-secondary); }
         .terminology-search { 
@@ -529,7 +551,7 @@ export default function App() {
         .term-card:hover { transform: translateY(-5px); border-color: var(--accent); }
         .term-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem; }
         .term-word { font-size: 1.5rem; font-weight: 800; color: var(--accent); }
-        .term-cat { font-size: 0.7rem; font-weight: 700; background: var(--bg-secondary); padding: 4px 10px; border-radius: 6px; color: var(--text-secondary); text-transform: uppercase; }
+        .term-cat-tag { font-size: 0.7rem; font-weight: 700; background: var(--bg-secondary); padding: 4px 10px; border-radius: 6px; color: var(--text-secondary); text-transform: uppercase; }
         .term-full { font-size: 0.9rem; font-weight: 600; color: var(--text-primary); margin-bottom: 1rem; opacity: 0.8; }
         .term-desc { font-size: 0.95rem; line-height: 1.6; color: var(--text-secondary); }
         .no-results { text-align: center; padding: 4rem; color: var(--text-secondary); font-weight: 600; }

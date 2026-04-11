@@ -1,482 +1,106 @@
 [
-  {
-    "term": "LTPO",
-    "full": "Low-Temperature Polycrystalline Oxide",
-    "desc": "LTPS의 빠른 응답속도와 Oxide의 저전력 특성을 결합한 차세대 디스플레이 구동 기술입니다.",
-    "category": "디스플레이"
-  },
-  {
-    "term": "PPI",
-    "full": "Pixels Per Inch",
-    "desc": "1인치당 들어가는 픽셀 수. 해상도를 나타내는 척도로 값이 높을수록 화면이 정밀해집니다.",
-    "category": "디스플레이"
-  },
-  {
-    "term": "Luminance",
-    "full": "Luminance (Brightess)",
-    "desc": "휘도. 화면의 밝기를 나타내며 주로 nits(cd/m²) 단위로 표현합니다.",
-    "category": "디스플레이"
-  },
-  {
-    "term": "Color Gamut",
-    "full": "Color Gamut (색재현율)",
-    "desc": "디스플레이가 표현할 수 있는 색의 범위. DCI-P3, NTSC 등이 표준으로 쓰입니다.",
-    "category": "디스플레이"
-  },
-  {
-    "term": "Contrast Ratio",
-    "full": "Contrast Ratio (명암비)",
-    "desc": "가장 밝은 흰색과 가장 어두운 검은색의 밝기 비율. OLED는 무한대에 가까운 명암비를 가집니다.",
-    "category": "디스플레이"
-  },
-  {
-    "term": "Bezel",
-    "full": "Bezel",
-    "desc": "디스플레이의 실제 화면을 제외한 테두리 영역. 제로 베젤 기술이 트렌드입니다.",
-    "category": "디스플레이"
-  },
-  {
-    "term": "Refresh Rate",
-    "full": "Refresh Rate (주사율)",
-    "desc": "1초당 화면에 보여주는 프레임 수. 120Hz는 1초에 120번 화면을 갱신함을 의미합니다.",
-    "category": "디스플레이"
-  },
-  {
-    "term": "HDR",
-    "full": "High Dynamic Range",
-    "desc": "밝은 곳은 더 밝게, 어두운 곳은 더 어둡게 표현하여 실제 눈으로 보는 것과 가깝게 만드는 기술입니다.",
-    "category": "디스플레이"
-  },
-  {
-    "term": "Flexible",
-    "full": "Flexible Display",
-    "desc": "유리 대신 플라스틱 기판을 사용하여 구부리거나 휠 수 있는 형태의 디스플레이입니다.",
-    "category": "디스플레이"
-  },
-  {
-    "term": "Foldable",
-    "full": "Foldable Display",
-    "desc": "종이처럼 완전히 접었다 펴는 것이 가능한 디스플레이 기술입니다.",
-    "category": "디스플레이"
-  },
-  {
-    "term": "Micro LED",
-    "full": "Micro Light Emitting Diode",
-    "desc": "마이크로미터 단위의 초소형 LED를 픽셀 하나하나로 사용하는 자발광 디스플레이입니다.",
-    "category": "디스플레이"
-  },
-  {
-    "term": "Mini LED",
-    "full": "Mini Light Emitting Diode",
-    "desc": "LCD의 백라이트로 아주 작은 LED를 촘촘히 배치하여 로컬 디밍 성능을 높인 기술입니다.",
-    "category": "디스플레이"
-  },
-  {
-    "term": "TFE",
-    "full": "Thin Film Encapsulation",
-    "desc": "박막 봉지. OLED 유기물을 수분과 산소로부터 보호하기 위해 얇은 막을 입히는 공정입니다.",
-    "category": "디스플레이"
-  },
-  {
-    "term": "LTPS",
-    "full": "Low-Temperature Polycrystalline Silicon",
-    "desc": "저온 다결정 실리콘. 전자 이동도가 높아 고해상도 구현에 유리한 TFT 기술입니다.",
-    "category": "디스플레이"
-  },
-  {
-    "term": "Oxide",
-    "full": "Oxide TFT",
-    "desc": "산화물 반도체. 저전력 구동에 유리하여 대형 OLED 및 고효율 모바일 기기에 사용됩니다.",
-    "category": "디스플레이"
-  },
-  {
-    "term": "Polarizer",
-    "full": "Polarizer (편광판)",
-    "desc": "빛을 특정 방향으로만 진동하게 걸러주어 화면을 선명하게 만드는 필름입니다.",
-    "category": "디스플레이"
-  },
-  {
-    "term": "Substrate",
-    "full": "Substrate (기판)",
-    "desc": "디스플레이 소자가 올라가는 기본 판. 유리가 전통적이나 최근엔 PI(폴리이미드)가 쓰입니다.",
-    "category": "디스플레이"
-  },
-  {
-    "term": "In-cell",
-    "full": "In-cell Touch",
-    "desc": "디스플레이 내부에 터치 센서를 통합하여 두께를 줄이고 시인성을 높인 터치 기술입니다.",
-    "category": "디스플레이"
-  },
-  {
-    "term": "DCI-P3",
-    "full": "Digital Cinema Initiatives - Color P3",
-    "desc": "디지털 영화의 색 영역을 표현하는 표준. 실제에 가까운 색 표현력을 측정하는 지표입니다.",
-    "category": "디스플레이"
-  },
-  {
-    "term": "Aspect Ratio",
-    "full": "Aspect Ratio (화면비)",
-    "desc": "화면의 가로와 세로 비율. 16:9, 21:9 등이 표준으로 많이 쓰입니다.",
-    "category": "디스플레이"
-  },
-  {
-    "term": "Photolithography",
-    "full": "Photolithography (노광 공정)",
-    "desc": "빛을 이용해 기판 위에 미세한 회로 패턴을 새기는 디스플레이 핵심 공정입니다.",
+  { "term": "OLED", "full": "Organic Light-Emitting Diode", "desc": "유기 발광 다이오드. 전류가 흐르면 스스로 빛을 내는 유기 화합물을 이용한 디스플레이 기술입니다.", "category": "디스플레이" },
+  { "term": "LCD", "full": "Liquid Crystal Display", "desc": "액정 표시 장치. 백라이트에서 나오는 빛을 액정으로 조절하여 화면을 보여줍니다.", "category": "디스플레이" },
+  { "term": "AMOLED", "full": "Active Matrix OLED", "desc": "능동 구동형 OLED. 픽셀 하나하나를 독립적으로 제어하여 고화질을 구현합니다.", "category": "디스플레이" },
+  { "term": "LTPO", "full": "Low-Temperature Polycrystalline Oxide", "desc": "LTPS의 빠른 응답속도와 Oxide의 저전력 특성을 결합하여 주사율을 유연하게 조절하는 기술입니다.", "category": "디스플레이" },
+  { "term": "PPI", "full": "Pixels Per Inch", "desc": "1인치당 픽셀 수. 화면의 정밀도를 나타내며 값이 높을수록 입자감이 없고 선명합니다.", "category": "디스플레이" },
+  { "term": "Nits", "full": "Cd/m² (Luminance)", "desc": "화면 밝기의 단위. 1칸델라는 촛불 하나 정도의 밝기를 의미합니다.", "category": "디스플레이" },
+  { "term": "Color Gamut", "full": "Color Gamut (색재현율)", "desc": "디스플레이가 표현할 수 있는 색의 범위. NTSC, DCI-P3 등이 기준이 됩니다.", "category": "디스플레이" },
+  { "term": "Refresh Rate", "full": "Refresh Rate (주사율)", "desc": "1초에 화면을 몇 번 갱신하는지를 나타내는 지표. 고주사율은 부드러운 움직임을 제공합니다.", "category": "디스플레이" },
+  { "term": "Response Time", "full": "Response Time (응답속도)", "desc": "픽셀의 색상이 변하는 데 걸리는 시간. 짧을수록 잔상이 적습니다.", "category": "디스플레이" },
+  { "term": "Contrast Ratio", "full": "Contrast Ratio (명암비)", "desc": "가장 밝은 흰색과 가장 어두운 검은색의 밝기 비율입니다.", "category": "디스플레이" },
+  { "term": "Substrate", "full": "Substrate (기판)", "desc": "디스플레이 패널을 만들기 위한 베이스 판. 유리나 플라스틱(PI)이 사용됩니다.", "category": "디스플레이" },
+  { "term": "Bezel", "full": "Bezel", "desc": "화면의 실제 구동 영역을 제외한 나머지 테두리 부분입니다.", "category": "디스플레이" },
+  { "term": "Delta E", "full": "Color Accuracy Indicator", "desc": "원본 색상과 디스플레이 표현 색상의 차이를 나타내는 수치. 낮을수록 정확합니다.", "category": "디스플레이" },
+  { "term": "Viewing Angle", "full": "Viewing Angle (시야각)", "desc": "측면에서 보았을 때 색이나 밝기의 왜곡 없이 볼 수 있는 최대 각도입니다.", "category": "디스플레이" },
+  { "term": "Gamma", "full": "Gamma Correction", "desc": "입력 신호의 밝기와 실제 출력 밝기 사이의 비선형적 관계를 보정하는 값입니다.", "category": "디스플레이" },
+  { "term": "Micro LED", "full": "Micro Light Emitting Diode", "desc": "마이크로미터 단위의 초소형 LED를 픽셀 단위로 직접 배치한 차세대 디스플레이입니다.", "category": "디스플레이" },
+  { "term": "Mini LED", "full": "Mini Light Emitting Diode", "desc": "LCD 백라이트용 LED를 아주 작게 만들어 명암비를 획기적으로 개선한 기술입니다.", "category": "디스플레이" },
+  { "term": "Quantum Dot", "full": "Quantum Dot (QD)", "desc": "크기에 따라 다른 빛을 내는 나노 입자. 색 순도와 밝기를 높이는 데 사용됩니다.", "category": "디스플레이" },
+  { "term": "Foldable", "full": "Foldable Display", "desc": "물리적으로 접을 수 있는 디스플레이. 힌지와 커버 윈도우 기술이 중요합니다.", "category": "디스플레이" },
+  { "term": "Rollable", "full": "Rollable Display", "desc": "두루마리처럼 말 수 있는 디스플레이. 공간 활용성이 극대화됩니다.", "category": "디스플레이" },
+  { "term": "Flexible", "full": "Flexible Display", "desc": "구부리거나 펼 수 있는 부드러운 성질의 디스플레이 총칭입니다.", "category": "디스플레이" },
+  { "term": "TFT", "full": "Thin Film Transistor", "desc": "박막 트랜지스터. 화면의 각 픽셀을 켜고 끄는 스위치 역할을 합니다.", "category": "디스플레이" },
+  { "term": "Encapsulation", "full": "Encapsulation (봉지)", "desc": "유기물이 수분과 산소에 노출되지 않도록 밀봉하는 필수 공정입니다.", "category": "디스플레이" },
+  { "term": "Polarizer", "full": "Polarizer (편광판)", "desc": "특정 방향의 빛만 통과시켜 화면의 반사를 줄이고 명암을 조절합니다.", "category": "디스플레이" },
+  { "term": "Backlight", "full": "Backlight Unit (BLU)", "desc": "LCD에서 스스로 빛을 내지 못하는 액정을 위해 뒤에서 빛을 쏴주는 광원입니다.", "category": "디스플레이" },
+  { "term": "AOD", "full": "Always On Display", "desc": "화면이 꺼진 상태에서도 시간이나 알림 등을 저전력으로 계속 보여주는 기능입니다.", "category": "디스플레이" },
+  { "term": "LTPS", "full": "Low-Temperature Polycrystalline Silicon", "desc": "저온 다결정 실리콘. 전자 이동도가 높아 고해상도 구현에 유리합니다.", "category": "디스플레이" },
+  { "term": "Oxide TFT", "full": "Indium Gallium Zinc Oxide (IGZO)", "desc": "산화물 반도체 기반 TFT. 저전력 소모와 대형화에 유리합니다.", "category": "디스플레이" },
+  { "term": "Color Filter", "full": "Color Filter (C/F)", "desc": "백색광을 통과시켜 적(R), 녹(G), 청(B)의 색을 만드는 필터입니다.", "category": "디스플레이" },
+  { "term": "Sub-pixel", "full": "Sub-pixel", "desc": "하나의 픽셀을 구성하는 R, G, B 등 개별 광원을 의미합니다.", "category": "디스플레이" },
+  { "term": "Photolithography", "full": "Photolithography (노광)", "desc": "빛을 이용해 기판 위에 미세한 회로 패턴을 그리는 공정입니다.", "category": "공정" },
+  { "term": "Etching", "full": "Etching (식각)", "desc": "화학물질이나 가스를 이용해 불필요한 부분을 깎아내는 공정입니다.", "category": "공정" },
+  { "term": "Deposition", "full": "Deposition (증착)", "desc": "기판 위에 특수한 물질을 얇은 막 형태로 입히는 공정입니다.", "category": "공정" },
+  { "term": "Sputtering", "full": "Sputtering", "desc": "이온을 가속해 타켓에 충돌시켜 튀어나온 입자들이 기판에 쌓이게 하는 증착법입니다.", "category": "공정" },
+  { "term": "CVD", "full": "Chemical Vapor Deposition", "desc": "화학 기상 증착. 가스 반응을 통해 기판 위에 막을 입히는 방식입니다.", "category": "공정" },
+  { "term": "PECVD", "full": "Plasma Enhanced CVD", "desc": "플라즈마를 이용해 낮은 온도에서도 증착이 가능하게 한 CVD 방식입니다.", "category": "공정" },
+  { "term": "ALD", "full": "Atomic Layer Deposition", "desc": "원자층 증착. 원자 단위의 초미세 박막을 쌓는 가장 정밀한 증착법입니다.", "category": "공정" },
+  { "term": "Annealing", "full": "Annealing (열처리)", "desc": "결정 상태를 좋게 하거나 특성을 안정시키기 위해 기판을 가공하는 열처리 공정입니다.", "category": "공정" },
+  { "term": "Cleaning", "full": "Cleaning (세정)", "desc": "공정 중간 이물질을 제거하여 수율을 높이는 필수 과정입니다.", "category": "공정" },
+  { "term": "Exposure", "full": "Exposure (노광)", "desc": "마스크의 패턴을 빛을 통해 감광액(PR)이 발린 기판에 전사하는 작업입니다.", "category": "공정" },
+  { "term": "Developer", "full": "Developer (현상)", "desc": "노광 후 필요 없는 부분을 씻어내어 실제 패턴을 드러나게 하는 공정입니다.", "category": "공정" },
+  { "term": "Stripping", "full": "Stripping (박리)", "desc": "식각 공정 후 더 이상 필요 없는 감광액을 완전히 제거하는 작업입니다.", "category": "공정" },
+  { "term": "Ion Implantation", "full": "Ion Implantation", "desc": "반도체 층에 특정 불순물 이온을 주입하여 전기적 특성을 조절합니다.", "category": "공정" },
+  { "term": "CMP", "full": "Chemical Mechanical Polishing", "desc": "화학/기계적 연마. 기판 표면을 평탄하게 갈아내는 공정입니다.", "category": "공정" },
+  { "term": "Inspection", "full": "Inspection (검사)", "desc": "공정 단계마다 불량을 감지하여 수율을 관리하는 과정입니다.", "category": "공정" },
+  { "term": "Repair", "full": "Repair (리페어)", "desc": "발견된 미세 불량을 레이저 등을 이용해 수정하여 정상화하는 공정입니다.", "category": "공정" },
+  { "term": "Cell", "full": "Cell Process", "desc": "TFT 기판과 컬러필터(혹은 유기층)를 합쳐 개별 패널 단위로 만드는 공정입니다.",
     "category": "공정"
   },
-  {
-    "term": "Etching",
-    "full": "Etching (식각 공정)",
-    "desc": "화학물질이나 가스를 이용해 불필요한 부분을 깎아내는 공정입니다. 습식과 건식이 있습니다.",
+  { "term": "Module", "full": "Module Process", "desc": "완성된 패널에 구동 칩과 회로 기판을 붙여 최종 제품화하는 공정입니다.",
     "category": "공정"
   },
-  {
-    "term": "Deposition",
-    "full": "Deposition (증착 공정)",
-    "desc": "기판 위에 금속이나 유기물 등을 아주 얇은 막 형태로 입히는 공정입니다.",
-    "category": "공정"
-  },
-  {
-    "term": "CVD",
-    "full": "Chemical Vapor Deposition",
-    "desc": "화학 기상 증착. 가스의 화학 반응을 이용해 박막을 형성하는 방식입니다.",
-    "category": "공정"
-  },
-  {
-    "term": "PVD",
-    "full": "Physical Vapor Deposition",
-    "desc": "물리 기상 증착. 진공 상태에서 물질을 가열하여 기판에 증발/부착시키는 방식입니다.",
-    "category": "공정"
-  },
-  {
-    "term": "Sputtering",
-    "full": "Sputtering",
-    "desc": "이온을 타겟에 충돌시켜 튀어나온 입자들이 기판에 달라붙게 만드는 증착 기법입니다.",
-    "category": "공정"
-  },
-  {
-    "term": "ALD",
-    "full": "Atomic Layer Deposition",
-    "desc": "원자층 증착. 원자 하나하나 두께로 막을 쌓아 올리는 초정밀 박막 증착 기술입니다.",
-    "category": "공정"
-  },
-  {
-    "term": "Developer",
-    "full": "Developer (현상)",
-    "desc": "노광 후 빛을 받은 부분(혹은 안 받은 부분)의 감광액을 씻어내 패턴을 드러내는 공정입니다.",
-    "category": "공정"
-  },
-  {
-    "term": "Stripping",
-    "full": "Stripping (박리)",
-    "desc": "식각 공정 완료 후 더 이상 필요 없는 감광액(PR)을 완전히 제거하는 과정입니다.",
-    "category": "공정"
-  },
-  {
-    "term": "Annealing",
-    "full": "Annealing (열처리)",
-    "desc": "디스플레이 소자의 특성을 안정시키기 위해 특정 온도로 기판을 가열하는 공정입니다.",
-    "category": "공정"
-  },
-  {
-    "term": "Cleaning",
-    "full": "Cleaning (세정)",
-    "desc": "공정 중 발생하는 미세 먼지나 불순물을 제거하여 수율을 높이는 필수 과정입니다.",
-    "category": "공정"
-  },
-  {
-    "term": "Inspection",
-    "full": "Inspection (검사)",
-    "desc": "공정 단계마다 불량 유무를 확인하는 과정. 자동 광학 검사(AOI) 등이 쓰입니다.",
-    "category": "공정"
-  },
-  {
-    "term": "Repair",
-    "full": "Repair (리페어)",
-    "desc": "검사에서 발견된 미세 불량을 레이저 등을 이용해 수정하여 살려내는 공정입니다.",
-    "category": "공정"
-  },
-  {
-    "term": "Mura",
-    "full": "Mura (얼룩)",
-    "desc": "디스플레이 표면이 고르지 않아 생기는 시각적 얼룩. 엔지니어의 주요 관리 대상입니다.",
-    "category": "공정"
-  },
-  {
-    "term": "Bonding",
-    "full": "Bonding",
-    "desc": "패널과 구동 칩(IC), 회로 기판을 전기적으로 연결하고 접합하는 공정입니다.",
-    "category": "공정"
-  },
-  {
-    "term": "ACF",
-    "full": "Anisotropic Conductive Film",
-    "desc": "이방성 도전 필름. 특정 방향으로만 전기를 통하게 하여 부품을 접합하는 재료입니다.",
-    "category": "공정"
-  },
-  {
-    "term": "Scribing",
-    "full": "Scribing",
-    "desc": "커다란 원장 유리를 개별 패널 크기에 맞춰 칼날이나 레이저로 자르는 공정입니다.",
-    "category": "공정"
-  },
-  {
-    "term": "Aging",
-    "full": "Aging (에이징)",
-    "desc": "패널 제작 후 일정 시간 동안 구동시켜 소자의 성능을 안정시키고 불량을 걸러내는 과정입니다.",
-    "category": "공정"
-  },
-  {
-    "term": "Inkjet Printing",
-    "full": "Inkjet Printing (잉크젯)",
-    "desc": "유기물을 진공 증착 대신 프린터처럼 노즐로 뿌려 픽셀을 만드는 차세대 공정입니다.",
-    "category": "공정"
-  },
-  {
-    "term": "Exposure",
-    "full": "Exposure (노광)",
-    "desc": "회로 패턴이 그려진 마스크를 통해 기판에 빛을 쪼여 형상을 전사하는 핵심 단계입니다.",
-    "category": "공정"
-  },
-  {
-    "term": "Pandas",
-    "full": "Pandas Library",
-    "desc": "파이썬에서 데이터 표(Table)를 다루는 가장 강력하고 대중적인 분석 라이브러리입니다.",
-    "category": "데이터 처리"
-  },
-  {
-    "term": "Numpy",
-    "full": "Numerical Python",
-    "desc": "수치 계산을 위한 파이썬 라이브러리. 대규모 배열과 행렬 연산에 최적화되어 있습니다.",
-    "category": "데이터 처리"
-  },
-  {
-    "term": "CSV",
-    "full": "Comma-Separated Values",
-    "desc": "콤마로 구분된 데이터 파일 형식. 엑셀보다 가볍고 단순해서 프로그래밍에서 애용됩니다.",
-    "category": "데이터 처리"
-  },
-  {
-    "term": "Normalization",
-    "full": "Normalization (정규화)",
-    "desc": "서로 다른 데이터 범위를 0~1 사이로 맞추어 공정하게 비교할 수 있게 만드는 과정입니다.",
-    "category": "데이터 처리"
-  },
-  {
-    "term": "Outlier",
-    "full": "Outlier (이상치)",
-    "desc": "전체적인 데이터 흐름에서 동떨어진 아주 작거나 큰 값. 설비 이상 징후일 확률이 높습니다.",
-    "category": "데이터 처리"
-  },
-  {
-    "term": "Missing Value",
-    "full": "Missing Value (결측치)",
-    "desc": "누락된 데이터. 센서 오류 등으로 기록되지 않은 데이터를 처리하는 것은 분석의 기본입니다.",
-    "category": "데이터 처리"
-  },
-  {
-    "term": "Correlation",
-    "full": "Correlation (상관관계)",
-    "desc": "두 변수가 서로 얼마나 밀접하게 변하는지를 나타내는 수치. -1에서 1 사이 값을 갖습니다.",
-    "category": "데이터 처리"
-  },
-  {
-    "term": "Regression",
-    "full": "Regression (회귀 분석)",
-    "desc": "데이터를 통해 미래의 연속적인 수치(예: 수율)를 예측하는 통계적 모델링 기법입니다.",
-    "category": "데이터 처리"
-  },
-  {
-    "term": "Classification",
-    "full": "Classification (분류)",
-    "desc": "데이터를 정해진 카테고리(예: 불량/양품) 중 하나로 나누는 분석 방식입니다.",
-    "category": "데이터 처리"
-  },
-  {
-    "term": "Histogram",
-    "full": "Histogram",
-    "desc": "데이터의 분포를 막대그래프로 나타낸 것. 공정이 안정적인지 한눈에 보여줍니다.",
-    "category": "데이터 처리"
-  },
-  {
-    "term": "Box Plot",
-    "full": "Box-and-Whisker Plot",
-    "desc": "데이터의 사분위수를 상자 모양으로 시각화하여 분포와 이상치를 한 번에 파악하는 도구입니다하고.",
-    "category": "데이터 처리"
-  },
-  {
-    "term": "SQL",
-    "full": "Structured Query Language",
-    "desc": "데이터베이스(DB)에서 정보를 찾아오고 관리하기 위해 사용하는 표준 언어입니다.",
-    "category": "데이터 처리"
-  },
-  {
-    "term": "ETL",
-    "full": "Extract, Transform, Load",
-    "desc": "추출, 변형, 적재. 여러 곳에 흩어진 데이터를 모아 분석하기 좋게 가공하여 저장하는 과정입니다.",
-    "category": "데이터 처리"
-  },
-  {
-    "term": "Standardization",
-    "full": "Standardization (표준화)",
-    "desc": "평균을 0, 표준편차를 1로 맞추어 데이터의 척도를 통일하는 전처리 과정입니다.",
-    "category": "데이터 처리"
-  },
-  {
-    "term": "Imputation",
-    "full": "Data Imputation",
-    "desc": "누락된 결측치를 평균이나 중앙값 등으로 채워 넣어 분석의 흐름을 잇는 기법입니다.",
-    "category": "데이터 처리"
-  },
-  {
-    "term": "Random Forest",
-    "full": "Random Forest Algorithm",
-    "desc": "여러 개의 결정 나무를 결합하여 높은 정확도로 결과를 내는 강력한 머신러닝 알고리즘입니다.",
-    "category": "데이터 처리"
-  },
-  {
-    "term": "Overfitting",
-    "full": "Overfitting (과적합)",
-    "desc": "모델이 학습 데이터에만 너무 맞춰져서 일반적인 새로운 데이터에는 성능이 떨어지는 현상입니다.",
-    "category": "데이터 처리"
-  },
-  {
-    "term": "Variance",
-    "full": "Variance (분산)",
-    "desc": "데이터가 평균에서 얼마나 멀리 퍼져 있는지를 나타내는 수치입니다.",
-    "category": "데이터 처리"
-  },
-  {
-    "term": "Mean / Median",
-    "full": "Mean vs Median",
-    "desc": "평균값과 중앙값. 데이터 전체의 특성을 요약하여 한 숫자로 보여주는 지표입니다.",
-    "category": "데이터 처리"
-  },
-  {
-    "term": "Scatter Chart",
-    "full": "Scatter Plot",
-    "desc": "데이터의 상관 관계를 점으로 표현하여 어떤 상호작용이 있는지 분석하는 차트입니다.",
-    "category": "데이터 처리"
-  },
-  {
-    "term": "Variable",
-    "full": "Variable (변수)",
-    "desc": "데이터를 저장하는 이름표 붙은 상자입니다. 나중에 다시 꺼내 쓸 수 있습니다.",
-    "category": "코딩"
-  },
-  {
-    "term": "Function",
-    "full": "Function (함수)",
-    "desc": "반복되는 코드를 묶어둔 '작업 박스'. 재료를 넣으면 결과물을 만들어 줍니다.",
-    "category": "코딩"
-  },
-  {
-    "term": "Condition",
-    "full": "Conditional Statement (if)",
-    "desc": "만약 ~라면 A를 하고, 아니면 B를 하라는 선택의 논리를 구현하는 명령문입니다.",
-    "category": "코딩"
-  },
-  {
-    "term": "Loop",
-    "full": "Iteration (for / while)",
-    "desc": "작업을 수천, 수만 번 반복시키고 싶을 때 사용하는 명령문입니다.",
-    "category": "코딩"
-  },
-  {
-    "term": "Array / List",
-    "full": "Array / List",
-    "desc": "데이터 여러 개를 기차처럼 순서대로 연결해 관리하는 주머니입니다.",
-    "category": "코딩"
-  },
-  {
-    "term": "Dictionary",
-    "full": "Dictionary (JSON Style)",
-    "desc": "키(Key)와 값(Value)이 한 쌍으로 이루어진 데이터 구조. 사전처럼 정보를 찾기 좋습니다.",
-    "category": "코딩"
-  },
-  {
-    "term": "String",
-    "full": "String (문자열)",
-    "desc": "따옴표로 감싸진 텍스트 데이터. 숫자와는 다르게 처리됩니다.",
-    "category": "코딩"
-  },
-  {
-    "term": "Integer / Float",
-    "full": "Integer / Float",
-    "desc": "코딩에서 사용하는 숫자 타입. 정수(Integer)와 소수점 있는 실수(Float)를 구분합니다.",
-    "category": "코딩"
-  },
-  {
-    "term": "Boolean",
-    "full": "Boolean (True/False)",
-    "desc": "참(True)과 거짓(False)만을 나타내는 가장 단순하고 강력한 데이터 타입입니다.",
-    "category": "코딩"
-  },
-  {
-    "term": "Class / Object",
-    "full": "Class & Object",
-    "desc": "설계도(Class)와 그 설계도로 만든 실제 제품(Object). 객체 지향 프로그래밍의 핵심입니다.",
-    "category": "코딩"
-  },
-  {
-    "term": "Library / Module",
-    "full": "Library & Module",
-    "desc": "남들이 미리 만들어둔 똑똑한 도구 세트. 개발 시간을 획기적으로 줄여줍니다.",
-    "category": "코딩"
-  },
-  {
-    "term": "Debugging",
-    "full": "Debugging",
-    "desc": "코드의 오류(버그)를 찾아내고 수정하는 과정입니다.",
-    "category": "코딩"
-  },
-  {
-    "term": "Syntax",
-    "full": "Syntax (문법)",
-    "desc": "코딩 언어만의 작성 규칙. 컴퓨터가 알아들을 수 있는 맞춤법입니다.",
-    "category": "코딩"
-  },
-  {
-    "term": "IDE",
-    "full": "Integrated Development Environment",
-    "desc": "통합 개발 환경. 코딩을 더 편하게 할 수 있게 도와주는 메모장 이상의 작업 도구(예: VS Code)입니다.",
-    "category": "코딩"
-  },
-  {
-    "term": "Git",
-    "full": "Git Verion Control",
-    "desc": "코드의 변경 이력을 타임머신처럼 기록하는 버전 관리 도구입니다.",
-    "category": "코딩"
-  },
-  {
-    "term": "Algorithm",
-    "full": "Algorithm",
-    "desc": "문제를 해결하기 위해 설계된 정해진 절차나 방법입니다.",
-    "category": "코딩"
-  },
-  {
-    "term": "Parameter",
-    "full": "Parameter (매개변수)",
-    "desc": "함수나 모델에 전달되는 설정값. 어떤 재료를 넣느냐에 따라 맛이 달라집니다.",
-    "category": "코딩"
-  },
-  {
-    "term": "Database",
-    "full": "Database (DB)",
-    "desc": "데이터를 체계적으로 저장하고 관리하는 거대한 정보 창고입니다.",
-    "category": "코딩"
-  },
-  {
-    "term": "Server",
-    "full": "Server",
-    "desc": "요청에 따라 정보나 서비스를 제공하는 중심 컴퓨터입니다.",
-    "category": "코딩"
-  },
-  {
-    "term": "Terminal / Console",
-    "full": "Terminal / Shell",
-    "desc": "명령어를 직접 입력해서 컴퓨터와 대화하는 검은색 줄글 화면입니다.",
-    "category": "코딩"
-  }
+  { "term": "Scribing", "full": "Scribing (절단)", "desc": "커다란 원장 유리를 정해진 규격으로 자르는 작업입니다.", "category": "공정" },
+  { "term": "Bonding", "full": "Bonding", "desc": "부품과 패널을 전기적으로 연결하면서 물리적으로 접합하는 기술입니다.", "category": "공정" },
+  { "term": "ACF", "full": "Anisotropic Conductive Film", "desc": "이방성 도전 필름. 미세 픽셀 연결에 필수적인 전도성 접착 재료입니다.", "category": "공정" },
+  { "term": "PI", "full": "Polyimide", "desc": "열에 강하고 유연한 플라스틱 소재. 폴더블 기판의 핵심 재료입니다.", "category": "공정" },
+  { "term": "Inkjet Printing", "full": "Inkjet Printing", "desc": "유기물을 증착 대신 노즐로 뿌려 픽셀을 형성하는 차세대 방식입니다.", "category": "공정" },
+  { "term": "FMM", "full": "Fine Metal Mask", "desc": "OLED 증착 시 픽셀 위치를 정밀하게 잡아주는 구멍 뚫린 얇은 금속판입니다.", "category": "공정" },
+  { "term": "OOC", "full": "Out of Control", "desc": "공정 이탈. 통계적 한계를 벗어나 조치가 필요한 에러 상태입니다.", "category": "공정" },
+  { "term": "UCL", "full": "Upper Control Limit", "desc": "관리 상한선. 이 품질 수치를 넘어가면 공정 이상으로 간주합니다.", "category": "공정" },
+  { "term": "LCL", "full": "Lower Control Limit", "desc": "관리 하한선. 품질이 이 수치 미만이면 가동을 중단하고 점검합니다.", "category": "공정" },
+  { "term": "Cp / Cpk", "full": "Process Capability Index", "desc": "공정 능력 지수. 공정이 얼마나 설계 목표에 맞춰 안정적으로 돌아가는지 나타내는 척도입니다.", "category": "공정" },
+  { "term": "Pareto chart", "full": "Pareto Analysis", "desc": "주요 불량 원인을 빈도순으로 나열하여 핵심 개선 대상을 찾는 도구입니다.", "category": "공정" },
+  { "term": "MES", "full": "Manufacturing Execution System", "desc": "생산 관리 시스템. 공장의 모든 가동 데이터를 수집하고 통제하는 두뇌 역할을 합니다.", "category": "공정" },
+  { "term": "Pandas", "full": "Python Data Analysis Library", "desc": "데이터를 표(DataFrame) 형태로 다루는 파이썬의 핵심 분석 도구입니다.", "category": "데이터 처리" },
+  { "term": "NumPy", "full": "Numerical Python", "desc": "대규모 수치 계산과 행렬 연산을 빠르게 처리하는 라이브러리입니다.", "category": "데이터 처리" },
+  { "term": "EDA", "full": "Exploratory Data Analysis", "desc": "탐색적 데이터 분석. 데이터를 본격 분석하기 전 전반적 특징을 파악하는 과정입니다.", "category": "데이터 처리" },
+  { "term": "Normalization", "full": "Normalization (정규화)", "desc": "서로 다른 데이터 범위를 0~1 사이 등으로 일정하게 맞추는 작업입니다.", "category": "데이터 처리" },
+  { "term": "Standardization", "full": "Standardization (표준화)", "desc": "평균을 0, 표준편차를 1로 맞춰 데이터 분포를 정규표준편차 형태로 만드는 것입니다.", "category": "데이터 처리" },
+  { "term": "Outlier", "full": "Outlier (이상치)", "desc": "전체 데이터 분포에서 유독 튀어나온 비정상적인 값입니다.", "category": "데이터 처리" },
+  { "term": "Missing Value", "full": "Missing Value (결측치)", "desc": "수집 과정에서 누락된 빈 데이터 값입니다.", "category": "데이터 처리" },
+  { "term": "Correlation", "full": "Correlation Coefficient", "desc": "두 데이터 변수가 서로 얼마나 관계가 있는지 나타내는 수치(-1 ~ 1)입니다.", "category": "데이터 처리" },
+  { "term": "Regression", "full": "Linear Regression", "desc": "데이터를 통해 미래의 수치를 예측하는 통계적 분석 기법입니다.", "category": "데이터 처리" },
+  { "term": "Classification", "full": "Classification", "desc": "데이터가 어떤 그룹(양품/불량 등)에 속하는지 분류하는 인공지능 방식입니다.", "category": "데이터 처리" },
+  { "term": "Scikit-learn", "full": "Machine Learning Library", "desc": "파이썬에서 머신러닝 알고리즘을 쉽게 사용하게 해주는 라이브러리입니다.", "category": "데이터 처리" },
+  { "term": "Matplotlib / Seaborn", "full": "Visualization Libraries", "desc": "데이터를 그래프나 차트로 시각화하는 파이썬 라이브러리입니다.", "category": "데이터 처리" },
+  { "term": "SQL", "full": "Structured Query Language", "desc": "데이터베이스(DB)에 저장된 수조 개의 데이터를 조회하고 가져오는 언어입니다.", "category": "데이터 처리" },
+  { "term": "Big Data", "full": "Big Data", "desc": "너무 방대하여 기존 방식으로는 처리가 어려운 대규모 데이터 집합입니다.", "category": "데이터 처리" },
+  { "term": "Algorithm", "full": "Algorithm", "desc": "문제를 해결하기 위해 설계된 정해진 절차나 수식입니다.", "category": "데이터 처리" },
+  { "term": "Machine Learning", "full": "Machine Learning", "desc": "데이터를 통해 기계가 스스로 학습하여 성능을 개선하는 기술입니다.", "category": "데이터 처리" },
+  { "term": "Deep Learning", "full": "Deep Learning", "desc": "인공 신경망을 이용하여 복잡한 데이터(이미지 등)를 처리하는 AI 기술입니다.", "category": "데이터 처리" },
+  { "term": "Histogram", "full": "Histogram", "desc": "데이터의 분포 상태를 막대그래프로 표현한 시각화 방법입니다.", "category": "데이터 처리" },
+  { "term": "Scatter Plot", "full": "Scatter Plot", "desc": "두 변수 간의 관계를 좌표 평면상의 점으로 찍어 나타낸 그래프입니다.", "category": "데이터 처리" },
+  { "term": "Heatmap", "full": "Heatmap", "desc": "데이터 농도를 색상으로 표현하여 특정 위치의 이상을 찾는 시각화 방식입니다.", "category": "데이터 처리" },
+  { "term": "API", "full": "Application Programming Interface", "desc": "코딩으로 다른 프로그램이나 서비스의 기능을 빌려오는 규격입니다.", "category": "코딩" },
+  { "term": "Variable", "full": "Variable (변수)", "desc": "데이터를 담아두는 이름표 붙은 상자입니다.", "category": "코딩" },
+  { "term": "Function", "full": "Function (함수)", "desc": "자주 쓰는 코드 뭉치를 묶어두고 재사용하는 마법 상자입니다.", "category": "코딩" },
+  { "term": "Condition", "full": "If statement", "desc": "특정 조건이 맞을 때만 실행되게 하는 흐름 제어문입니다.", "category": "코딩" },
+  { "term": "Loop", "full": "Iteration (for / while)", "desc": "동일한 작업을 수만 번 반복시킬 때 사용하는 코드입니다.", "category": "코딩" },
+  { "term": "Library", "full": "Library", "desc": "전문가들이 미리 만들어둔 기능 묶음. 우리는 이것을 가져다 씁니다.", "category": "코딩" },
+  { "term": "Syntax", "full": "Syntax (문법)", "desc": "컴퓨터가 알아들을 수 있게 정해진 작성 규칙입니다.", "category": "코딩" },
+  { "term": "Error / Bug", "full": "Bug", "desc": "프로그램이 예기치 않게 멈추거나 잘못 작동하는 원인입니다.", "category": "코딩" },
+  { "term": "Debugging", "full": "Debugging", "desc": "코드 속의 벌레(버그)를 찾아내고 고치는 모든 과정입니다.", "category": "코딩" },
+  { "term": "IDE", "full": "Integrated Development Environment", "desc": "VS Code처럼 코딩을 편리하게 할 수 있도록 돕는 작업 도구입니다.", "category": "코딩" },
+  { "term": "GUI", "full": "Graphical User Interface", "desc": "사용자가 버튼이나 창으로 프로그램을 다루는 시각적 환경입니다.", "category": "코딩" },
+  { "term": "Open Source", "full": "Open Source", "desc": "누구나 자유롭게 보고, 쓰고, 수정할 수 있는 공개된 소스 코드입니다.", "category": "코딩" },
+  { "term": "GitHub", "full": "GitHub", "desc": "코드 저장소이자 전 세계 개발자들의 협업 및 공유 플랫폼입니다.", "category": "코딩" },
+  { "term": "Prompt", "full": "AI Prompting", "desc": "AI에게 내리는 구체적인 질문이나 지시문입니다.", "category": "코딩" },
+  { "term": "Markdown", "full": "Markdown (MD)", "desc": "글자를 깔끔하게 꾸며서 기록하기 위한 쉽고 가벼운 문서 규칙입니다.", "category": "코딩" },
+  { "term": "CSV / JSON", "full": "Data Formats", "desc": "코드가 읽고 쓰기 편하게 고안된 텍스트 형식의 데이터 규격입니다.", "category": "코딩" },
+  { "term": "Web App", "full": "Web Application", "desc": "설치 없이 웹 브라우저에서 바로 실행되는 프로그램입니다.", "category": "코딩" },
+  { "term": "Deploy", "full": "Deployment (배포)", "desc": "내가 만든 프로그램을 실제 사용자가 쓸 수 있게 서버에 올리는 과정입니다.", "category": "코딩" },
+  { "term": "Frontend", "full": "User Interface Development", "desc": "사용자 눈에 보이는 화면 부분을 개발하는 영역입니다.", "category": "코딩" },
+  { "term": "Backend", "full": "Server-side Development", "desc": "서버 내부 로직과 데이터 처리를 담당하는 보이지 않는 뒷 영역입니다.", "category": "코딩" }
 ]
