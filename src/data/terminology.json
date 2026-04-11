@@ -1,0 +1,86 @@
+[
+  {
+    "term": "OLED",
+    "full": "Organic Light-Emitting Diode",
+    "desc": "유기 발광 다이오드. 전류가 흐르면 스스로 빛을 내는 유기 화합물을 이용한 디스플레이 기술입니다.",
+    "category": "디스플레이"
+  },
+  {
+    "term": "MES",
+    "full": "Manufacturing Execution System",
+    "desc": "생산 관리 시스템. 공장의 주문부터 완제품 생산까지 모든 과정을 실시간으로 모니터링하고 제어하는 시스템입니다.",
+    "category": "시스템"
+  },
+  {
+    "term": "OOC",
+    "full": "Out of Control",
+    "desc": "관리 이탈. 통계적 공정 관리에서 설비의 상태가 일상적인 범위를 벗어나 관리가 필요한 상태가 된 것을 의미합니다.",
+    "category": "공정관리"
+  },
+  {
+    "term": "UCL / LCL",
+    "full": "Upper / Lower Control Limit",
+    "desc": "관리 상/하한. 공정 데이터가 이 범위 안에 있어야 정상으로 판단하는 통계적 경계선입니다.",
+    "category": "공정관리"
+  },
+  {
+    "term": "SEM",
+    "full": "Scanning Electron Microscope",
+    "desc": "주사 전자 현미경. 전자선으로 시료 표면을 스캔하여 나노미터 수준의 미세한 불량을 정밀하게 관찰하는 장비입니다.",
+    "category": "측정기기"
+  },
+  {
+    "term": "OM",
+    "full": "Optical Microscope",
+    "desc": "광학 현미경. 렌즈와 빛을 이용해 육안으로 보기 힘든 공정상의 이물이나 불량 패턴을 확대해 보는 기초 장비입니다.",
+    "category": "측정기기"
+  },
+  {
+    "term": "Yield (수율)",
+    "full": "Production Yield",
+    "desc": "투입 수 대비 완성된 양품의 비율. 디스플레이 엔지니어가 가장 중요하게 관리하는 생산성 핵심 지표입니다.",
+    "category": "디스플레이"
+  },
+  {
+    "term": "Pareto Analysis",
+    "full": "Pareto Chart analysis",
+    "desc": "파레토 분석. '전체 불량의 80%는 20%의 핵심 원인에서 발생한다'는 원리에 기초하여 주요 불량 원인을 우선순위로 나열하는 기법입니다.",
+    "category": "데이터분석"
+  },
+  {
+    "term": "Prompt (프롬프트)",
+    "full": "AI Prompt Engineering",
+    "desc": "AI에게 내리는 지시문. 바이브 코딩에서 AI 사수에게 우리의 의도를 정확하게 전달하는 대화의 기술을 의미합니다.",
+    "category": "바이브코딩"
+  },
+  {
+    "term": "API",
+    "full": "Application Programming Interface",
+    "desc": "소프트웨어 간 통신 규격. 우리가 짠 코드와 AI 모델, 혹은 사내 시스템(MES) 간에 데이터를 안전하게 주고받는 창구입니다.",
+    "category": "소프트웨어"
+  },
+  {
+    "term": "Vibe Coding",
+    "full": "Vibe Coding Philosophy",
+    "desc": "바이브 코딩. 복잡한 문법 암기보다는 AI와 대화하며 문제 해결의 '흐름(Vibe)'과 '맥락'에 집중하는 새로운 코딩 학습법입니다.",
+    "category": "바이브코딩"
+  },
+  {
+    "term": "EDA",
+    "full": "Exploratory Data Analysis",
+    "desc": "탐색적 데이터 분석. 본격적인 모델링 전, 데이터를 그래프로 그려보고 통계량을 확인하며 특징을 파악하는 필수 과정입니다.",
+    "category": "데이터분석"
+  },
+  {
+    "term": "Scatter Plot",
+    "full": "Scatter Plot Visualization",
+    "desc": "산점도. 두 변수(예: 온도와 불량률) 사이의 상관관계를 점의 분포로 시각화하여 원인 파악을 돕는 도구입니다.",
+    "category": "데이터분석"
+  },
+  {
+    "term": "Heatmap",
+    "full": "Defect Heatmap",
+    "desc": "히트맵. 패널 전면에 걸쳐 발생하는 불량의 밀집도를 색상으로 표현하여 어떤 공정 챔버에서 문제가 생겼는지 추적하는 지도입니다.",
+    "category": "시각화"
+  }
+]

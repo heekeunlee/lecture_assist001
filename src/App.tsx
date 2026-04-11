@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ChevronLeft, ChevronRight, Presentation, Grid, Sparkles, MessageCircle, HelpCircle, Layers, List, FileText, Target, TrendingUp, Clock, Award, Download } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight, Presentation, Grid, Sparkles, MessageCircle, HelpCircle, Layers, List, FileText, Target, TrendingUp, Clock, Award, Download, Printer, BookOpen, Search } from 'lucide-react';
 import questionsData from './data/questions.json';
 import curriculumData from './data/curriculum.json';
 import officialData from './data/official_plan.json';
+import terminologyData from './data/terminology.json';
 
-type TabType = 'faq' | 'curriculum';
+type TabType = 'faq' | 'curriculum' | 'terminology';
 
 const CurriculumVisuals = () => {
   return (
@@ -90,6 +91,7 @@ export default function App() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [theme, setTheme] = useState('dark');
   const [showOfficial, setShowOfficial] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
@@ -100,6 +102,7 @@ export default function App() {
   const openModal = (id: number | string) => {
     setSelectedId(id);
     const data = activeTab === 'faq' ? questionsData : (showOfficial ? officialData : curriculumData);
+    if (activeTab === 'terminology') return;
     const index = data.findIndex((q: any) => q.id === id);
     setCurrentIndex(index);
   };
@@ -116,7 +119,12 @@ export default function App() {
 
   const currentData = activeTab === 'faq' 
     ? questionsData[currentIndex] 
-    : (showOfficial ? officialData[currentIndex] : curriculumData[currentIndex]);
+    : (activeTab === 'curriculum' ? (showOfficial ? officialData[currentIndex] : curriculumData[currentIndex]) : null);
+
+  const filteredTerms = terminologyData.filter(t => 
+    t.term.toLowerCase().includes(searchTerm.toLowerCase()) || 
+    t.desc.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div className="app-container">
@@ -133,6 +141,12 @@ export default function App() {
             onClick={() => { setActiveTab('curriculum'); setSelectedId(null); }}
           >
             <List size={18} /> 실무 커리큘럼
+          </button>
+          <button 
+            className={`tab-button ${activeTab === 'terminology' ? 'active' : ''}`} 
+            onClick={() => { setActiveTab('terminology'); setSelectedId(null); }}
+          >
+            <BookOpen size={18} /> 주요 용어
           </button>
         </div>
         
@@ -163,12 +177,12 @@ export default function App() {
           <h1>
             {activeTab === 'faq' 
               ? '입문자 FAQ 가이드' 
-              : (showOfficial ? 'Vibe Coding 공식 커리큘럼' : '디스플레이 엔지니어 실무 로드맵')}
+              : (activeTab === 'terminology' ? '엔지니어 용어 사전' : (showOfficial ? 'Vibe Coding 공식 커리큘럼' : '디스플레이 엔지니어 실무 로드맵'))}
           </h1>
           <p className="header-subtitle">
             {activeTab === 'faq' 
               ? '비전공자를 위한 시원한 코딩 문답' 
-              : (showOfficial ? 'AI와 함께 기술의 한계를 넘어서는 미래 엔지니어로의 도약' : '조기 전력화를 위한 단계별 학습 과정')}
+              : (activeTab === 'terminology' ? '실무에서 바로 만나는 핵심 가이드' : (showOfficial ? 'AI와 함께 기술의 한계를 넘어서는 미래 엔지니어로의 도약' : '조기 전력화를 위한 단계별 학습 과정'))}
           </p>
         </motion.div>
       </header>
@@ -191,18 +205,25 @@ export default function App() {
               </motion.div>
             ))}
           </div>
-        ) : (
+        ) : activeTab === 'curriculum' ? (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '3rem' }}>
             
             <CurriculumVisuals />
 
             <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '1rem' }}>
               <button 
+                className="toggle-button print-btn"
+                onClick={() => window.print()}
+              >
+                <Printer size={16} />
+                <span>📄 PDF 인쇄하기</span>
+              </button>
+              <button 
                 className="toggle-button download-btn"
                 onClick={() => window.print()}
               >
                 <Download size={16} />
-                <span>{showOfficial ? '공식 커리큘럼 PDF 다운로드' : '실무 로드맵(쉬운 버전) PDF 다운로드'}</span>
+                <span>💾 PDF 파일 다운로드</span>
               </button>
               <button 
                 className={`toggle-button ${showOfficial ? 'active' : ''}`}
@@ -269,11 +290,46 @@ export default function App() {
               </table>
             </motion.div>
           </div>
+        ) : (
+          <div className="terminology-container">
+            <div className="search-wrapper">
+              <Search className="search-icon" size={20} />
+              <input 
+                type="text" 
+                placeholder="찾으시는 용어나 약어를 검색하세요..." 
+                className="terminology-search"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
+
+            <div className="terminology-grid">
+              {filteredTerms.map((t, idx) => (
+                <motion.div 
+                  key={t.term}
+                  className="term-card"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: idx * 0.02 }}
+                >
+                  <div className="term-header">
+                    <span className="term-cat">{t.category}</span>
+                    <h2 className="term-word">{t.term}</h2>
+                  </div>
+                  <div className="term-full">{t.full}</div>
+                  <p className="term-desc">{t.desc}</p>
+                </motion.div>
+              ))}
+            </div>
+            {filteredTerms.length === 0 && (
+              <div className="no-results">찾으시는 검색 결과가 없습니다.</div>
+            )}
+          </div>
         )}
       </main>
 
       <AnimatePresence>
-        {(selectedId !== null || isPresenting) && (
+        {(selectedId !== null && currentData !== null || isPresenting) && currentData && (
           <motion.div 
             className="modal-overlay"
             initial={{ opacity: 0 }}
@@ -454,14 +510,36 @@ export default function App() {
         }
 
         .nav-btn { background: var(--bg-secondary); border: none; width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-        .page-indicator { font-size: 1.1rem; font-weight: 700; }
+        .title-cell { font-size: 1rem !important; font-weight: 700 !important; }
+
+        /* Terminology Styles */
+        .terminology-container { display: flex; flex-direction: column; gap: 2rem; }
+        .search-wrapper { position: relative; max-width: 500px; margin: 0 auto 2rem; width: 100%; }
+        .search-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-secondary); }
+        .terminology-search { 
+          width: 100%; padding: 14px 14px 14px 48px; border-radius: 16px; border: 1px solid var(--border);
+          background: var(--bg-tertiary); color: var(--text-primary); font-size: 1rem; outline: none; transition: border-color 0.2s;
+        }
+        .terminology-search:focus { border-color: var(--accent); }
+        .terminology-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; }
+        .term-card { 
+          background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: 20px; padding: 2rem;
+          transition: transform 0.2s;
+        }
+        .term-card:hover { transform: translateY(-5px); border-color: var(--accent); }
+        .term-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem; }
+        .term-word { font-size: 1.5rem; font-weight: 800; color: var(--accent); }
+        .term-cat { font-size: 0.7rem; font-weight: 700; background: var(--bg-secondary); padding: 4px 10px; border-radius: 6px; color: var(--text-secondary); text-transform: uppercase; }
+        .term-full { font-size: 0.9rem; font-weight: 600; color: var(--text-primary); margin-bottom: 1rem; opacity: 0.8; }
+        .term-desc { font-size: 0.95rem; line-height: 1.6; color: var(--text-secondary); }
+        .no-results { text-align: center; padding: 4rem; color: var(--text-secondary); font-weight: 600; }
 
         @media print {
           @page { margin: 0; size: A4; }
           html, body { margin: 0 !important; padding: 0 !important; -webkit-print-color-adjust: exact !important; }
           body { background: white !important; color: black !important; padding: 2.5cm 2cm !important; }
           .app-container { padding: 0 !important; width: 100% !important; max-width: 100% !important; border: none; margin: 0 !important; }
-          nav, footer, .toggle-button, .download-btn, .icon-button, .action-button, .modal-close-btn { display: none !important; }
+          nav, footer, .toggle-button, .download-btn, .print-btn, .icon-button, .action-button, .modal-close-btn, .terminology-container { display: none !important; }
           header { margin-bottom: 4rem !important; text-align: center !important; }
           h1 { font-size: 3rem !important; margin-bottom: 1rem !important; color: #000 !important; -webkit-text-fill-color: #000 !important; display: block !important; text-align: center !important; }
           .header-subtitle { font-size: 1.3rem !important; color: #333 !important; display: block !important; margin-top: 1rem !important; text-align: center !important; }
