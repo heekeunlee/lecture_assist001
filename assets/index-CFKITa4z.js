@@ -19,9 +19,9 @@ Error generating stack: `+e.message+`
         .tab-button {
           background: transparent; border: none; padding: 10px 20px; border-radius: 14px;
           cursor: pointer; color: var(--text-secondary); display: flex; align-items: center;
-          gap: 10px; font-weight: 600; font-size: 0.95rem; transition: all 0.2s;
+          gap: 10px; font-weight: 700; font-size: 0.95rem; transition: all 0.2s;
         }
-        .tab-button.active { background: var(--bg-tertiary); color: var(--accent); }
+        .tab-button.active { background: var(--bg-secondary); color: var(--accent); border: 1px solid var(--border); }
         .icon-button {
           background: var(--bg-tertiary); border: 1px solid var(--border);
           width: 44px; height: 44px; border-radius: 12px;
@@ -29,14 +29,14 @@ Error generating stack: `+e.message+`
         }
         .action-button {
           background: var(--accent-gradient); border: none; padding: 0 24px;
-          height: 44px; border-radius: 12px; color: white; font-weight: 600;
+          height: 44px; border-radius: 12px; color: white; font-weight: 700;
           display: flex; align-items: center; gap: 10px; cursor: pointer;
         }
         
         .toggle-button {
-          background: var(--bg-tertiary); border: 1px solid var(--border);
-          padding: 8px 16px; border-radius: 10px; color: var(--text-secondary);
-          display: flex; align-items: center; gap: 8px; font-weight: 600; cursor: pointer;
+          background: var(--bg-secondary); border: 1px solid var(--border);
+          padding: 8px 16px; border-radius: 10px; color: var(--text-primary);
+          display: flex; align-items: center; gap: 8px; font-weight: 700; cursor: pointer;
           transition: all 0.2s;
         }
         .toggle-button.active { background: var(--accent); color: white; border-color: var(--accent); }
