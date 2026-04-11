@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ChevronLeft, ChevronRight, Presentation, Grid, Sparkles, MessageCircle, HelpCircle, Layers, List, FileText, Target, TrendingUp, Clock, Award, Download, Printer, BookOpen, Search } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight, Presentation, Grid, Sparkles, MessageCircle, HelpCircle, Layers, List, FileText, Target, TrendingUp, Clock, Award, Download, Printer, BookOpen, Search, Image, Zap } from 'lucide-react';
 import questionsData from './data/questions.json';
 import curriculumData from './data/curriculum.json';
 import officialData from './data/official_plan.json';
 import terminologyData from './data/terminology.json';
+import examplesData from './data/examples.json';
 
-type TabType = 'faq' | 'curriculum' | 'terminology';
+type TabType = 'faq' | 'curriculum' | 'terminology' | 'examples';
 
 const CurriculumVisuals = () => {
   return (
@@ -144,6 +145,12 @@ export default function App() {
             <List size={18} /> 실무 커리큘럼
           </button>
           <button 
+            className={`tab-button ${activeTab === 'examples' ? 'active' : ''}`} 
+            onClick={() => { setActiveTab('examples'); setSelectedId(null); }}
+          >
+            <Sparkles size={18} /> 실전 예제 10
+          </button>
+          <button 
             className={`tab-button ${activeTab === 'faq' ? 'active' : ''}`} 
             onClick={() => { setActiveTab('faq'); setSelectedId(null); setShowOfficial(false); }}
           >
@@ -184,12 +191,12 @@ export default function App() {
           <h1>
             {activeTab === 'curriculum' 
               ? (showOfficial ? 'Vibe Coding 공식 커리큘럼' : '디스플레이 엔지니어 실무 로드맵')
-              : (activeTab === 'faq' ? '바이브코딩 쌩기초 Q&A' : '업계용어 2000')}
+              : (activeTab === 'faq' ? '바이브코딩 쌩기초 Q&A' : (activeTab === 'examples' ? '실무 해결 예제 10선' : '업계용어 2000'))}
           </h1>
           <p className="header-subtitle">
             {activeTab === 'curriculum'
               ? (showOfficial ? 'AI와 함께 기술의 한계를 넘어서는 미래 엔지니어로의 도약' : '조기 전력화를 위한 단계별 학습 과정')
-              : (activeTab === 'faq' ? '비전공자를 위한 시원한 코딩 문답' : '실무에서 바로 만나는 엔지니어 핵심 가이드')}
+              : (activeTab === 'faq' ? '비전공자를 위한 시원한 코딩 문답' : (activeTab === 'examples' ? '강의를 통해 마스터할 디스플레이 현장 실습 시나리오' : '실무에서 바로 만나는 엔지니어 핵심 가이드'))}
           </p>
         </motion.div>
       </header>
@@ -211,6 +218,35 @@ export default function App() {
                 <p className="card-desc">{q.answer.substring(0, 50)}...</p>
               </motion.div>
             ))}
+          </div>
+        ) : activeTab === 'examples' ? (
+          <div className="examples-grid">
+            {examplesData.map((ex: any, idx) => {
+              const iconMap: any = { Image, Target, FileText, TrendingUp, Award, Layers, Sparkles, Zap, Grid, Clock };
+              const IconComp = iconMap[ex.icon] || Sparkles;
+
+              return (
+                <motion.div 
+                  key={ex.id}
+                  className="example-card"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: idx * 0.05 }}
+                >
+                  <div className="example-header">
+                    <div className="example-icon-wrapper">
+                      <IconComp size={24} />
+                    </div>
+                    <span className="case-id">CASE {ex.id}</span>
+                  </div>
+                  <h3 className="example-title">{ex.title}</h3>
+                  <p className="example-desc">{ex.desc}</p>
+                  <div className="example-goal">
+                    <strong>학습 성과:</strong> {ex.goal}
+                  </div>
+                </motion.div>
+              );
+            })}
           </div>
         ) : activeTab === 'curriculum' ? (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '3rem' }}>
@@ -586,12 +622,32 @@ export default function App() {
         .pagination .nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
         .pagination .page-indicator { font-family: var(--font-main); font-weight: 700; color: var(--text-primary); }
 
+        /* Examples Styles */
+        .examples-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 2rem; }
+        .example-card { 
+          background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: 24px; padding: 2.5rem;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: flex; flex-direction: column; gap: 1.2rem;
+        }
+        .example-card:hover { transform: translateY(-8px); border-color: var(--accent); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2); }
+        .example-header { display: flex; justify-content: space-between; align-items: center; }
+        .example-icon-wrapper { 
+          width: 52px; height: 52px; background: rgba(0, 113, 227, 0.1); color: var(--accent);
+          border-radius: 14px; display: flex; align-items: center; justify-content: center;
+        }
+        .case-id { font-size: 0.75rem; font-weight: 800; color: var(--text-secondary); letter-spacing: 0.1em; }
+        .example-title { font-size: 1.4rem; font-weight: 800; line-height: 1.3; color: var(--text-primary); }
+        .example-desc { font-size: 1rem; line-height: 1.6; color: var(--text-secondary); flex-grow: 1; }
+        .example-goal { 
+          font-size: 0.9rem; padding: 1rem; background: var(--bg-secondary); border-radius: 12px;
+          color: var(--text-primary); line-height: 1.5; border-left: 4px solid var(--accent);
+        }
+
         @media print {
           @page { margin: 0; size: A4; }
           html, body { margin: 0 !important; padding: 0 !important; -webkit-print-color-adjust: exact !important; }
           body { background: white !important; color: black !important; padding: 2.5cm 2cm !important; }
           .app-container { padding: 0 !important; width: 100% !important; max-width: 100% !important; border: none; margin: 0 !important; }
-          nav, footer, .toggle-button, .download-btn, .print-btn, .icon-button, .action-button, .modal-close-btn, .terminology-container { display: none !important; }
+          nav, footer, .toggle-button, .download-btn, .print-btn, .icon-button, .action-button, .modal-close-btn, .terminology-container, .examples-grid { display: none !important; }
           header { margin-bottom: 4rem !important; text-align: center !important; }
           h1 { font-size: 3rem !important; margin-bottom: 1rem !important; color: #000 !important; -webkit-text-fill-color: #000 !important; display: block !important; text-align: center !important; }
           .header-subtitle { font-size: 1.3rem !important; color: #333 !important; display: block !important; margin-top: 1rem !important; text-align: center !important; }
