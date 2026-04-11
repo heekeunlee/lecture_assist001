@@ -231,24 +231,35 @@ export default function App() {
                   )}
                 </thead>
                 <tbody>
-                  {(showOfficial ? officialData : curriculumData).map((c: any) => (
-                    <tr key={c.id} onClick={() => openModal(c.id)}>
-                      <td className="id-cell">{c.id}</td>
-                      {showOfficial ? (
-                        <>
-                          <td className="title-cell">{c.title}</td>
-                          <td className="desc-cell">{c.content}</td>
-                          <td><span className="time-badge">{c.time}</span></td>
-                        </>
-                      ) : (
-                        <>
-                          <td><span className="cat-badge">{c.category}</span></td>
-                          <td className="title-cell">{c.title}</td>
-                          <td className="desc-cell">{c.description}</td>
-                        </>
-                      )}
-                    </tr>
-                  ))}
+                  {(showOfficial ? officialData : curriculumData).map((c: any) => {
+                    const isProject = c.type === 'project' || (typeof c.id === 'string' && c.id.startsWith('P'));
+                    return (
+                      <tr key={c.id} onClick={() => openModal(c.id)} className={isProject ? 'row-project' : ''}>
+                        <td className="id-cell">
+                          {isProject ? <div className="project-id-badge">{c.id}</div> : c.id}
+                        </td>
+                        {showOfficial ? (
+                          <>
+                            <td className="title-cell">
+                              {isProject && <span className="p-tag">PROJECT</span>}
+                              {c.title}
+                            </td>
+                            <td className="desc-cell">{c.content}</td>
+                            <td><span className="time-badge">{c.time}</span></td>
+                          </>
+                        ) : (
+                          <>
+                            <td><span className="cat-badge">{c.category}</span></td>
+                            <td className="title-cell">
+                              {isProject && <span className="p-tag">PROJECT</span>}
+                              {c.title}
+                            </td>
+                            <td className="desc-cell">{c.description}</td>
+                          </>
+                        )}
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </motion.div>
@@ -401,6 +412,16 @@ export default function App() {
         .curriculum-table tr { cursor: pointer; }
         .curriculum-table tr:hover td { background: rgba(0, 113, 227, 0.05); }
         .id-cell { font-weight: 700; color: var(--accent); }
+        .row-project { background: rgba(0, 113, 227, 0.03); }
+        .row-project td { border-bottom: 2px solid var(--accent) !important; }
+        .project-id-badge { 
+          background: var(--accent); color: white; padding: 4px 8px; border-radius: 6px; 
+          font-size: 0.7rem; display: inline-block; 
+        }
+        .p-tag { 
+          background: #ff3b30; color: white; padding: 2px 8px; border-radius: 4px; 
+          font-size: 0.65rem; font-weight: 800; margin-right: 8px; vertical-align: middle;
+        }
         .cat-badge, .time-badge { background: var(--bg-secondary); padding: 6px 14px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; white-space: nowrap; }
         .time-badge { color: var(--accent); }
         .title-cell { font-weight: 600; font-size: 1.1rem; }
