@@ -147,13 +147,13 @@ export default function App() {
             className={`tab-button ${activeTab === 'faq' ? 'active' : ''}`} 
             onClick={() => { setActiveTab('faq'); setSelectedId(null); setShowOfficial(false); }}
           >
-            <HelpCircle size={18} /> 바이브코딩 생기초 Q&A
+            <HelpCircle size={18} /> 바이브코딩 쌩기초 Q&A
           </button>
           <button 
             className={`tab-button ${activeTab === 'terminology' ? 'active' : ''}`} 
             onClick={() => { setActiveTab('terminology'); setSelectedId(null); }}
           >
-            <BookOpen size={18} /> 업계 용어 사전 2000
+            <BookOpen size={18} /> 업계용어 2000
           </button>
         </div>
         
@@ -184,7 +184,7 @@ export default function App() {
           <h1>
             {activeTab === 'curriculum' 
               ? (showOfficial ? 'Vibe Coding 공식 커리큘럼' : '디스플레이 엔지니어 실무 로드맵')
-              : (activeTab === 'faq' ? '바이브코딩 생기초 Q&A' : '업계 용어 사전 2000')}
+              : (activeTab === 'faq' ? '바이브코딩 쌩기초 Q&A' : '업계용어 2000')}
           </h1>
           <p className="header-subtitle">
             {activeTab === 'curriculum'
