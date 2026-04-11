@@ -1,11 +1,87 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ChevronLeft, ChevronRight, Presentation, Grid, Sparkles, MessageCircle, HelpCircle, Layers, List, FileText } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight, Presentation, Grid, Sparkles, MessageCircle, HelpCircle, Layers, List, FileText, Target, TrendingUp, Clock, Award } from 'lucide-react';
 import questionsData from './data/questions.json';
 import curriculumData from './data/curriculum.json';
 import officialData from './data/official_plan.json';
 
 type TabType = 'faq' | 'curriculum';
+
+const CurriculumVisuals = () => {
+  return (
+    <div className="visuals-container">
+      {/* 1. Roadmap Stepper */}
+      <div className="roadmap-section">
+        <div className="section-label">Learning Journey Roadmap</div>
+        <div className="roadmap-stepper">
+          {['마인드셋', '데이터 자동화', '그림의 힘', '퇴근 도우미', '가상 현실', '스마트 비서', '실전 투입'].map((stage, idx) => (
+            <div key={idx} className="step-item">
+              <div className="step-node">{idx + 1}</div>
+              <div className="step-label">{stage}</div>
+              {idx < 6 && <div className="step-line" />}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="stats-grid">
+        {/* 2. Productivity Insight */}
+        <div className="stat-card">
+          <div className="stat-header">
+            <Clock size={16} />
+            <span>업무 시간 단축 시뮬레이션</span>
+          </div>
+          <div className="chart-container">
+            <div className="bar-group">
+              <div className="bar-label">기존 (Excel)</div>
+              <div className="bar-bg"><motion.div initial={{ width: 0 }} animate={{ width: '100%' }} transition={{ duration: 1 }} className="bar-fill legacy" /></div>
+              <div className="bar-value">480분</div>
+            </div>
+            <div className="bar-group">
+              <div className="bar-label">바이브 코딩</div>
+              <div className="bar-bg"><motion.div initial={{ width: 0 }} animate={{ width: '5%' }} transition={{ duration: 1, delay: 0.5 }} className="bar-fill vibe" /></div>
+              <div className="bar-value">15분</div>
+            </div>
+          </div>
+          <div className="stat-footer">최대 96% 생산성 개선</div>
+        </div>
+
+        {/* 3. Skill Growth */}
+        <div className="stat-card">
+          <div className="stat-header">
+            <Target size={16} />
+            <span>엔지니어 핵심 역량 성장</span>
+          </div>
+          <div className="skill-circles">
+            {[
+              { label: 'AI 활용', val: 95, icon: <Sparkles size={12}/> },
+              { label: '데이터 분석', val: 88, icon: <TrendingUp size={12}/> },
+              { label: '문제 해결', val: 92, icon: <Award size={12}/> }
+            ].map((s, i) => (
+              <div key={i} className="skill-item">
+                <div className="circle-bg">
+                  <svg viewBox="0 0 36 36" className="circular-chart">
+                    <path className="circle-trail" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                    <motion.path 
+                      initial={{ strokeDasharray: '0, 100' }}
+                      animate={{ strokeDasharray: `${s.val}, 100` }}
+                      transition={{ duration: 1.5, delay: i * 0.2 }}
+                      className="circle-fill"
+                      d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" 
+                    />
+                  </svg>
+                  <div className="circle-icon">{s.icon}</div>
+                </div>
+                <div className="skill-label">{s.label}</div>
+              </div>
+            ))}
+          </div>
+          <div className="stat-footer">현업 즉시 투입 가능한 조기 전력화</div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<TabType>('faq');
@@ -116,8 +192,11 @@ export default function App() {
             ))}
           </div>
         ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '3rem' }}>
+            
+            <CurriculumVisuals />
+
+            <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '1rem' }}>
               <button 
                 className={`toggle-button ${showOfficial ? 'active' : ''}`}
                 onClick={() => setShowOfficial(!showOfficial)}
@@ -281,6 +360,39 @@ export default function App() {
           transition: all 0.2s;
         }
         .toggle-button.active { background: var(--accent); color: white; border-color: var(--accent); }
+
+        /* Visuals Style */
+        .visuals-container { display: flex; flex-direction: column; gap: 3rem; margin-bottom: 2rem; }
+        .roadmap-section { background: var(--bg-tertiary); padding: 2.5rem; border-radius: 24px; border: 1px solid var(--border); }
+        .section-label { font-size: 0.8rem; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 2rem; text-align: center; }
+        .roadmap-stepper { display: flex; justify-content: space-between; position: relative; }
+        .step-item { display: flex; flex-direction: column; align-items: center; flex: 1; position: relative; z-index: 1; }
+        .step-node { width: 32px; height: 32px; background: var(--accent); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8rem; margin-bottom: 12px; box-shadow: 0 4px 10px rgba(0, 113, 227, 0.3); }
+        .step-label { font-size: 0.75rem; font-weight: 600; color: var(--text-secondary); text-align: center; }
+        .step-line { position: absolute; top: 16px; left: 50%; width: 100%; height: 2px; background: var(--border); z-index: -1; }
+
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+        .stat-card { background: var(--bg-tertiary); padding: 2rem; border-radius: 24px; border: 1px solid var(--border); }
+        .stat-header { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 0.9rem; color: var(--text-primary); margin-bottom: 1.5rem; }
+        .stat-footer { font-size: 0.8rem; color: var(--accent); font-weight: 600; margin-top: 1.5rem; text-align: right; }
+        
+        .chart-container { display: flex; flex-direction: column; gap: 1.2rem; }
+        .bar-group { display: flex; align-items: center; gap: 12px; }
+        .bar-label { width: 80px; font-size: 0.75rem; color: var(--text-secondary); }
+        .bar-bg { flex: 1; height: 12px; background: var(--bg-secondary); border-radius: 6px; overflow: hidden; }
+        .bar-fill { height: 100%; border-radius: 6px; }
+        .bar-fill.legacy { background: var(--text-secondary); opacity: 0.3; }
+        .bar-fill.vibe { background: var(--accent-gradient); }
+        .bar-value { width: 45px; font-size: 0.75rem; font-weight: 700; font-family: 'Outfit'; }
+
+        .skill-circles { display: flex; justify-content: space-around; align-items: center; padding-top: 0.5rem; }
+        .skill-item { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+        .circle-bg { position: relative; width: 60px; height: 60px; }
+        .circular-chart { display: block; margin: 0 auto; max-width: 100%; max-height: 100%; }
+        .circle-trail { fill: none; stroke: var(--border); stroke-width: 3; }
+        .circle-fill { fill: none; stroke: var(--accent); stroke-width: 3; stroke-linecap: round; }
+        .circle-icon { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: var(--accent); }
+        .skill-label { font-size: 0.7rem; font-weight: 700; color: var(--text-secondary); }
 
         .table-container { background: var(--bg-tertiary); border-radius: 24px; border: 1px solid var(--border); overflow: hidden; }
         .curriculum-table { width: 100%; border-collapse: collapse; text-align: left; }
