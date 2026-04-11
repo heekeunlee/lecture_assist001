@@ -236,9 +236,17 @@ export default function App() {
                   transition={{ duration: 0.6, ease: "easeOut" }}
                 >
                   <div className="example-visual">
-                    <div className="example-icon-large">
-                      <IconComp size={64} />
-                    </div>
+                    {ex.image ? (
+                      <img 
+                        src={(import.meta.env.BASE_URL || '') + ex.image.replace(/^\//,"")} 
+                        alt={ex.title} 
+                        className="example-image" 
+                      />
+                    ) : (
+                      <div className="example-icon-large">
+                        <IconComp size={64} />
+                      </div>
+                    )}
                     <div className="case-badge">CASE {ex.id}</div>
                   </div>
 
@@ -643,11 +651,21 @@ export default function App() {
         
         .example-visual { 
           flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
-          background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: 40px; padding: 4rem;
-          min-width: 300px; position: relative; overflow: hidden;
+          background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: 40px; padding: 0;
+          min-width: 300px; min-height: 340px; position: relative; overflow: hidden;
         }
-        .example-icon-large { color: var(--accent); margin-bottom: 2rem; filter: drop-shadow(0 0 20px rgba(0,113,227,0.4)); }
-        .case-badge { font-family: var(--font-main); font-weight: 900; color: var(--text-secondary); opacity: 0.3; font-size: 1rem; letter-spacing: 0.2rem; }
+        .example-image {
+          width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0;
+          opacity: 0.85; transition: transform 0.5s ease;
+        }
+        .example-item:hover .example-image { transform: scale(1.05); }
+        .example-icon-large { color: var(--accent); z-index: 1; filter: drop-shadow(0 0 20px rgba(0,113,227,0.4)); }
+        .case-badge { 
+          position: absolute; bottom: 20px; left: 30px; z-index: 2;
+          font-family: var(--font-main); font-weight: 900; color: #fff; 
+          background: rgba(0,0,0,0.6); padding: 8px 16px; border-radius: 20px;
+          backdrop-filter: blur(10px); font-size: 1rem; letter-spacing: 0.1em; 
+        }
         
         .example-info { flex: 1.5; display: flex; flex-direction: column; gap: 1.5rem; }
         .example-title-large { font-size: 2.2rem; font-weight: 800; color: var(--text-primary); line-height: 1.2; letter-spacing: -0.02em; }
