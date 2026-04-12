@@ -6,7 +6,8 @@ import curriculumData from './data/curriculum.json';
 import officialData from './data/official_plan.json';
 import terminologyData from './data/terminology.json';
 import examplesData from './data/examples.json';
-import * as XLSX from 'xlsx';
+import ExcelJS from 'exceljs';
+import { saveAs } from 'file-saver';
 
 type TabType = 'faq' | 'curriculum' | 'terminology' | 'examples';
 
@@ -135,32 +136,100 @@ export default function App() {
   const pageCount = Math.ceil(filteredTerms.length / itemsPerPage);
   const currentTerms = filteredTerms.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
-  const exportToExcel = () => {
-    const data = showOfficial ? officialData : curriculumData;
-    const exportData = data.map((item: any) => {
-      if (showOfficial) {
-        return {
-          '순서 (회차)': item.id,
-          '소요 시간': item.time || '',
-          '주제명': item.title || '',
-          '학습 내용': item.content || ''
-        };
-      } else {
-        return {
-          '순서 (회차)': item.id,
-          '구분': item.type === 'project' ? '프로젝트' : '이론강의',
-          '분류': item.category || '',
-          '주제명': item.title || '',
-          '핵심 브리핑': item.description || '',
-          '세부 커리큘럼': item.details || '',
-        };
-      }
+  const exportToExcel = async () => {
+    const workbook = new ExcelJS.Workbook();
+    const sheet = workbook.addWorksheet(showOfficial ? '공식 커리큘럼' : '실무 로드맵');
+
+    const applyBorder = (cell: ExcelJS.Cell) => {
+      cell.border = {
+        top: { style: 'thin' }, left: { style: 'thin' },
+        bottom: { style: 'thin' }, right: { style: 'thin' }
+      };
+      cell.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
+    };
+
+    // 1. Title
+    sheet.mergeCells('A1:E1');
+    const titleCell = sheet.getCell('A1');
+    titleCell.value = '강의 계획서';
+    titleCell.font = { size: 16, bold: true, color: { argb: 'FFFFFFFF' } };
+    titleCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1F4E79' } };
+    applyBorder(titleCell);
+    sheet.getRow(1).height = 40;
+
+    // 2. Metadata Rows
+    const metaData = [
+      ['강의명', '디스플레이 취업준비생을 위한 AI 바이브 코딩 실전', '', '', ''],
+      ['강의분량', '총 20강 (이론 17강, 프로젝트 3강) = 총 약 14시간', '', '', ''],
+      ['수강 대상', '디스플레이 관련 학과 대학교 3~4학년 / 취업준비생 (주 대상) 및 현업 엔지니어', '', '', ''],
+      ['강의 목표', '① 코드 없이 AI로 실무 분석 툴 제작 ② 디스플레이 엔지니어링 포트폴리오 완성 ③ 데이터(수율/공정/소재) 자동화 스킬 확보', '', '', '']
+    ];
+
+    metaData.forEach((row, idx) => {
+      const rowIndex = idx + 2;
+      sheet.addRow(row);
+      sheet.mergeCells(`B${rowIndex}:E${rowIndex}`);
+      const headerCell = sheet.getCell(`A${rowIndex}`);
+      const contentCell = sheet.getCell(`B${rowIndex}`);
+      
+      headerCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFDDEEFC' } };
+      headerCell.font = { bold: true };
+      
+      applyBorder(headerCell);
+      applyBorder(contentCell);
+      contentCell.alignment = { vertical: 'middle', horizontal: 'left', wrapText: true };
+      sheet.getRow(rowIndex).height = 30;
     });
-    
-    const worksheet = XLSX.utils.json_to_sheet(exportData);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, showOfficial ? '공식 커리큘럼' : '실무 로드맵');
-    XLSX.writeFile(workbook, `VibeCoding_Curriculum_${showOfficial ? 'Official' : 'Roadmap'}.xlsx`);
+
+    // 3. Table Headers
+    const headers = ['차시', '구분', '주제', '시간 배분 및 상세 내용', '핵심 결과물'];
+    sheet.addRow(headers);
+    const headerRow = sheet.getRow(6);
+    headerRow.height = 35;
+    headerRow.eachCell((cell) => {
+      cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFA6A6A6' } };
+      cell.font = { bold: true };
+      applyBorder(cell);
+    });
+
+    // 4. Data Rows
+    const data = showOfficial ? officialData : curriculumData;
+    data.forEach((item: any) => {
+      let typeConfig = '', titleConfig = '', detailConfig = '', summaryConfig = '';
+
+      if (showOfficial) {
+        typeConfig = item.time || '';
+        titleConfig = item.title || '';
+        detailConfig = item.content || '';
+        summaryConfig = '핵심 실무 역량 확보';
+      } else {
+        typeConfig = item.type === 'project' ? '프로젝트' : '이론강의';
+        titleConfig = item.title || item.question || '';
+        detailConfig = item.details || item.answer || '';
+        summaryConfig = item.description || item.summary || '';
+      }
+
+      const row = sheet.addRow([item.id, typeConfig, titleConfig, detailConfig, summaryConfig]);
+      const isProject = showOfficial ? titleConfig.includes('프로젝트') : item.type === 'project';
+      
+      row.eachCell((cell, colNumber) => {
+        applyBorder(cell);
+        if (colNumber === 3 || colNumber === 4) cell.alignment = { vertical: 'middle', horizontal: 'left', wrapText: true };
+        if (isProject) cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE2EFDA' } };
+      });
+      
+      const maxText = Math.max(detailConfig.length, titleConfig.length, summaryConfig.length);
+      row.height = Math.max(40, Math.ceil(maxText / 35) * 20);
+    });
+
+    sheet.getColumn(1).width = 8;
+    sheet.getColumn(2).width = 15;
+    sheet.getColumn(3).width = 35;
+    sheet.getColumn(4).width = 50;
+    sheet.getColumn(5).width = 25;
+
+    const buffer = await workbook.xlsx.writeBuffer();
+    saveAs(new Blob([buffer]), `VibeCoding_Curriculum_${showOfficial ? 'Official' : 'Roadmap'}.xlsx`);
   };
 
   return (
