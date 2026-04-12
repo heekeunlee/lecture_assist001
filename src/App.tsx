@@ -477,24 +477,24 @@ export default function App() {
                     const isProject = c.type === 'project' || (typeof c.id === 'string' && c.id.startsWith('P'));
                     return (
                       <tr key={c.id} onClick={() => openModal(c.id)} className={isProject ? 'row-project' : ''}>
-                        <td className="id-cell">
+                        <td className="id-cell" data-label={showOfficial ? "차시" : "단계"}>
                           {isProject ? <div className="project-id-badge">{c.id}</div> : c.id}
                         </td>
                         {showOfficial ? (
                           <>
-                            <td className="title-cell">
+                            <td className="title-cell" data-label="주제">
                               {c.title}
                             </td>
-                            <td className="desc-cell">{c.content}</td>
-                            <td><span className="time-badge">{c.time}</span></td>
+                            <td className="desc-cell" data-label="세부 강의 내용">{c.content}</td>
+                            <td data-label="시간"><span className="time-badge">{c.time}</span></td>
                           </>
                         ) : (
                           <>
-                            <td><span className="cat-badge">{c.category}</span></td>
-                            <td className="title-cell">
+                            <td data-label="분류"><span className="cat-badge">{c.category}</span></td>
+                            <td className="title-cell" data-label="주제">
                               {c.title}
                             </td>
-                            <td className="desc-cell">{c.description}</td>
+                            <td className="desc-cell" data-label="핵심 성과">{c.description}</td>
                           </>
                         )}
                       </tr>
@@ -681,8 +681,8 @@ export default function App() {
           transition: all 0.2s;
         }
         .toggle-button.active { background: var(--accent); color: white; border-color: var(--accent); }
-        .download-btn { background: #34c759; color: white; border: none; }
-        .download-btn:hover { background: #28a745; transform: translateY(-2px); }
+        .print-btn, .download-btn { background: #34c759; color: white; border: none; }
+        .print-btn:hover, .download-btn:hover { background: #28a745; transform: translateY(-2px); }
 
         .logo-container { display: flex; alignItems: center; justify-content: center; gap: 12px; margin-bottom: 1.5rem; }
         .logo-text { font-size: 1.2rem; font-weight: 700; color: var(--accent); letter-spacing: 0.05em; }
@@ -907,11 +907,54 @@ export default function App() {
           .toggle-button { justify-content: center; font-size: 0.85rem; padding: 12px 10px; border-radius: 12px; }
           
           .table-container { 
-            margin: 1.5rem -1.2rem; width: calc(100% + 2.4rem); 
-            border-radius: 0; border: none; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+            margin: 1.5rem 0; width: 100%; 
+            border-radius: 0; border: none;
+            overflow: visible;
           }
-          .curriculum-table { min-width: 900px; }
-          .curriculum-table th, .curriculum-table td { padding: 1.2rem 1rem; font-size: 0.9rem; }
+          .curriculum-table, .curriculum-table tbody, .curriculum-table tr, .curriculum-table td {
+            display: block;
+            width: 100%;
+          }
+          .curriculum-table thead {
+            display: none;
+          }
+          .curriculum-table tr {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+            position: relative;
+          }
+          .curriculum-table td {
+            padding: 0.8rem 0;
+            border: none !important;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            text-align: left;
+          }
+          .curriculum-table td:before {
+            content: attr(data-label);
+            font-size: 0.7rem;
+            font-weight: 800;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+          }
+          .id-cell { 
+            margin-bottom: 1rem; 
+            padding-bottom: 1.2rem !important; 
+            border-bottom: 1px solid var(--border) !important; 
+            flex-direction: row !important;
+            justify-content: space-between;
+            align-items: center;
+          }
+          .id-cell:before { content: "CHAPTER " !important; font-size: 0.9rem !important; }
+          .title-cell { font-size: 1.2rem !important; line-height: 1.4; color: var(--text-primary); }
+          .desc-cell { color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6; }
+          .curriculum-table .time-badge, .curriculum-table .cat-badge { align-self: flex-start; margin-top: 4px; }
           .title-cell { font-size: 0.95rem !important; }
           
           .modal { 
