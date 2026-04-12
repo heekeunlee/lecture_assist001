@@ -201,7 +201,7 @@ export default function App() {
         typeConfig = item.time || '';
         titleConfig = item.title || '';
         detailConfig = item.content || '';
-        summaryConfig = '핵심 실무 역량 확보';
+        summaryConfig = item.output || '핵심 실무 역량 확보';
       } else {
         typeConfig = item.type === 'project' ? '프로젝트' : '이론강의';
         titleConfig = item.title || item.question || '';
@@ -375,7 +375,7 @@ export default function App() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem', width: '100%' }}>
               <div style={{ display: 'flex', alignItems: 'center' }}>
                 <button 
-                  className={`toggle-button ${!showOfficial ? 'active' : ''}`}
+                  className="toggle-button active"
                   onClick={() => setShowOfficial(!showOfficial)}
                 >
                   {showOfficial ? <Sparkles size={16} /> : <FileText size={16} />}
