@@ -336,12 +336,12 @@ export default function App() {
           </div>
           <h1>
             {activeTab === 'curriculum' 
-              ? (showOfficial ? 'Vibe Coding 공식 커리큘럼' : '디스플레이 엔지니어 실무 로드맵')
+              ? (showOfficial ? 'Vibe Coding 교육과정' : '디스플레이 엔지니어 실무 로드맵')
               : (activeTab === 'faq' ? '바이브코딩 쌩기초 Q&A' : (activeTab === 'examples' ? '실무 해결 예제 10선' : '업계용어 2000'))}
           </h1>
           <p className="header-subtitle">
             {activeTab === 'curriculum'
-              ? (showOfficial ? 'AI와 함께 기술의 한계를 넘어서는 미래 엔지니어로의 도약' : '조기 전력화를 위한 단계별 학습 과정')
+              ? (showOfficial ? 'AI와 함께 기술의 한계를 넘어서는 미래 Display 엔지니어로의 도약' : '조기 전력화를 위한 단계별 학습 과정')
               : (activeTab === 'faq' ? '비전공자를 위한 시원한 코딩 문답' : (activeTab === 'examples' ? '강의를 통해 마스터할 디스플레이 현장 실습 시나리오' : '실무에서 바로 만나는 엔지니어 핵심 가이드'))}
           </p>
         </motion.div>
@@ -891,11 +891,11 @@ export default function App() {
           .logo-text { font-size: 1rem !important; }
 
           .roadmap-section { padding: 1.5rem 1rem; border-radius: 16px; }
-          .roadmap-stepper { flex-direction: column; gap: 2.5rem; align-items: flex-start; padding-left: 10px; }
-          .step-item { flex-direction: row; gap: 15px; align-items: flex-start; width: 100%; min-width: auto; }
+          .roadmap-stepper { flex-direction: column; gap: 1.2rem; align-items: flex-start; padding-left: 10px; }
+          .step-item { flex-direction: row; gap: 15px; align-items: center; width: 100%; min-width: auto; }
           .step-node { width: 32px; height: 32px; font-size: 0.8rem; flex-shrink: 0; margin-bottom: 0; }
-          .step-label { text-align: left; font-size: 0.95rem; line-height: 1.4; color: var(--text-primary); }
-          .step-line { left: 16px; top: 32px; width: 2px; height: calc(100% + 2rem); }
+          .step-label { text-align: left; font-size: 0.95rem; line-height: 1.4; color: var(--text-primary); font-weight: 700; }
+          .step-line { left: 16px; top: 32px; width: 2px; height: calc(100% + 1.2rem); }
           
           .stats-grid { grid-template-columns: 1fr; gap: 1.2rem; }
           .stat-card { padding: 1.5rem 1.25rem; border-radius: 20px; }
