@@ -233,7 +233,7 @@ use chrome, FireFox or Internet Explorer 11`)}var a=e(`safe-buffer`),o=e(`random
           }
           @page { margin: 0; size: A4; }
           html, body { margin: 0 !important; padding: 0 !important; -webkit-print-color-adjust: exact !important; }
-          body { background: white !important; color: black !important; padding: 2.5cm 2cm !important; }
+          body { background: white !important; color: black !important; padding: 1cm 1cm !important; }
           .app-container { padding: 0 !important; width: 100% !important; max-width: 100% !important; border: none; margin: 0 !important; }
           nav, footer, .toggle-button, .download-btn, .print-btn, .icon-button, .action-button, .modal-close-btn, .terminology-container, .examples-showcase { display: none !important; }
           header { margin-bottom: 4rem !important; text-align: center !important; }
@@ -247,10 +247,10 @@ use chrome, FireFox or Internet Explorer 11`)}var a=e(`safe-buffer`),o=e(`random
           /* Force table to start on a new page and fit perfectly into one A4 sheet */
           .table-container { page-break-before: always; border: 2px solid #ccc !important; box-shadow: none !important; border-radius: 0; overflow: visible !important; width: 100%; margin-top: 0 !important; }
           .curriculum-table { width: 100% !important; border-collapse: collapse !important; }
-          .curriculum-table th { background: #f5f5f5 !important; border-bottom: 2px solid #888 !important; color: #000 !important; padding: 0.5rem !important; font-size: 0.95rem !important; font-weight: 800 !important; white-space: nowrap !important; }
-          .curriculum-table td { border-bottom: 1px solid #e0e0e0 !important; color: #000 !important; padding: 0.4rem 0.6rem !important; font-size: 0.85rem !important; line-height: 1.2 !important; }
+          .curriculum-table th { background: #f5f5f5 !important; border-bottom: 2px solid #888 !important; color: #000 !important; padding: 0.4rem 0.4rem !important; font-size: 0.85rem !important; font-weight: 800 !important; white-space: nowrap !important; }
+          .curriculum-table td { border-bottom: 1px solid #e0e0e0 !important; color: #000 !important; padding: 0.25rem 0.4rem !important; font-size: 0.75rem !important; line-height: 1.15 !important; }
           .id-cell { color: #000 !important; font-weight: 900 !important; }
-          .cat-badge, .time-badge, .project-id-badge { background: #e8e8e8 !important; color: #000 !important; border: 1px solid #bbb !important; display: inline-block !important; padding: 2px 6px !important; border-radius: 4px !important; font-size: 0.75rem !important; }
-          .title-cell { font-size: 0.85rem !important; font-weight: 700 !important; }
+          .cat-badge, .time-badge, .project-id-badge { background: #e8e8e8 !important; color: #000 !important; border: 1px solid #bbb !important; display: inline-block !important; padding: 1px 4px !important; border-radius: 4px !important; font-size: 0.65rem !important; }
+          .title-cell { font-size: 0.8rem !important; font-weight: 700 !important; }
         }
       `}),(0,$.jsx)(`footer`,{style:{marginTop:`8rem`,textAlign:`center`,padding:`4rem 0`,borderTop:`1px solid var(--border)`,color:`var(--text-secondary)`},children:(0,$.jsx)(`p`,{children:`© 2026 Vibe Coding - For Professional Instructors`})})]})}Zu.createRoot(document.getElementById(`root`)).render((0,$.jsx)(C.StrictMode,{children:(0,$.jsx)(cd,{})}));
