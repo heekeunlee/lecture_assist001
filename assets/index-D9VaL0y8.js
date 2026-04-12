@@ -42,12 +42,14 @@ use chrome, FireFox or Internet Explorer 11`)}var a=e(`safe-buffer`),o=e(`random
 \r -퟿-�𐀀-􏿿`,n.S=` 	\r
 `,n.NAME_START_CHAR=`:A-Z_a-zÀ-ÖØ-öø-˿Ͱ-ͽͿ-῿‌‍⁰-↏Ⰰ-⿯、-퟿豈-﷏ﷰ-�𐀀-󯿿`,n.NAME_CHAR=`-`+n.NAME_START_CHAR+`.0-9·̀-ͯ‿-⁀`,n.CHAR_RE=RegExp(`^[`+n.CHAR+`]$`,`u`),n.S_RE=RegExp(`^[`+n.S+`]+$`,`u`),n.NAME_START_CHAR_RE=RegExp(`^[`+n.NAME_START_CHAR+`]$`,`u`),n.NAME_CHAR_RE=RegExp(`^[`+n.NAME_CHAR+`]$`,`u`),n.NAME_RE=RegExp(`^[`+n.NAME_START_CHAR+`][`+n.NAME_CHAR+`]*$`,`u`),n.NMTOKEN_RE=RegExp(`^[`+n.NAME_CHAR+`]+$`,`u`);function r(e){return e>=65&&e<=90||e>=97&&e<=122||e===58||e===95||e===8204||e===8205||e>=192&&e<=214||e>=216&&e<=246||e>=248&&e<=767||e>=880&&e<=893||e>=895&&e<=8191||e>=8304&&e<=8591||e>=11264&&e<=12271||e>=12289&&e<=55295||e>=63744&&e<=64975||e>=65008&&e<=65533||e>=65536&&e<=983039}n.S_LIST=[32,10,13,9],n.isChar=function(e){return e>=32&&e<=55295||e===10||e===13||e===9||e>=57344&&e<=65533||e>=65536&&e<=1114111},n.isS=function(e){return e===32||e===10||e===13||e===9},n.isNameStartChar=r,n.isNameChar=function(e){return r(e)||e>=48&&e<=57||e===45||e===46||e===183||e>=768&&e<=879||e>=8255&&e<=8256}},{}],544:[function(e,t,n){Object.defineProperty(n,`__esModule`,{value:!0}),n.CHAR=`-퟿-�𐀀-􏿿`,n.RESTRICTED_CHAR=`-\b\v\f---`,n.S=` 	\r
 `,n.NAME_START_CHAR=`:A-Z_a-zÀ-ÖØ-öø-˿Ͱ-ͽͿ-῿‌‍⁰-↏Ⰰ-⿯、-퟿豈-﷏ﷰ-�𐀀-󯿿`,n.NAME_CHAR=`-`+n.NAME_START_CHAR+`.0-9·̀-ͯ‿-⁀`,n.CHAR_RE=RegExp(`^[`+n.CHAR+`]$`,`u`),n.RESTRICTED_CHAR_RE=RegExp(`^[`+n.RESTRICTED_CHAR+`]$`,`u`),n.S_RE=RegExp(`^[`+n.S+`]+$`,`u`),n.NAME_START_CHAR_RE=RegExp(`^[`+n.NAME_START_CHAR+`]$`,`u`),n.NAME_CHAR_RE=RegExp(`^[`+n.NAME_CHAR+`]$`,`u`),n.NAME_RE=RegExp(`^[`+n.NAME_START_CHAR+`][`+n.NAME_CHAR+`]*$`,`u`),n.NMTOKEN_RE=RegExp(`^[`+n.NAME_CHAR+`]+$`,`u`);function r(e){return e>=65&&e<=90||e>=97&&e<=122||e===58||e===95||e===8204||e===8205||e>=192&&e<=214||e>=216&&e<=246||e>=248&&e<=767||e>=880&&e<=893||e>=895&&e<=8191||e>=8304&&e<=8591||e>=11264&&e<=12271||e>=12289&&e<=55295||e>=63744&&e<=64975||e>=65008&&e<=65533||e>=65536&&e<=983039}n.S_LIST=[32,10,13,9],n.isChar=function(e){return e>=1&&e<=55295||e>=57344&&e<=65533||e>=65536&&e<=1114111},n.isRestrictedChar=function(e){return e>=1&&e<=8||e===11||e===12||e>=14&&e<=31||e>=127&&e<=132||e>=134&&e<=159},n.isCharAndNotRestricted=function(e){return e===9||e===10||e===13||e>31&&e<127||e===133||e>159&&e<=55295||e>=57344&&e<=65533||e>=65536&&e<=1114111},n.isS=function(e){return e===32||e===10||e===13||e===9},n.isNameStartChar=r,n.isNameChar=function(e){return r(e)||e>=48&&e<=57||e===45||e===46||e===183||e>=768&&e<=879||e>=8255&&e<=8256}},{}],545:[function(e,t,n){function r(e){return e>=65&&e<=90||e===95||e>=97&&e<=122||e>=192&&e<=214||e>=216&&e<=246||e>=248&&e<=767||e>=880&&e<=893||e>=895&&e<=8191||e>=8204&&e<=8205||e>=8304&&e<=8591||e>=11264&&e<=12271||e>=12289&&e<=55295||e>=63744&&e<=64975||e>=65008&&e<=65533||e>=65536&&e<=983039}Object.defineProperty(n,`__esModule`,{value:!0}),n.NC_NAME_START_CHAR=`A-Z_a-zÀ-ÖØ-öø-˿Ͱ-ͽͿ-῿‌-‍⁰-↏Ⰰ-⿯、-퟿豈-﷏ﷰ-�𐀀-󯿿`,n.NC_NAME_CHAR=`-`+n.NC_NAME_START_CHAR+`.0-9·̀-ͯ‿-⁀`,n.NC_NAME_START_CHAR_RE=RegExp(`^[`+n.NC_NAME_START_CHAR+`]$`,`u`),n.NC_NAME_CHAR_RE=RegExp(`^[`+n.NC_NAME_CHAR+`]$`,`u`),n.NC_NAME_RE=RegExp(`^[`+n.NC_NAME_START_CHAR+`][`+n.NC_NAME_CHAR+`]*$`,`u`),n.isNCNameStartChar=r,n.isNCNameChar=function(e){return r(e)||e===45||e===46||e>=48&&e<=57||e===183||e>=768&&e<=879||e>=8255&&e<=8256}},{}]},{},[15])(15)}))})),rd=s(((e,t)=>{(function(t,n){typeof define==`function`&&define.amd?define([],n):e===void 0?(n(),t.FileSaver={exports:{}}.exports):n()})(e,function(){function e(e,t){return t===void 0?t={autoBom:!1}:typeof t!=`object`&&(console.warn(`Deprecated: Expected third argument to be a object`),t={autoBom:!t}),t.autoBom&&/^\s*(?:text\/\S*|application\/xml|\S*\/\S*\+xml)\s*;.*charset\s*=\s*utf-8/i.test(e.type)?new Blob([`﻿`,e],{type:e.type}):e}function n(e,t,n){var r=new XMLHttpRequest;r.open(`GET`,e),r.responseType=`blob`,r.onload=function(){s(r.response,t,n)},r.onerror=function(){console.error(`could not download file`)},r.send()}function r(e){var t=new XMLHttpRequest;t.open(`HEAD`,e,!1);try{t.send()}catch{}return 200<=t.status&&299>=t.status}function i(e){try{e.dispatchEvent(new MouseEvent(`click`))}catch{var t=document.createEvent(`MouseEvents`);t.initMouseEvent(`click`,!0,!0,window,0,0,0,80,20,!1,!1,!1,!1,0,null),e.dispatchEvent(t)}}var a=typeof window==`object`&&window.window===window?window:typeof self==`object`&&self.self===self?self:typeof global==`object`&&global.global===global?global:void 0,o=a.navigator&&/Macintosh/.test(navigator.userAgent)&&/AppleWebKit/.test(navigator.userAgent)&&!/Safari/.test(navigator.userAgent),s=a.saveAs||(typeof window!=`object`||window!==a?function(){}:`download`in HTMLAnchorElement.prototype&&!o?function(e,t,o){var s=a.URL||a.webkitURL,c=document.createElement(`a`);t=t||e.name||`download`,c.download=t,c.rel=`noopener`,typeof e==`string`?(c.href=e,c.origin===location.origin?i(c):r(c.href)?n(e,t,o):i(c,c.target=`_blank`)):(c.href=s.createObjectURL(e),setTimeout(function(){s.revokeObjectURL(c.href)},4e4),setTimeout(function(){i(c)},0))}:`msSaveOrOpenBlob`in navigator?function(t,a,o){if(a=a||t.name||`download`,typeof t!=`string`)navigator.msSaveOrOpenBlob(e(t,o),a);else if(r(t))n(t,a,o);else{var s=document.createElement(`a`);s.href=t,s.target=`_blank`,setTimeout(function(){i(s)})}}:function(e,t,r,i){if(i||=open(``,`_blank`),i&&(i.document.title=i.document.body.innerText=`downloading...`),typeof e==`string`)return n(e,t,r);var s=e.type===`application/octet-stream`,c=/constructor/i.test(a.HTMLElement)||a.safari,l=/CriOS\/[\d]+/.test(navigator.userAgent);if((l||s&&c||o)&&typeof FileReader<`u`){var u=new FileReader;u.onloadend=function(){var e=u.result;e=l?e:e.replace(/^data:[^;]*;/,`data:attachment/file;`),i?i.location.href=e:location=e,i=null},u.readAsDataURL(e)}else{var d=a.URL||a.webkitURL,f=d.createObjectURL(e);i?i.location=f:location.href=f,i=null,setTimeout(function(){d.revokeObjectURL(f)},4e4)}});a.saveAs=s.saveAs=s,t!==void 0&&(t.exports=s)})})),id=u(nd(),1),ad=rd(),od=()=>(0,$.jsx)(yu.div,{className:`splash-screen`,initial:{opacity:1},animate:{opacity:1},exit:{opacity:0},transition:{duration:.8},children:(0,$.jsxs)(`div`,{className:`splash-content`,children:[(0,$.jsxs)(yu.div,{initial:{scale:.8,opacity:0},animate:{scale:1,opacity:1},transition:{duration:.8,ease:`easeOut`},className:`splash-logo`,children:[(0,$.jsx)(zu,{size:80,className:`splash-icon`}),(0,$.jsxs)(`div`,{className:`splash-text-group`,children:[(0,$.jsx)(`h1`,{className:`splash-title`,children:`VIBE CODING`}),(0,$.jsx)(`p`,{className:`splash-subtitle`,children:`for Display Engineering`})]})]}),(0,$.jsx)(yu.div,{className:`loading-bar-container`,initial:{width:0},animate:{width:200},transition:{duration:2.5,ease:`easeInOut`},children:(0,$.jsx)(`div`,{className:`loading-bar-fill`})})]})}),sd=()=>(0,$.jsxs)(`div`,{className:`visuals-container`,children:[(0,$.jsxs)(`div`,{className:`roadmap-section`,children:[(0,$.jsx)(`div`,{className:`section-label`,children:`Learning Journey Roadmap`}),(0,$.jsx)(`div`,{className:`roadmap-stepper`,children:[`AI 마인드셋`,`데이터 자동 분석`,`실전 시각화`,`자동 보고서`,`의사결정 도구`].map((e,t)=>(0,$.jsxs)(`div`,{className:`step-item`,children:[(0,$.jsx)(`div`,{className:`step-node`,children:t+1}),(0,$.jsx)(`div`,{className:`step-label`,children:e}),t<4&&(0,$.jsx)(`div`,{className:`step-line`})]},t))})]}),(0,$.jsxs)(`div`,{className:`stats-grid`,children:[(0,$.jsxs)(`div`,{className:`stat-card`,children:[(0,$.jsxs)(`div`,{className:`stat-header`,children:[(0,$.jsx)(Fu,{size:16}),(0,$.jsx)(`span`,{children:`업무 시간 단축 시뮬레이션`})]}),(0,$.jsxs)(`div`,{className:`chart-container`,children:[(0,$.jsxs)(`div`,{className:`bar-group`,children:[(0,$.jsx)(`div`,{className:`bar-label`,children:`기존 (Excel)`}),(0,$.jsx)(`div`,{className:`bar-bg`,children:(0,$.jsx)(yu.div,{initial:{width:0},animate:{width:`100%`},transition:{duration:1},className:`bar-fill legacy`})}),(0,$.jsx)(`div`,{className:`bar-value`,children:`480분`})]}),(0,$.jsxs)(`div`,{className:`bar-group`,children:[(0,$.jsx)(`div`,{className:`bar-label`,children:`바이브 코딩`}),(0,$.jsx)(`div`,{className:`bar-bg`,children:(0,$.jsx)(yu.div,{initial:{width:0},animate:{width:`5%`},transition:{duration:1,delay:.5},className:`bar-fill vibe`})}),(0,$.jsx)(`div`,{className:`bar-value`,children:`15분`})]})]}),(0,$.jsx)(`div`,{className:`stat-footer`,children:`최대 96% 생산성 개선`})]}),(0,$.jsxs)(`div`,{className:`stat-card`,children:[(0,$.jsxs)(`div`,{className:`stat-header`,children:[(0,$.jsx)(Ku,{size:16}),(0,$.jsx)(`span`,{children:`엔지니어 핵심 역량 성장`})]}),(0,$.jsx)(`div`,{className:`skill-circles`,children:[{label:`AI 활용`,val:95,icon:(0,$.jsx)(Gu,{size:12})},{label:`데이터 분석`,val:88,icon:(0,$.jsx)(qu,{size:12})},{label:`문제 해결`,val:92,icon:(0,$.jsx)(Au,{size:12})}].map((e,t)=>(0,$.jsxs)(`div`,{className:`skill-item`,children:[(0,$.jsxs)(`div`,{className:`circle-bg`,children:[(0,$.jsxs)(`svg`,{viewBox:`0 0 36 36`,className:`circular-chart`,children:[(0,$.jsx)(`path`,{className:`circle-trail`,d:`M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831`}),(0,$.jsx)(yu.path,{initial:{strokeDasharray:`0, 100`},animate:{strokeDasharray:`${e.val}, 100`},transition:{duration:1.5,delay:t*.2},className:`circle-fill`,d:`M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831`})]}),(0,$.jsx)(`div`,{className:`circle-icon`,children:e.icon})]}),(0,$.jsx)(`div`,{className:`skill-label`,children:e.label})]},t))}),(0,$.jsx)(`div`,{className:`stat-footer`,children:`현업 즉시 투입 가능한 조기 전력화`})]})]})]});function cd(){let[e,t]=(0,C.useState)(`curriculum`),[n,r]=(0,C.useState)(null),[i,a]=(0,C.useState)(!1),[o,s]=(0,C.useState)(0),[c,l]=(0,C.useState)(`dark`),[u,d]=(0,C.useState)(!0),[f,p]=(0,C.useState)(``),[m,h]=(0,C.useState)(`전체`),[g,_]=(0,C.useState)(1),[v,y]=(0,C.useState)(!0);(0,C.useEffect)(()=>{document.documentElement.setAttribute(`data-theme`,c);let e=setTimeout(()=>{y(!1)},3e3);return()=>clearTimeout(e)},[c]);let b=()=>l(e=>e===`light`?`dark`:`light`),x=t=>{r(t),e!==`terminology`&&s((e===`faq`?Zu:u?$u:Qu).findIndex(e=>e.id===t))},S=()=>{let t=e===`faq`?Zu:u?$u:Qu;s(e=>(e+1)%t.length)},w=()=>{let t=e===`faq`?Zu:u?$u:Qu;s(e=>(e-1+t.length)%t.length)},T=e===`faq`?Zu[o]:e===`curriculum`?u?$u[o]:Qu[o]:null,E=ed.filter(e=>(m===`전체`||e.category===m)&&(e.term.toLowerCase().includes(f.toLowerCase())||e.desc.toLowerCase().includes(f.toLowerCase()))).sort((e,t)=>e.term.localeCompare(t.term)),D=Math.ceil(E.length/30),O=E.slice((g-1)*30,g*30);return(0,$.jsxs)($.Fragment,{children:[(0,$.jsx)(Cc,{children:v&&(0,$.jsx)(od,{},`splash`)}),(0,$.jsxs)(`div`,{className:`app-container`,children:[(0,$.jsxs)(`nav`,{className:`main-nav`,children:[(0,$.jsxs)(`div`,{className:`nav-group tabs-group`,children:[(0,$.jsxs)(`button`,{className:`tab-button ${e===`curriculum`?`active`:``}`,onClick:()=>{t(`curriculum`),r(null)},children:[(0,$.jsx)(Bu,{size:18}),` 실무 커리큘럼`]}),(0,$.jsxs)(`button`,{className:`tab-button ${e===`examples`?`active`:``}`,onClick:()=>{t(`examples`),r(null)},children:[(0,$.jsx)(Gu,{size:18}),` 실전 예제 10`]}),(0,$.jsxs)(`button`,{className:`tab-button ${e===`faq`?`active`:``}`,onClick:()=>{t(`faq`),r(null),d(!1)},children:[(0,$.jsx)(Pu,{size:18}),` 바이브코딩 쌩기초 Q&A`]}),(0,$.jsxs)(`button`,{className:`tab-button ${e===`terminology`?`active`:``}`,onClick:()=>{t(`terminology`),r(null)},children:[(0,$.jsx)(ju,{size:18}),` 업계용어 2000`]})]}),(0,$.jsxs)(`div`,{className:`nav-group`,children:[(0,$.jsx)(`button`,{onClick:b,className:`icon-button`,children:c===`dark`?`☀️`:`🌙`}),(0,$.jsxs)(`button`,{onClick:()=>a(!i),className:`action-button`,children:[i?(0,$.jsx)(Lu,{size:18}):(0,$.jsx)(Hu,{size:18}),(0,$.jsx)(`span`,{children:`발표 모드`})]})]})]}),(0,$.jsx)(`header`,{children:(0,$.jsxs)(yu.div,{initial:{opacity:0,y:20},animate:{opacity:1,y:0},children:[(0,$.jsxs)(`div`,{className:`logo-container`,children:[(0,$.jsx)(zu,{className:`accent-color`,size:32}),(0,$.jsx)(`span`,{className:`logo-text`,children:`VIBE CODING 101`})]}),(0,$.jsx)(`h1`,{children:e===`curriculum`?u?`Vibe Coding 공식 커리큘럼`:`디스플레이 엔지니어 실무 로드맵`:e===`faq`?`바이브코딩 쌩기초 Q&A`:e===`examples`?`실무 해결 예제 10선`:`업계용어 2000`}),(0,$.jsx)(`p`,{className:`header-subtitle`,children:e===`curriculum`?u?`AI와 함께 기술의 한계를 넘어서는 미래 엔지니어로의 도약`:`조기 전력화를 위한 단계별 학습 과정`:e===`faq`?`비전공자를 위한 시원한 코딩 문답`:e===`examples`?`강의를 통해 마스터할 디스플레이 현장 실습 시나리오`:`실무에서 바로 만나는 엔지니어 핵심 가이드`})]},e+(u?`-official`:``))}),(0,$.jsx)(`main`,{children:e===`faq`?(0,$.jsx)(`div`,{className:`questions-grid`,children:Zu.map((e,t)=>(0,$.jsxs)(yu.div,{className:`card`,initial:{opacity:0,scale:.9},animate:{opacity:1,scale:1},transition:{delay:t*.03},onClick:()=>x(e.id),children:[(0,$.jsxs)(`div`,{className:`badge`,children:[`Q`,e.id]}),(0,$.jsx)(`h2`,{children:e.question}),(0,$.jsxs)(`p`,{className:`card-desc`,children:[e.answer.substring(0,50),`...`]})]},e.id))}):e===`examples`?(0,$.jsx)(`div`,{className:`examples-showcase`,children:td.map((e,t)=>{let n={Image:Ru,Target:Ku,FileText:Iu,TrendingUp:qu,Award:Au,Layers:zu,Sparkles:Gu,Zap:Yu,Grid:Lu,Clock:Fu}[e.icon]||Gu,r=t%2==0;return(0,$.jsxs)(yu.div,{className:`example-item ${r?`row`:`row-reverse`}`,initial:{opacity:0,x:r?-50:50},whileInView:{opacity:1,x:0},viewport:{once:!0,margin:`-100px`},transition:{duration:.6,ease:`easeOut`},children:[(0,$.jsxs)(`div`,{className:`example-visual`,children:[e.image?(0,$.jsx)(`img`,{src:`/lecture_assist001/`+e.image.replace(/^\//,``),alt:e.title,className:`example-image`}):(0,$.jsx)(`div`,{className:`example-icon-large`,children:(0,$.jsx)(n,{size:64})}),(0,$.jsxs)(`div`,{className:`case-badge`,children:[`CASE `,e.id]})]}),(0,$.jsxs)(`div`,{className:`example-info`,children:[(0,$.jsx)(`h2`,{className:`example-title-large`,children:e.title}),(0,$.jsx)(`p`,{className:`example-full-desc`,children:e.desc}),(0,$.jsxs)(`div`,{className:`example-detail-split`,children:[(0,$.jsxs)(`div`,{className:`detail-section`,children:[(0,$.jsxs)(`h4`,{children:[(0,$.jsx)(zu,{size:16}),` 분석 프로세스`]}),(0,$.jsx)(`p`,{className:`process-text`,children:e.process})]}),(0,$.jsxs)(`div`,{className:`detail-section`,children:[(0,$.jsxs)(`h4`,{children:[(0,$.jsx)(Ku,{size:16}),` 기대 효과`]}),(0,$.jsx)(`div`,{className:`impact-tag`,children:e.impact})]})]})]})]},e.id)})}):e===`curriculum`?(0,$.jsxs)(`div`,{style:{display:`flex`,flexDirection:`column`,gap:`3rem`},children:[(0,$.jsx)(sd,{}),(0,$.jsxs)(`div`,{className:`curriculum-controls`,children:[(0,$.jsx)(`div`,{className:`control-left`,children:(0,$.jsxs)(`button`,{className:`toggle-button active`,onClick:()=>d(!u),children:[u?(0,$.jsx)(Gu,{size:16}):(0,$.jsx)(Iu,{size:16}),u?`쉬운 표현으로 보기`:`공식 커리큘럼 보기`]})}),(0,$.jsxs)(`div`,{className:`control-right`,children:[(0,$.jsxs)(`button`,{className:`toggle-button print-btn`,onClick:()=>window.print(),children:[(0,$.jsx)(Uu,{size:16}),(0,$.jsx)(`span`,{children:`PDF 인쇄`})]}),(0,$.jsxs)(`button`,{className:`toggle-button download-btn`,onClick:async()=>{let e=new id.default.Workbook,t=e.addWorksheet(u?`공식 커리큘럼`:`실무 로드맵`),n=e=>{e.border={top:{style:`thin`},left:{style:`thin`},bottom:{style:`thin`},right:{style:`thin`}},e.alignment={vertical:`middle`,horizontal:`center`,wrapText:!0}};t.mergeCells(`A1:E1`);let r=t.getCell(`A1`);r.value=`강의 계획서`,r.font={size:16,bold:!0,color:{argb:`FFFFFFFF`}},r.fill={type:`pattern`,pattern:`solid`,fgColor:{argb:`FF1F4E79`}},n(r),t.getRow(1).height=40,[[`강의명`,`디스플레이 취업준비생을 위한 AI 바이브 코딩 실전`,``,``,``],[`강의분량`,`총 20강 (이론 17강, 프로젝트 3강) = 총 약 14시간`,``,``,``],[`수강 대상`,`디스플레이 관련 학과 대학교 3~4학년 / 취업준비생 (주 대상) 및 현업 엔지니어`,``,``,``],[`강의 목표`,`① 코드 없이 AI로 실무 분석 툴 제작 ② 디스플레이 엔지니어링 포트폴리오 완성 ③ 데이터(수율/공정/소재) 자동화 스킬 확보`,``,``,``]].forEach((e,r)=>{let i=r+2;t.addRow(e),t.mergeCells(`B${i}:E${i}`);let a=t.getCell(`A${i}`),o=t.getCell(`B${i}`);a.fill={type:`pattern`,pattern:`solid`,fgColor:{argb:`FFDDEEFC`}},a.font={bold:!0},n(a),n(o),o.alignment={vertical:`middle`,horizontal:`left`,wrapText:!0},t.getRow(i).height=30}),t.addRow([`차시`,`구분`,`주제`,`시간 배분 및 상세 내용`,`핵심 결과물`]);let i=t.getRow(6);i.height=35,i.eachCell(e=>{e.fill={type:`pattern`,pattern:`solid`,fgColor:{argb:`FFA6A6A6`}},e.font={bold:!0},n(e)}),(u?$u:Qu).forEach(e=>{let r=``,i=``,a=``,o=``;u?(r=e.time||``,i=e.title||``,a=e.content||``,o=e.output||`핵심 실무 역량 확보`):(r=e.type===`project`?`프로젝트`:`이론강의`,i=e.title||e.question||``,a=e.details||e.answer||``,o=e.description||e.summary||``);let s=t.addRow([e.id,r,i,a,o]),c=u?i.includes(`프로젝트`):e.type===`project`;s.eachCell((e,t)=>{n(e),(t===3||t===4)&&(e.alignment={vertical:`middle`,horizontal:`left`,wrapText:!0}),c&&(e.fill={type:`pattern`,pattern:`solid`,fgColor:{argb:`FFE2EFDA`}})});let l=Math.max(a.length,i.length,o.length);s.height=Math.max(40,Math.ceil(l/35)*20)}),t.getColumn(1).width=8,t.getColumn(2).width=15,t.getColumn(3).width=35,t.getColumn(4).width=50,t.getColumn(5).width=25;let a=await e.xlsx.writeBuffer();(0,ad.saveAs)(new Blob([a]),`VibeCoding_Curriculum_${u?`Official`:`Roadmap`}.xlsx`)},children:[(0,$.jsx)(Iu,{size:16}),(0,$.jsx)(`span`,{children:`Excel`})]})]})]}),(0,$.jsx)(yu.div,{className:`table-container`,initial:{opacity:0,x:u?20:-20},animate:{opacity:1,x:0},children:(0,$.jsxs)(`table`,{className:`curriculum-table`,children:[(0,$.jsx)(`thead`,{children:u?(0,$.jsxs)(`tr`,{children:[(0,$.jsx)(`th`,{style:{width:`100px`},children:`차시`}),(0,$.jsx)(`th`,{style:{width:`300px`},children:`주제`}),(0,$.jsx)(`th`,{children:`세부 강의 내용`}),(0,$.jsx)(`th`,{style:{width:`100px`},children:`시간`})]}):(0,$.jsxs)(`tr`,{children:[(0,$.jsx)(`th`,{style:{width:`100px`},children:`단계`}),(0,$.jsx)(`th`,{style:{width:`180px`},children:`분류`}),(0,$.jsx)(`th`,{children:`주제`}),(0,$.jsx)(`th`,{children:`핵심 성과`})]})}),(0,$.jsx)(`tbody`,{children:(u?$u:Qu).map(e=>{let t=e.type===`project`||typeof e.id==`string`&&e.id.startsWith(`P`);return(0,$.jsxs)(`tr`,{onClick:()=>x(e.id),className:t?`row-project`:``,children:[(0,$.jsx)(`td`,{className:`id-cell`,children:t?(0,$.jsx)(`div`,{className:`project-id-badge`,children:e.id}):e.id}),u?(0,$.jsxs)($.Fragment,{children:[(0,$.jsx)(`td`,{className:`title-cell`,children:e.title}),(0,$.jsx)(`td`,{className:`desc-cell`,children:e.content}),(0,$.jsx)(`td`,{children:(0,$.jsx)(`span`,{className:`time-badge`,children:e.time})})]}):(0,$.jsxs)($.Fragment,{children:[(0,$.jsx)(`td`,{children:(0,$.jsx)(`span`,{className:`cat-badge`,children:e.category})}),(0,$.jsx)(`td`,{className:`title-cell`,children:e.title}),(0,$.jsx)(`td`,{className:`desc-cell`,children:e.description})]})]},e.id)})})]})},u?`official`:`easy`)]}):(0,$.jsxs)(`div`,{className:`terminology-container`,children:[(0,$.jsx)(`div`,{className:`terminology-nav`,children:[`전체`,`디스플레이`,`공정`,`데이터 처리`,`코딩`].map(e=>(0,$.jsx)(`button`,{className:`term-cat-btn ${m===e?`active`:``}`,onClick:()=>{h(e),_(1)},children:e},e))}),(0,$.jsxs)(`div`,{className:`search-wrapper`,children:[(0,$.jsx)(Wu,{className:`search-icon`,size:20}),(0,$.jsx)(`input`,{type:`text`,placeholder:`${m} 분야 용어 검색...`,className:`terminology-search`,value:f,onChange:e=>{p(e.target.value),_(1)}})]}),D>1&&(0,$.jsxs)(`div`,{className:`pagination`,children:[(0,$.jsx)(`button`,{onClick:()=>_(e=>Math.max(1,e-1)),disabled:g===1,className:`nav-btn`,children:(0,$.jsx)(Mu,{size:20})}),(0,$.jsxs)(`span`,{className:`page-indicator`,children:[g,` / `,D]}),(0,$.jsx)(`button`,{onClick:()=>_(e=>Math.min(D,e+1)),disabled:g===D,className:`nav-btn`,children:(0,$.jsx)(Nu,{size:20})})]}),(0,$.jsx)(`div`,{className:`terminology-grid`,children:O.map((e,t)=>(0,$.jsxs)(yu.div,{className:`term-card`,initial:{opacity:0,y:10},animate:{opacity:1,y:0},transition:{delay:Math.min(t*.01,.5)},children:[(0,$.jsxs)(`div`,{className:`term-header`,children:[(0,$.jsx)(`span`,{className:`term-cat-tag`,children:e.category}),(0,$.jsx)(`h2`,{className:`term-word`,children:e.term})]}),(0,$.jsx)(`div`,{className:`term-full`,children:e.full}),(0,$.jsx)(`p`,{className:`term-desc`,children:e.desc})]},e.term))}),E.length===0&&(0,$.jsx)(`div`,{className:`no-results`,children:`찾으시는 검색 결과가 없습니다.`})]})}),(0,$.jsx)(Cc,{children:(n!==null&&T!==null||i)&&T&&(0,$.jsx)(yu.div,{className:`modal-overlay`,initial:{opacity:0},animate:{opacity:1},exit:{opacity:0},children:(0,$.jsxs)(yu.div,{className:`modal`,initial:{scale:.95,opacity:0},animate:{scale:1,opacity:1},exit:{scale:.95,opacity:0},children:[(0,$.jsx)(`button`,{className:`modal-close-btn`,onClick:()=>{r(null),a(!1)},children:(0,$.jsx)(Ju,{size:20})}),(0,$.jsxs)(`div`,{className:`modal-inner`,children:[(0,$.jsxs)(`div`,{className:`badge`,style:{marginBottom:`2rem`},children:[e===`faq`?`Question ${T.id}`:`Step ${T.id}`,u&&` • Official`]}),(0,$.jsx)(`h1`,{className:`modal-title`,children:e===`faq`?T.question:T.title}),(0,$.jsxs)(`div`,{className:`modal-section`,children:[(0,$.jsxs)(`h3`,{children:[(0,$.jsx)(Vu,{size:14}),e===`faq`?`시원한 답변`:u?`세부 실습 내용`:`핵심 내용`]}),(0,$.jsx)(`p`,{className:`highlight-text`,children:e===`faq`?T.answer:u?T.content:T.description})]}),(0,$.jsxs)(`div`,{className:`modal-section`,children:[(0,$.jsxs)(`h3`,{children:[(0,$.jsx)(Gu,{size:14}),e===`faq`?`비법 비유`:u?`학습 목표`:`상세 설명`]}),(0,$.jsx)(`p`,{className:`normal-text`,children:e===`faq`?T.analogy:u?`본 차시를 통해 디스플레이 도메인 기술과 AI 바이브 코딩을 결합한 ${T.id}단계 역량을 습득합니다.`:T.details})]}),e===`faq`&&(0,$.jsxs)(`div`,{className:`strategy-box`,children:[(0,$.jsx)(`h3`,{children:`💡 강의 활용 전략`}),(0,$.jsx)(`p`,{children:T.strategy})]})]}),(0,$.jsxs)(`div`,{className:`modal-footer`,children:[(0,$.jsx)(`button`,{onClick:w,className:`nav-btn`,children:(0,$.jsx)(Mu,{size:24})}),(0,$.jsxs)(`div`,{className:`page-indicator`,children:[o+1,` / `,(e===`faq`?Zu:u?$u:Qu).length]}),(0,$.jsx)(`button`,{onClick:S,className:`nav-btn`,children:(0,$.jsx)(Nu,{size:24})})]})]})})}),(0,$.jsx)(`style`,{children:`
-        .main-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4rem; }
+        .main-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4rem; flex-wrap: wrap; gap: 1rem; }
         .nav-group { display: flex; gap: 12px; align-items: center; }
+        .nav-group.tabs-group { flex-wrap: wrap; }
         .tab-button {
-          background: transparent; border: none; padding: 10px 20px; border-radius: 14px;
+          background: transparent; border: none; padding: 10px 16px; border-radius: 14px;
           cursor: pointer; color: var(--text-secondary); display: flex; align-items: center;
-          gap: 10px; font-weight: 700; font-size: 0.95rem; transition: all 0.2s;
+          gap: 8px; font-weight: 700; font-size: 0.9rem; transition: all 0.2s;
+          white-space: nowrap;
         }
         .tab-button.active { background: var(--bg-secondary); color: var(--accent); border: 1px solid var(--border); }
         .icon-button {
@@ -81,10 +83,10 @@ use chrome, FireFox or Internet Explorer 11`)}var a=e(`safe-buffer`),o=e(`random
         .visuals-container { display: flex; flex-direction: column; gap: 3rem; margin-bottom: 2rem; }
         .roadmap-section { background: var(--bg-tertiary); padding: 2.5rem; border-radius: 24px; border: 1px solid var(--border); }
         .section-label { font-size: 0.8rem; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 2rem; text-align: center; }
-        .roadmap-stepper { display: flex; justify-content: space-between; position: relative; }
-        .step-item { display: flex; flex-direction: column; align-items: center; flex: 1; position: relative; z-index: 1; }
-        .step-node { width: 32px; height: 32px; background: var(--accent); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8rem; margin-bottom: 12px; box-shadow: 0 4px 10px rgba(0, 113, 227, 0.3); }
-        .step-label { font-size: 0.75rem; font-weight: 600; color: var(--text-secondary); text-align: center; }
+        .roadmap-stepper { display: flex; justify-content: space-between; position: relative; gap: 8px; }
+        .step-item { display: flex; flex-direction: column; align-items: center; flex: 1; position: relative; z-index: 1; min-width: 60px; }
+        .step-node { width: 32px; height: 32px; background: var(--accent); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8rem; margin-bottom: 12px; box-shadow: 0 4px 10px rgba(0, 113, 227, 0.3); flex-shrink: 0; }
+        .step-label { font-size: 0.7rem; font-weight: 600; color: var(--text-secondary); text-align: center; line-height: 1.2; }
         .step-line { position: absolute; top: 16px; left: 50%; width: 100%; height: 2px; background: var(--border); z-index: -1; }
 
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
@@ -110,7 +112,7 @@ use chrome, FireFox or Internet Explorer 11`)}var a=e(`safe-buffer`),o=e(`random
         .circle-icon { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: var(--accent); }
         .skill-label { font-size: 0.7rem; font-weight: 700; color: var(--text-secondary); }
 
-        .table-container { background: var(--bg-tertiary); border-radius: 24px; border: 1px solid var(--border); overflow: hidden; }
+        .table-container { background: var(--bg-tertiary); border-radius: 24px; border: 1px solid var(--border); overflow-x: auto; -webkit-overflow-scrolling: touch; }
         .curriculum-table { width: 100%; border-collapse: collapse; text-align: left; }
         .curriculum-table th { background: var(--bg-secondary); padding: 1.5rem 2rem; font-size: 1.1rem; color: var(--text-primary); font-weight: 800; letter-spacing: 0.05em; white-space: nowrap; }
         .curriculum-table td { padding: 1.5rem 2rem; border-bottom: 1px solid var(--border); }
@@ -132,7 +134,7 @@ use chrome, FireFox or Internet Explorer 11`)}var a=e(`safe-buffer`),o=e(`random
         .cat-badge, .time-badge { background: var(--bg-secondary); padding: 6px 14px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; white-space: nowrap; }
         .time-badge { color: var(--accent); }
         .title-cell { font-weight: 600; font-size: 1.1rem; }
-        .desc-cell { color: var(--text-secondary); }
+        .desc-cell { color: var(--text-secondary); word-break: keep-all; overflow-wrap: break-word; }
 
         .modal-title { font-size: 2.8rem; line-height: 1.1; margin-bottom: 3rem; }
         .highlight-text { font-size: 1.6rem; font-weight: 700; line-height: 1.3; }
@@ -187,6 +189,8 @@ use chrome, FireFox or Internet Explorer 11`)}var a=e(`safe-buffer`),o=e(`random
         .pagination { display: flex; align-items: center; justify-content: center; gap: 1.5rem; margin-bottom: 2rem; }
         .pagination .nav-btn { width: 44px; height: 44px; }
         .pagination .nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+        /* Mobile Styles will be at the bottom */
         .pagination .page-indicator { font-family: var(--font-main); font-weight: 700; color: var(--text-primary); }
 
         /* Showcase Styles */
@@ -249,75 +253,74 @@ use chrome, FireFox or Internet Explorer 11`)}var a=e(`safe-buffer`),o=e(`random
         .logo-text { font-size: 1.2rem; white-space: nowrap; }
 
         /* Mobile Responsiveness Improvements */
+        /* Desktop-first Media Queries */
+        @media screen and (max-width: 1024px) {
+          .curriculum-table { min-width: 850px; }
+          .roadmap-stepper { overflow-x: auto; padding-bottom: 1rem; justify-content: flex-start; }
+          .step-item { flex: 0 0 100px; }
+        }
+
         @media screen and (max-width: 768px) {
           .app-container { padding: 2rem 1.2rem; }
-          header { margin-bottom: 3rem; }
+          header { margin-bottom: 2rem; }
           header h1 { font-size: clamp(1.8rem, 8vw, 2.5rem) !important; line-height: 1.2; word-break: keep-all; }
-          .header-subtitle { font-size: clamp(0.9rem, 4vw, 1.1rem) !important; margin-top: 1rem; }
+          .header-subtitle { font-size: 1rem !important; margin-top: 1rem; line-height: 1.5; }
 
           .main-nav { flex-direction: column; gap: 1rem; margin-bottom: 2rem !important; align-items: stretch; }
           .nav-group { width: 100%; justify-content: center; }
-          .tabs-group { 
-            display: flex; overflow-x: auto; padding: 4px 0 12px; 
-            justify-content: flex-start; -webkit-overflow-scrolling: touch;
-            scrollbar-width: none;
+          .nav-group.tabs-group { 
+            display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%;
           }
-          .tabs-group::-webkit-scrollbar { display: none; }
           .tab-button { 
-            white-space: nowrap; padding: 10px 18px; font-size: 0.9rem; 
-            flex-shrink: 0; background: var(--bg-secondary);
+            white-space: nowrap; padding: 12px 10px; font-size: 0.85rem; 
+            justify-content: center; background: var(--bg-secondary); border-radius: 12px;
           }
           
-          .logo-container { margin-bottom: 1.5rem; flex-wrap: wrap; }
-          .logo-text { font-size: 0.9rem !important; }
+          .logo-container { margin-bottom: 1.5rem; }
+          .logo-text { font-size: 1rem !important; }
 
           .roadmap-section { padding: 1.5rem 1rem; border-radius: 16px; }
-          .roadmap-stepper { flex-direction: column; gap: 2rem; align-items: flex-start; padding-left: 10px; }
-          .step-item { flex-direction: row; gap: 15px; align-items: flex-start; width: 100%; }
-          .step-node { width: 28px; height: 28px; font-size: 0.75rem; flex-shrink: 0; margin-top: 4px; }
+          .roadmap-stepper { flex-direction: column; gap: 2.5rem; align-items: flex-start; padding-left: 10px; }
+          .step-item { flex-direction: row; gap: 15px; align-items: flex-start; width: 100%; min-width: auto; }
+          .step-node { width: 32px; height: 32px; font-size: 0.8rem; flex-shrink: 0; margin-bottom: 0; }
           .step-label { text-align: left; font-size: 0.95rem; line-height: 1.4; color: var(--text-primary); }
-          .step-line { left: 14px; top: 32px; width: 1.5px; height: calc(100% + 2rem); }
+          .step-line { left: 16px; top: 32px; width: 2px; height: calc(100% + 2rem); }
           
-          .stats-grid { grid-template-columns: 1fr; gap: 1rem; }
-          .stat-card { padding: 1.25rem; border-radius: 18px; }
-          .stat-header { font-size: 0.85rem; }
-          .skill-circles { justify-content: space-around; gap: 8px; }
-          .circle-bg { width: 50px; height: 50px; }
+          .stats-grid { grid-template-columns: 1fr; gap: 1.2rem; }
+          .stat-card { padding: 1.5rem 1.25rem; border-radius: 20px; }
+          .skill-circles { justify-content: space-around; gap: 10px; }
           
-          .curriculum-controls { flex-direction: column; gap: 0.8rem; }
-          .control-left, .control-right { width: 100%; display: flex; flex-wrap: wrap; gap: 0.5rem; }
-          .toggle-button { flex: 1; min-width: 140px; justify-content: center; font-size: 0.85rem; padding: 12px 10px; border-radius: 12px; }
+          .curriculum-controls { flex-direction: column; gap: 1rem; }
+          .control-left, .control-right { width: 100%; display: grid; grid-template-columns: 1fr; gap: 8px; }
+          .control-right { grid-template-columns: 1fr 1fr; }
+          .toggle-button { justify-content: center; font-size: 0.85rem; padding: 12px 10px; border-radius: 12px; }
           
           .table-container { 
             margin: 1.5rem -1.2rem; width: calc(100% + 2.4rem); 
-            border-radius: 0; border-left: none; border-right: none;
-            overflow-x: auto; -webkit-overflow-scrolling: touch;
+            border-radius: 0; border: none; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
           }
-          .curriculum-table { min-width: 600px; }
-          .curriculum-table th, .curriculum-table td { padding: 1rem 1.2rem; font-size: 0.9rem; }
+          .curriculum-table { min-width: 900px; }
+          .curriculum-table th, .curriculum-table td { padding: 1.2rem 1rem; font-size: 0.9rem; }
+          .title-cell { font-size: 0.95rem !important; }
           
           .modal { 
-            padding: 1.5rem; border-radius: 24px; width: 92%; max-height: 85vh; 
+            padding: 2rem 1.5rem; border-radius: 24px; width: 95%; max-height: 85vh; 
             margin: 0 auto; overflow-y: auto;
           }
-          .modal-inner { padding-top: 2rem; }
-          .modal-title { font-size: 1.7rem; line-height: 1.3; margin-bottom: 2rem; }
-          .highlight-text { font-size: 1.15rem; line-height: 1.5; }
-          .modal-section { margin-bottom: 2rem; }
+          .modal-title { font-size: 1.8rem; line-height: 1.3; margin-bottom: 2rem; }
+          .highlight-text { font-size: 1.2rem; }
           .modal-close-btn { top: 15px; right: 15px; width: 40px; height: 40px; }
-          
+
+          .splash-title { font-size: 2.2rem; }
+          .splash-subtitle { font-size: 1rem; }
+
           .terminology-grid { grid-template-columns: 1fr; gap: 1rem; }
-          .term-card { padding: 1.5rem; border-radius: 18px; }
-          .term-word { font-size: 1.4rem; }
-          .term-desc { font-size: 0.9rem; }
+          .term-card { padding: 1.5rem; }
           
-          .example-visual { min-width: 100%; min-height: 220px; border-radius: 20px; }
-          .example-info { gap: 1rem; }
-          .example-title-large { font-size: 1.5rem; }
-          .example-full-desc { font-size: 0.95rem; }
-          .example-detail-split { gap: 0.8rem; }
-          .detail-section { padding: 1rem; }
-          .impact-tag { font-size: 0.9rem; }
+          .example-visual { width: 100% !important; min-height: 200px !important; border-radius: 20px; }
+          .example-info { gap: 1.2rem; }
+          .example-title-large { font-size: 1.6rem; }
+          .example-detail-split { grid-template-columns: 1fr; gap: 1rem; }
         }
 
         @media print {
