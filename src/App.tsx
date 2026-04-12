@@ -417,14 +417,14 @@ export default function App() {
                 <thead>
                   {showOfficial ? (
                     <tr>
-                      <th style={{ width: '80px' }}>차시</th>
+                      <th style={{ width: '100px' }}>차시</th>
                       <th style={{ width: '300px' }}>주제</th>
                       <th>세부 강의 내용</th>
                       <th style={{ width: '100px' }}>시간</th>
                     </tr>
                   ) : (
                     <tr>
-                      <th style={{ width: '80px' }}>단계</th>
+                      <th style={{ width: '100px' }}>단계</th>
                       <th style={{ width: '180px' }}>분류</th>
                       <th>주제</th>
                       <th>핵심 성과</th>
@@ -675,7 +675,7 @@ export default function App() {
 
         .table-container { background: var(--bg-tertiary); border-radius: 24px; border: 1px solid var(--border); overflow: hidden; }
         .curriculum-table { width: 100%; border-collapse: collapse; text-align: left; }
-        .curriculum-table th { background: var(--bg-secondary); padding: 1.5rem 2rem; font-size: 1.1rem; color: var(--text-primary); font-weight: 800; letter-spacing: 0.05em; }
+        .curriculum-table th { background: var(--bg-secondary); padding: 1.5rem 2rem; font-size: 1.1rem; color: var(--text-primary); font-weight: 800; letter-spacing: 0.05em; white-space: nowrap; }
         .curriculum-table td { padding: 1.5rem 2rem; border-bottom: 1px solid var(--border); }
         .curriculum-table tr { cursor: pointer; }
         .curriculum-table tr:hover td { background: rgba(0, 113, 227, 0.05); }
