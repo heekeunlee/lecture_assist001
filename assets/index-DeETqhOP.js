@@ -239,16 +239,18 @@ use chrome, FireFox or Internet Explorer 11`)}var a=e(`safe-buffer`),o=e(`random
           header { margin-bottom: 4rem !important; text-align: center !important; }
           h1 { font-size: 3rem !important; margin-bottom: 1rem !important; color: #000 !important; -webkit-text-fill-color: #000 !important; display: block !important; text-align: center !important; }
           .header-subtitle { font-size: 1.3rem !important; color: #333 !important; display: block !important; margin-top: 1rem !important; text-align: center !important; }
-          .visuals-container { margin-bottom: 4rem; break-inside: avoid; }
-          .roadmap-section { border: 1px solid #ddd !important; padding: 2rem !important; margin-bottom: 3rem !important; }
-          .stats-grid { gap: 1.5rem !important; margin-bottom: 3rem !important; }
-          .stat-card { border: 1px solid #ddd !important; padding: 1.5rem !important; break-inside: avoid; }
-          .table-container { border: 1px solid #ccc !important; box-shadow: none !important; border-radius: 0; overflow: visible !important; width: 100%; margin-top: 3rem; }
+          .visuals-container { margin-bottom: 2rem !important; break-inside: avoid; }
+          .roadmap-section { border: 1px solid #ddd !important; padding: 1.5rem !important; margin-bottom: 2rem !important; }
+          .stats-grid { gap: 1rem !important; margin-bottom: 2rem !important; }
+          .stat-card { border: 1px solid #ddd !important; padding: 1.2rem !important; break-inside: avoid; }
+          
+          /* Force table to start on a new page and fit perfectly into one A4 sheet */
+          .table-container { page-break-before: always; border: 2px solid #ccc !important; box-shadow: none !important; border-radius: 0; overflow: visible !important; width: 100%; margin-top: 0 !important; }
           .curriculum-table { width: 100% !important; border-collapse: collapse !important; }
-          .curriculum-table th { background: #f5f5f5 !important; border-bottom: 2px solid #ccc !important; color: #000 !important; padding: 1.2rem !important; font-size: 1.1rem !important; font-weight: 800 !important; }
-          .curriculum-table td { border-bottom: 1px dotted #ccc !important; color: #111 !important; padding: 1.5rem 1.2rem !important; font-size: 1rem !important; }
+          .curriculum-table th { background: #f5f5f5 !important; border-bottom: 2px solid #888 !important; color: #000 !important; padding: 0.5rem !important; font-size: 0.95rem !important; font-weight: 800 !important; white-space: nowrap !important; }
+          .curriculum-table td { border-bottom: 1px solid #e0e0e0 !important; color: #000 !important; padding: 0.4rem 0.6rem !important; font-size: 0.85rem !important; line-height: 1.2 !important; }
           .id-cell { color: #000 !important; font-weight: 900 !important; }
-          .cat-badge, .time-badge, .project-id-badge { background: #e8e8e8 !important; color: #000 !important; border: 1px solid #bbb !important; display: inline-block !important; border-radius: 4px !important; }
-          .title-cell { font-size: 1rem !important; font-weight: 700 !important; }
+          .cat-badge, .time-badge, .project-id-badge { background: #e8e8e8 !important; color: #000 !important; border: 1px solid #bbb !important; display: inline-block !important; padding: 2px 6px !important; border-radius: 4px !important; font-size: 0.75rem !important; }
+          .title-cell { font-size: 0.85rem !important; font-weight: 700 !important; }
         }
       `}),(0,$.jsx)(`footer`,{style:{marginTop:`8rem`,textAlign:`center`,padding:`4rem 0`,borderTop:`1px solid var(--border)`,color:`var(--text-secondary)`},children:(0,$.jsx)(`p`,{children:`© 2026 Vibe Coding - For Professional Instructors`})})]})}Zu.createRoot(document.getElementById(`root`)).render((0,$.jsx)(C.StrictMode,{children:(0,$.jsx)(cd,{})}));
