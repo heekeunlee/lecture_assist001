@@ -138,14 +138,23 @@ export default function App() {
   const exportToExcel = () => {
     const data = showOfficial ? officialData : curriculumData;
     const exportData = data.map((item: any) => {
-      const isOfficial = !!item.topic;
-      return {
-        '순서 (회차)': item.id,
-        '구분': item.type === 'project' ? '프로젝트' : '이론강의',
-        '주제명': isOfficial ? item.topic : item.question,
-        '핵심 브리핑': item.summary || '',
-        '세부 커리큘럼': item.detail || item.answer || '',
-      };
+      if (showOfficial) {
+        return {
+          '순서 (회차)': item.id,
+          '소요 시간': item.time || '',
+          '주제명': item.title || '',
+          '학습 내용': item.content || ''
+        };
+      } else {
+        return {
+          '순서 (회차)': item.id,
+          '구분': item.type === 'project' ? '프로젝트' : '이론강의',
+          '분류': item.category || '',
+          '주제명': item.title || '',
+          '핵심 브리핑': item.description || '',
+          '세부 커리큘럼': item.details || '',
+        };
+      }
     });
     
     const worksheet = XLSX.utils.json_to_sheet(exportData);
