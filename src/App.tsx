@@ -11,6 +11,42 @@ import { saveAs } from 'file-saver';
 
 type TabType = 'faq' | 'curriculum' | 'terminology' | 'examples';
 
+const SplashScreen = ({ onComplete }: { onComplete: () => void }) => {
+  return (
+    <motion.div 
+      className="splash-screen"
+      initial={{ opacity: 1 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.8 }}
+    >
+      <div className="splash-content">
+        <motion.div
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="splash-logo"
+        >
+          <Layers size={80} className="splash-icon" />
+          <div className="splash-text-group">
+            <h1 className="splash-title">VIBE CODING</h1>
+            <p className="splash-subtitle">Premium Engineering Education</p>
+          </div>
+        </motion.div>
+        
+        <motion.div 
+          className="loading-bar-container"
+          initial={{ width: 0 }}
+          animate={{ width: 200 }}
+          transition={{ duration: 2.5, ease: "easeInOut" }}
+        >
+          <div className="loading-bar-fill" />
+        </motion.div>
+      </div>
+    </motion.div>
+  );
+};
+
 const CurriculumVisuals = () => {
   return (
     <div className="visuals-container">
@@ -97,10 +133,17 @@ export default function App() {
   const [searchTerm, setSearchTerm] = useState('');
   const [activeTermCat, setActiveTermCat] = useState('전체');
   const [currentPage, setCurrentPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(true);
   const itemsPerPage = 30;
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
+    
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 3000);
+    
+    return () => clearTimeout(timer);
   }, [theme]);
 
   const toggleTheme = () => setTheme(prev => prev === 'light' ? 'dark' : 'light');
@@ -233,9 +276,14 @@ export default function App() {
   };
 
   return (
-    <div className="app-container">
-      <nav style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4rem' }}>
-        <div className="nav-group">
+    <>
+      <AnimatePresence>
+        {isLoading && <SplashScreen key="splash" onComplete={() => setIsLoading(false)} />}
+      </AnimatePresence>
+
+      <div className="app-container">
+      <nav className="main-nav">
+        <div className="nav-group tabs-group">
           <button 
             className={`tab-button ${activeTab === 'curriculum' ? 'active' : ''}`} 
             onClick={() => { setActiveTab('curriculum'); setSelectedId(null); }}
@@ -282,9 +330,9 @@ export default function App() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', marginBottom: '1.5rem' }}>
+          <div className="logo-container">
             <Layers className="accent-color" size={32} />
-            <span style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--accent)', letterSpacing: '0.05em' }}>VIBE CODING 101</span>
+            <span className="logo-text">VIBE CODING 101</span>
           </div>
           <h1>
             {activeTab === 'curriculum' 
@@ -372,8 +420,8 @@ export default function App() {
             
             <CurriculumVisuals />
 
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem', width: '100%' }}>
-              <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div className="curriculum-controls">
+              <div className="control-left">
                 <button 
                   className="toggle-button active"
                   onClick={() => setShowOfficial(!showOfficial)}
@@ -382,27 +430,20 @@ export default function App() {
                   {showOfficial ? '쉬운 표현으로 보기' : '공식 커리큘럼 보기'}
                 </button>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+              <div className="control-right">
                 <button 
                   className="toggle-button print-btn"
                   onClick={() => window.print()}
                 >
                   <Printer size={16} />
-                  <span>📄 PDF 인쇄하기</span>
-                </button>
-                <button 
-                  className="toggle-button download-btn"
-                  onClick={() => window.print()}
-                >
-                  <Download size={16} />
-                  <span>💾 PDF 다운로드</span>
+                  <span>PDF 인쇄</span>
                 </button>
                 <button 
                   className="toggle-button download-btn"
                   onClick={exportToExcel}
                 >
                   <FileText size={16} />
-                  <span>📊 Excel 다운로드</span>
+                  <span>Excel</span>
                 </button>
               </div>
             </div>
@@ -612,6 +653,7 @@ export default function App() {
       </AnimatePresence>
 
       <style>{`
+        .main-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4rem; }
         .nav-group { display: flex; gap: 12px; align-items: center; }
         .tab-button {
           background: transparent; border: none; padding: 10px 20px; border-radius: 14px;
@@ -639,6 +681,12 @@ export default function App() {
         .toggle-button.active { background: var(--accent); color: white; border-color: var(--accent); }
         .download-btn { background: #34c759; color: white; border: none; }
         .download-btn:hover { background: #28a745; transform: translateY(-2px); }
+
+        .logo-container { display: flex; alignItems: center; justify-content: center; gap: 12px; margin-bottom: 1.5rem; }
+        .logo-text { font-size: 1.2rem; font-weight: 700; color: var(--accent); letter-spacing: 0.05em; }
+        
+        .curriculum-controls { display: flex; justify-content: space-between; align-items: center; gap: 1rem; width: 100%; }
+        .control-left, .control-right { display: flex; align-items: center; gap: 1rem; }
 
         /* Visuals Style */
         .visuals-container { display: flex; flex-direction: column; gap: 3rem; margin-bottom: 2rem; }
@@ -786,10 +834,101 @@ export default function App() {
         .process-text { font-size: 0.95rem; line-height: 1.5; color: var(--text-secondary); }
         .impact-tag { font-size: 1rem; font-weight: 700; color: var(--text-primary); background: rgba(0, 113, 227, 0.1); padding: 10px 15px; border-radius: 10px; border-left: 4px solid var(--accent); }
 
-        @media screen and (max-width: 1024px) {
-          .example-item, .example-item.row-reverse { flex-direction: column; text-align: center; gap: 2rem; }
-          .example-detail-split { grid-template-columns: 1fr; }
-          .example-title-large { font-size: 1.8rem; }
+        /* Base Styles Enhancements */
+        .app-container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 4rem 2rem; box-sizing: border-box; }
+        
+        /* Splash Screen */
+        .splash-screen {
+          position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+          background: #000; display: flex; align-items: center; justify-content: center;
+          z-index: 9999; color: white;
+        }
+        .splash-content { display: flex; flex-direction: column; align-items: center; gap: 2rem; }
+        .splash-logo { display: flex; flex-direction: column; align-items: center; gap: 1rem; text-align: center; }
+        .splash-icon { color: #0071e3; filter: drop-shadow(0 0 20px rgba(0,113,227,0.5)); }
+        .splash-title { font-size: 3rem; font-weight: 900; letter-spacing: 0.1em; background: linear-gradient(135deg, #fff, #888); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .splash-subtitle { font-size: 1.1rem; opacity: 0.6; font-weight: 300; }
+        .loading-bar-container { width: 200px; height: 2px; background: rgba(255,255,255,0.1); border-radius: 1px; overflow: hidden; }
+        .loading-bar-fill { height: 100%; background: #0071e3; width: 0; animation: load 2.5s forwards ease-in-out; }
+        @keyframes load { from { width: 0; } to { width: 100%; } }
+
+        /* Typography Auto-scaling */
+        html { font-size: 16px; }
+        @media screen and (max-width: 1400px) { html { font-size: 15px; } }
+        @media screen and (max-width: 768px) { html { font-size: 14px; } }
+
+        .logo-text { font-size: 1.2rem; white-space: nowrap; }
+
+        /* Mobile Responsiveness Improvements */
+        @media screen and (max-width: 768px) {
+          .app-container { padding: 2rem 1.2rem; }
+          header { margin-bottom: 3rem; }
+          header h1 { font-size: clamp(1.8rem, 8vw, 2.5rem) !important; line-height: 1.2; word-break: keep-all; }
+          .header-subtitle { font-size: clamp(0.9rem, 4vw, 1.1rem) !important; margin-top: 1rem; }
+
+          .main-nav { flex-direction: column; gap: 1rem; margin-bottom: 2rem !important; align-items: stretch; }
+          .nav-group { width: 100%; justify-content: center; }
+          .tabs-group { 
+            display: flex; overflow-x: auto; padding: 4px 0 12px; 
+            justify-content: flex-start; -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+          }
+          .tabs-group::-webkit-scrollbar { display: none; }
+          .tab-button { 
+            white-space: nowrap; padding: 10px 18px; font-size: 0.9rem; 
+            flex-shrink: 0; background: var(--bg-secondary);
+          }
+          
+          .logo-container { margin-bottom: 1.5rem; flex-wrap: wrap; }
+          .logo-text { font-size: 0.9rem !important; }
+
+          .roadmap-section { padding: 1.5rem 1rem; border-radius: 16px; }
+          .roadmap-stepper { flex-direction: column; gap: 2rem; align-items: flex-start; padding-left: 10px; }
+          .step-item { flex-direction: row; gap: 15px; align-items: flex-start; width: 100%; }
+          .step-node { width: 28px; height: 28px; font-size: 0.75rem; flex-shrink: 0; margin-top: 4px; }
+          .step-label { text-align: left; font-size: 0.95rem; line-height: 1.4; color: var(--text-primary); }
+          .step-line { left: 14px; top: 32px; width: 1.5px; height: calc(100% + 2rem); }
+          
+          .stats-grid { grid-template-columns: 1fr; gap: 1rem; }
+          .stat-card { padding: 1.25rem; border-radius: 18px; }
+          .stat-header { font-size: 0.85rem; }
+          .skill-circles { justify-content: space-around; gap: 8px; }
+          .circle-bg { width: 50px; height: 50px; }
+          
+          .curriculum-controls { flex-direction: column; gap: 0.8rem; }
+          .control-left, .control-right { width: 100%; display: flex; flex-wrap: wrap; gap: 0.5rem; }
+          .toggle-button { flex: 1; min-width: 140px; justify-content: center; font-size: 0.85rem; padding: 12px 10px; border-radius: 12px; }
+          
+          .table-container { 
+            margin: 1.5rem -1.2rem; width: calc(100% + 2.4rem); 
+            border-radius: 0; border-left: none; border-right: none;
+            overflow-x: auto; -webkit-overflow-scrolling: touch;
+          }
+          .curriculum-table { min-width: 600px; }
+          .curriculum-table th, .curriculum-table td { padding: 1rem 1.2rem; font-size: 0.9rem; }
+          
+          .modal { 
+            padding: 1.5rem; border-radius: 24px; width: 92%; max-height: 85vh; 
+            margin: 0 auto; overflow-y: auto;
+          }
+          .modal-inner { padding-top: 2rem; }
+          .modal-title { font-size: 1.7rem; line-height: 1.3; margin-bottom: 2rem; }
+          .highlight-text { font-size: 1.15rem; line-height: 1.5; }
+          .modal-section { margin-bottom: 2rem; }
+          .modal-close-btn { top: 15px; right: 15px; width: 40px; height: 40px; }
+          
+          .terminology-grid { grid-template-columns: 1fr; gap: 1rem; }
+          .term-card { padding: 1.5rem; border-radius: 18px; }
+          .term-word { font-size: 1.4rem; }
+          .term-desc { font-size: 0.9rem; }
+          
+          .example-visual { min-width: 100%; min-height: 220px; border-radius: 20px; }
+          .example-info { gap: 1rem; }
+          .example-title-large { font-size: 1.5rem; }
+          .example-full-desc { font-size: 0.95rem; }
+          .example-detail-split { gap: 0.8rem; }
+          .detail-section { padding: 1rem; }
+          .impact-tag { font-size: 0.9rem; }
         }
 
         @media print {
