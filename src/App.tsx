@@ -6,6 +6,7 @@ import curriculumData from './data/curriculum.json';
 import officialData from './data/official_plan.json';
 import terminologyData from './data/terminology.json';
 import examplesData from './data/examples.json';
+import * as XLSX from 'xlsx';
 
 type TabType = 'faq' | 'curriculum' | 'terminology' | 'examples';
 
@@ -133,6 +134,25 @@ export default function App() {
 
   const pageCount = Math.ceil(filteredTerms.length / itemsPerPage);
   const currentTerms = filteredTerms.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+  const exportToExcel = () => {
+    const data = showOfficial ? officialData : curriculumData;
+    const exportData = data.map((item: any) => {
+      const isOfficial = !!item.topic;
+      return {
+        '순서 (회차)': item.id,
+        '구분': item.type === 'project' ? '프로젝트' : '이론강의',
+        '주제명': isOfficial ? item.topic : item.question,
+        '핵심 브리핑': item.summary || '',
+        '세부 커리큘럼': item.detail || item.answer || '',
+      };
+    });
+    
+    const worksheet = XLSX.utils.json_to_sheet(exportData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, showOfficial ? '공식 커리큘럼' : '실무 로드맵');
+    XLSX.writeFile(workbook, `VibeCoding_Curriculum_${showOfficial ? 'Official' : 'Roadmap'}.xlsx`);
+  };
 
   return (
     <div className="app-container">
@@ -287,7 +307,14 @@ export default function App() {
                 onClick={() => window.print()}
               >
                 <Download size={16} />
-                <span>💾 PDF 파일 다운로드</span>
+                <span>💾 PDF 다운로드</span>
+              </button>
+              <button 
+                className="toggle-button download-btn"
+                onClick={exportToExcel}
+              >
+                <FileText size={16} />
+                <span>📊 Excel 다운로드</span>
               </button>
               <button 
                 className={`toggle-button ${showOfficial ? 'active' : ''}`}
