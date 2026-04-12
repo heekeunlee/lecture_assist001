@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ChevronLeft, ChevronRight, Presentation, Grid, Sparkles, MessageCircle, HelpCircle, Layers, List, FileText, Target, TrendingUp, Clock, Award, Download, Printer, BookOpen, Search, Image, Zap } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight, Presentation, Grid, Sparkles, MessageCircle, HelpCircle, Layers, List, FileText, Target, TrendingUp, Clock, Award, Printer, BookOpen, Search, Image, Zap } from 'lucide-react';
 import questionsData from './data/questions.json';
 import curriculumData from './data/curriculum.json';
 import officialData from './data/official_plan.json';
@@ -11,7 +11,7 @@ import { saveAs } from 'file-saver';
 
 type TabType = 'faq' | 'curriculum' | 'terminology' | 'examples';
 
-const SplashScreen = ({ onComplete }: { onComplete: () => void }) => {
+const SplashScreen = () => {
   return (
     <motion.div 
       className="splash-screen"
@@ -30,7 +30,7 @@ const SplashScreen = ({ onComplete }: { onComplete: () => void }) => {
           <Layers size={80} className="splash-icon" />
           <div className="splash-text-group">
             <h1 className="splash-title">VIBE CODING</h1>
-            <p className="splash-subtitle">Premium Engineering Education</p>
+            <p className="splash-subtitle">for Display Engineering</p>
           </div>
         </motion.div>
         
@@ -278,7 +278,7 @@ export default function App() {
   return (
     <>
       <AnimatePresence>
-        {isLoading && <SplashScreen key="splash" onComplete={() => setIsLoading(false)} />}
+        {isLoading && <SplashScreen key="splash" />}
       </AnimatePresence>
 
       <div className="app-container">
@@ -968,5 +968,6 @@ export default function App() {
         <p>© 2026 Vibe Coding - For Professional Instructors</p>
       </footer>
     </div>
+    </>
   );
 }
