@@ -436,7 +436,7 @@ export default function App() {
                   onClick={() => window.print()}
                 >
                   <Printer size={16} />
-                  <span>PDF 인쇄</span>
+                  <span>PDF</span>
                 </button>
                 <button 
                   className="toggle-button download-btn"
