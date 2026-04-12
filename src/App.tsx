@@ -653,12 +653,14 @@ export default function App() {
       </AnimatePresence>
 
       <style>{`
-        .main-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4rem; }
+        .main-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4rem; flex-wrap: wrap; gap: 1rem; }
         .nav-group { display: flex; gap: 12px; align-items: center; }
+        .nav-group.tabs-group { flex-wrap: wrap; }
         .tab-button {
-          background: transparent; border: none; padding: 10px 20px; border-radius: 14px;
+          background: transparent; border: none; padding: 10px 16px; border-radius: 14px;
           cursor: pointer; color: var(--text-secondary); display: flex; align-items: center;
-          gap: 10px; font-weight: 700; font-size: 0.95rem; transition: all 0.2s;
+          gap: 8px; font-weight: 700; font-size: 0.9rem; transition: all 0.2s;
+          white-space: nowrap;
         }
         .tab-button.active { background: var(--bg-secondary); color: var(--accent); border: 1px solid var(--border); }
         .icon-button {
@@ -692,10 +694,10 @@ export default function App() {
         .visuals-container { display: flex; flex-direction: column; gap: 3rem; margin-bottom: 2rem; }
         .roadmap-section { background: var(--bg-tertiary); padding: 2.5rem; border-radius: 24px; border: 1px solid var(--border); }
         .section-label { font-size: 0.8rem; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 2rem; text-align: center; }
-        .roadmap-stepper { display: flex; justify-content: space-between; position: relative; }
-        .step-item { display: flex; flex-direction: column; align-items: center; flex: 1; position: relative; z-index: 1; }
-        .step-node { width: 32px; height: 32px; background: var(--accent); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8rem; margin-bottom: 12px; box-shadow: 0 4px 10px rgba(0, 113, 227, 0.3); }
-        .step-label { font-size: 0.75rem; font-weight: 600; color: var(--text-secondary); text-align: center; }
+        .roadmap-stepper { display: flex; justify-content: space-between; position: relative; gap: 8px; }
+        .step-item { display: flex; flex-direction: column; align-items: center; flex: 1; position: relative; z-index: 1; min-width: 60px; }
+        .step-node { width: 32px; height: 32px; background: var(--accent); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8rem; margin-bottom: 12px; box-shadow: 0 4px 10px rgba(0, 113, 227, 0.3); flex-shrink: 0; }
+        .step-label { font-size: 0.7rem; font-weight: 600; color: var(--text-secondary); text-align: center; line-height: 1.2; }
         .step-line { position: absolute; top: 16px; left: 50%; width: 100%; height: 2px; background: var(--border); z-index: -1; }
 
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
@@ -721,7 +723,7 @@ export default function App() {
         .circle-icon { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: var(--accent); }
         .skill-label { font-size: 0.7rem; font-weight: 700; color: var(--text-secondary); }
 
-        .table-container { background: var(--bg-tertiary); border-radius: 24px; border: 1px solid var(--border); overflow: hidden; }
+        .table-container { background: var(--bg-tertiary); border-radius: 24px; border: 1px solid var(--border); overflow-x: auto; -webkit-overflow-scrolling: touch; }
         .curriculum-table { width: 100%; border-collapse: collapse; text-align: left; }
         .curriculum-table th { background: var(--bg-secondary); padding: 1.5rem 2rem; font-size: 1.1rem; color: var(--text-primary); font-weight: 800; letter-spacing: 0.05em; white-space: nowrap; }
         .curriculum-table td { padding: 1.5rem 2rem; border-bottom: 1px solid var(--border); }
@@ -743,7 +745,7 @@ export default function App() {
         .cat-badge, .time-badge { background: var(--bg-secondary); padding: 6px 14px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; white-space: nowrap; }
         .time-badge { color: var(--accent); }
         .title-cell { font-weight: 600; font-size: 1.1rem; }
-        .desc-cell { color: var(--text-secondary); }
+        .desc-cell { color: var(--text-secondary); word-break: keep-all; overflow-wrap: break-word; }
 
         .modal-title { font-size: 2.8rem; line-height: 1.1; margin-bottom: 3rem; }
         .highlight-text { font-size: 1.6rem; font-weight: 700; line-height: 1.3; }
@@ -798,6 +800,8 @@ export default function App() {
         .pagination { display: flex; align-items: center; justify-content: center; gap: 1.5rem; margin-bottom: 2rem; }
         .pagination .nav-btn { width: 44px; height: 44px; }
         .pagination .nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+        /* Mobile Styles will be at the bottom */
         .pagination .page-indicator { font-family: var(--font-main); font-weight: 700; color: var(--text-primary); }
 
         /* Showcase Styles */
@@ -860,75 +864,74 @@ export default function App() {
         .logo-text { font-size: 1.2rem; white-space: nowrap; }
 
         /* Mobile Responsiveness Improvements */
+        /* Desktop-first Media Queries */
+        @media screen and (max-width: 1024px) {
+          .curriculum-table { min-width: 850px; }
+          .roadmap-stepper { overflow-x: auto; padding-bottom: 1rem; justify-content: flex-start; }
+          .step-item { flex: 0 0 100px; }
+        }
+
         @media screen and (max-width: 768px) {
           .app-container { padding: 2rem 1.2rem; }
-          header { margin-bottom: 3rem; }
+          header { margin-bottom: 2rem; }
           header h1 { font-size: clamp(1.8rem, 8vw, 2.5rem) !important; line-height: 1.2; word-break: keep-all; }
-          .header-subtitle { font-size: clamp(0.9rem, 4vw, 1.1rem) !important; margin-top: 1rem; }
+          .header-subtitle { font-size: 1rem !important; margin-top: 1rem; line-height: 1.5; }
 
           .main-nav { flex-direction: column; gap: 1rem; margin-bottom: 2rem !important; align-items: stretch; }
           .nav-group { width: 100%; justify-content: center; }
-          .tabs-group { 
-            display: flex; overflow-x: auto; padding: 4px 0 12px; 
-            justify-content: flex-start; -webkit-overflow-scrolling: touch;
-            scrollbar-width: none;
+          .nav-group.tabs-group { 
+            display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%;
           }
-          .tabs-group::-webkit-scrollbar { display: none; }
           .tab-button { 
-            white-space: nowrap; padding: 10px 18px; font-size: 0.9rem; 
-            flex-shrink: 0; background: var(--bg-secondary);
+            white-space: nowrap; padding: 12px 10px; font-size: 0.85rem; 
+            justify-content: center; background: var(--bg-secondary); border-radius: 12px;
           }
           
-          .logo-container { margin-bottom: 1.5rem; flex-wrap: wrap; }
-          .logo-text { font-size: 0.9rem !important; }
+          .logo-container { margin-bottom: 1.5rem; }
+          .logo-text { font-size: 1rem !important; }
 
           .roadmap-section { padding: 1.5rem 1rem; border-radius: 16px; }
-          .roadmap-stepper { flex-direction: column; gap: 2rem; align-items: flex-start; padding-left: 10px; }
-          .step-item { flex-direction: row; gap: 15px; align-items: flex-start; width: 100%; }
-          .step-node { width: 28px; height: 28px; font-size: 0.75rem; flex-shrink: 0; margin-top: 4px; }
+          .roadmap-stepper { flex-direction: column; gap: 2.5rem; align-items: flex-start; padding-left: 10px; }
+          .step-item { flex-direction: row; gap: 15px; align-items: flex-start; width: 100%; min-width: auto; }
+          .step-node { width: 32px; height: 32px; font-size: 0.8rem; flex-shrink: 0; margin-bottom: 0; }
           .step-label { text-align: left; font-size: 0.95rem; line-height: 1.4; color: var(--text-primary); }
-          .step-line { left: 14px; top: 32px; width: 1.5px; height: calc(100% + 2rem); }
+          .step-line { left: 16px; top: 32px; width: 2px; height: calc(100% + 2rem); }
           
-          .stats-grid { grid-template-columns: 1fr; gap: 1rem; }
-          .stat-card { padding: 1.25rem; border-radius: 18px; }
-          .stat-header { font-size: 0.85rem; }
-          .skill-circles { justify-content: space-around; gap: 8px; }
-          .circle-bg { width: 50px; height: 50px; }
+          .stats-grid { grid-template-columns: 1fr; gap: 1.2rem; }
+          .stat-card { padding: 1.5rem 1.25rem; border-radius: 20px; }
+          .skill-circles { justify-content: space-around; gap: 10px; }
           
-          .curriculum-controls { flex-direction: column; gap: 0.8rem; }
-          .control-left, .control-right { width: 100%; display: flex; flex-wrap: wrap; gap: 0.5rem; }
-          .toggle-button { flex: 1; min-width: 140px; justify-content: center; font-size: 0.85rem; padding: 12px 10px; border-radius: 12px; }
+          .curriculum-controls { flex-direction: column; gap: 1rem; }
+          .control-left, .control-right { width: 100%; display: grid; grid-template-columns: 1fr; gap: 8px; }
+          .control-right { grid-template-columns: 1fr 1fr; }
+          .toggle-button { justify-content: center; font-size: 0.85rem; padding: 12px 10px; border-radius: 12px; }
           
           .table-container { 
             margin: 1.5rem -1.2rem; width: calc(100% + 2.4rem); 
-            border-radius: 0; border-left: none; border-right: none;
-            overflow-x: auto; -webkit-overflow-scrolling: touch;
+            border-radius: 0; border: none; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
           }
-          .curriculum-table { min-width: 600px; }
-          .curriculum-table th, .curriculum-table td { padding: 1rem 1.2rem; font-size: 0.9rem; }
+          .curriculum-table { min-width: 900px; }
+          .curriculum-table th, .curriculum-table td { padding: 1.2rem 1rem; font-size: 0.9rem; }
+          .title-cell { font-size: 0.95rem !important; }
           
           .modal { 
-            padding: 1.5rem; border-radius: 24px; width: 92%; max-height: 85vh; 
+            padding: 2rem 1.5rem; border-radius: 24px; width: 95%; max-height: 85vh; 
             margin: 0 auto; overflow-y: auto;
           }
-          .modal-inner { padding-top: 2rem; }
-          .modal-title { font-size: 1.7rem; line-height: 1.3; margin-bottom: 2rem; }
-          .highlight-text { font-size: 1.15rem; line-height: 1.5; }
-          .modal-section { margin-bottom: 2rem; }
+          .modal-title { font-size: 1.8rem; line-height: 1.3; margin-bottom: 2rem; }
+          .highlight-text { font-size: 1.2rem; }
           .modal-close-btn { top: 15px; right: 15px; width: 40px; height: 40px; }
-          
+
+          .splash-title { font-size: 2.2rem; }
+          .splash-subtitle { font-size: 1rem; }
+
           .terminology-grid { grid-template-columns: 1fr; gap: 1rem; }
-          .term-card { padding: 1.5rem; border-radius: 18px; }
-          .term-word { font-size: 1.4rem; }
-          .term-desc { font-size: 0.9rem; }
+          .term-card { padding: 1.5rem; }
           
-          .example-visual { min-width: 100%; min-height: 220px; border-radius: 20px; }
-          .example-info { gap: 1rem; }
-          .example-title-large { font-size: 1.5rem; }
-          .example-full-desc { font-size: 0.95rem; }
-          .example-detail-split { gap: 0.8rem; }
-          .detail-section { padding: 1rem; }
-          .impact-tag { font-size: 0.9rem; }
+          .example-visual { width: 100% !important; min-height: 200px !important; border-radius: 20px; }
+          .example-info { gap: 1.2rem; }
+          .example-title-large { font-size: 1.6rem; }
+          .example-detail-split { grid-template-columns: 1fr; gap: 1rem; }
         }
 
         @media print {
