@@ -27,7 +27,7 @@ const SplashScreen = () => {
           transition={{ duration: 0.8, ease: "easeOut" }}
           className="splash-logo"
         >
-          <Layers size={80} className="splash-icon" />
+          <Layers size={160} className="splash-icon" />
           <div className="splash-text-group">
             <h1 className="splash-title">VIBE CODING</h1>
             <p className="splash-subtitle">for Display Engineering</p>
@@ -850,11 +850,19 @@ export default function App() {
         .splash-content { display: flex; flex-direction: column; align-items: center; gap: 2rem; }
         .splash-logo { display: flex; flex-direction: column; align-items: center; gap: 1rem; text-align: center; }
         .splash-icon { color: #0071e3; filter: drop-shadow(0 0 20px rgba(0,113,227,0.5)); }
-        .splash-title { font-size: 3rem; font-weight: 900; letter-spacing: 0.1em; background: linear-gradient(135deg, #fff, #888); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .splash-subtitle { font-size: 1.1rem; opacity: 0.6; font-weight: 300; }
-        .loading-bar-container { width: 200px; height: 2px; background: rgba(255,255,255,0.1); border-radius: 1px; overflow: hidden; }
+        .splash-title { font-size: 4rem; font-weight: 900; letter-spacing: 0.1em; background: linear-gradient(135deg, #fff, #888); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .splash-subtitle { font-size: 1.5rem; opacity: 0.6; font-weight: 300; }
+        .loading-bar-container { width: 300px; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden; }
         .loading-bar-fill { height: 100%; background: #0071e3; width: 0; animation: load 2.5s forwards ease-in-out; }
         @keyframes load { from { width: 0; } to { width: 100%; } }
+
+        /* Splash Screen Mobile Optimization (for wide viewport) */
+        @media screen and (pointer: coarse) {
+          .splash-icon { width: 120px; height: 120px; }
+          .splash-title { font-size: 7rem; }
+          .splash-subtitle { font-size: 2.2rem; }
+          .loading-bar-container { width: 500px; height: 8px; }
+        }
 
         /* Typography Auto-scaling */
         html { font-size: 16px; }
