@@ -105,7 +105,7 @@ use chrome, FireFox or Internet Explorer 11`)}var a=e(`safe-buffer`),o=e(`random
 
         .table-container { background: var(--bg-tertiary); border-radius: 24px; border: 1px solid var(--border); overflow: hidden; }
         .curriculum-table { width: 100%; border-collapse: collapse; text-align: left; }
-        .curriculum-table th { background: var(--bg-secondary); padding: 1.5rem 2rem; font-size: 0.85rem; color: var(--text-secondary); }
+        .curriculum-table th { background: var(--bg-secondary); padding: 1.5rem 2rem; font-size: 1.1rem; color: var(--text-primary); font-weight: 800; letter-spacing: 0.05em; }
         .curriculum-table td { padding: 1.5rem 2rem; border-bottom: 1px solid var(--border); }
         .curriculum-table tr { cursor: pointer; }
         .curriculum-table tr:hover td { background: rgba(0, 113, 227, 0.05); }
@@ -237,7 +237,7 @@ use chrome, FireFox or Internet Explorer 11`)}var a=e(`safe-buffer`),o=e(`random
           .stat-card { border: 1px solid #ddd !important; padding: 1.5rem !important; break-inside: avoid; }
           .table-container { border: 1px solid #ccc !important; box-shadow: none !important; border-radius: 0; overflow: visible !important; width: 100%; margin-top: 3rem; }
           .curriculum-table { width: 100% !important; border-collapse: collapse !important; }
-          .curriculum-table th { background: #f5f5f5 !important; border-bottom: 2px solid #ccc !important; color: #000 !important; padding: 1.2rem !important; font-size: 0.9rem !important; }
+          .curriculum-table th { background: #f5f5f5 !important; border-bottom: 2px solid #ccc !important; color: #000 !important; padding: 1.2rem !important; font-size: 1.1rem !important; font-weight: 800 !important; }
           .curriculum-table td { border-bottom: 1px dotted #ccc !important; color: #111 !important; padding: 1.5rem 1.2rem !important; font-size: 1rem !important; }
           .id-cell { color: #000 !important; font-weight: 900 !important; }
           .cat-badge, .time-badge, .project-id-badge { background: #e8e8e8 !important; color: #000 !important; border: 1px solid #bbb !important; display: inline-block !important; border-radius: 4px !important; }
