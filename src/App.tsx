@@ -793,6 +793,14 @@ export default function App() {
         }
 
         @media print {
+          :root, [data-theme='dark'] {
+            --bg-primary: #ffffff !important;
+            --bg-secondary: #f0f0f2 !important;
+            --bg-tertiary: #f9f9fb !important;
+            --text-primary: #000000 !important;
+            --text-secondary: #4b4b4b !important;
+            --border: rgba(0, 0, 0, 0.12) !important;
+          }
           @page { margin: 0; size: A4; }
           html, body { margin: 0 !important; padding: 0 !important; -webkit-print-color-adjust: exact !important; }
           body { background: white !important; color: black !important; padding: 2.5cm 2cm !important; }
