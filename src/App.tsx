@@ -93,7 +93,7 @@ export default function App() {
   const [isPresenting, setIsPresenting] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [theme, setTheme] = useState('dark');
-  const [showOfficial, setShowOfficial] = useState(false);
+  const [showOfficial, setShowOfficial] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [activeTermCat, setActiveTermCat] = useState('전체');
   const [currentPage, setCurrentPage] = useState(1);
@@ -372,35 +372,39 @@ export default function App() {
             
             <CurriculumVisuals />
 
-            <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '1rem' }}>
-              <button 
-                className="toggle-button print-btn"
-                onClick={() => window.print()}
-              >
-                <Printer size={16} />
-                <span>📄 PDF 인쇄하기</span>
-              </button>
-              <button 
-                className="toggle-button download-btn"
-                onClick={() => window.print()}
-              >
-                <Download size={16} />
-                <span>💾 PDF 다운로드</span>
-              </button>
-              <button 
-                className="toggle-button download-btn"
-                onClick={exportToExcel}
-              >
-                <FileText size={16} />
-                <span>📊 Excel 다운로드</span>
-              </button>
-              <button 
-                className={`toggle-button ${showOfficial ? 'active' : ''}`}
-                onClick={() => setShowOfficial(!showOfficial)}
-              >
-                {showOfficial ? <Sparkles size={16} /> : <FileText size={16} />}
-                {showOfficial ? '쉬운 표현으로 보기' : '공식 커리큘럼 보기'}
-              </button>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem', width: '100%' }}>
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <button 
+                  className={`toggle-button ${!showOfficial ? 'active' : ''}`}
+                  onClick={() => setShowOfficial(!showOfficial)}
+                >
+                  {showOfficial ? <Sparkles size={16} /> : <FileText size={16} />}
+                  {showOfficial ? '쉬운 표현으로 보기' : '공식 커리큘럼 보기'}
+                </button>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                <button 
+                  className="toggle-button print-btn"
+                  onClick={() => window.print()}
+                >
+                  <Printer size={16} />
+                  <span>📄 PDF 인쇄하기</span>
+                </button>
+                <button 
+                  className="toggle-button download-btn"
+                  onClick={() => window.print()}
+                >
+                  <Download size={16} />
+                  <span>💾 PDF 다운로드</span>
+                </button>
+                <button 
+                  className="toggle-button download-btn"
+                  onClick={exportToExcel}
+                >
+                  <FileText size={16} />
+                  <span>📊 Excel 다운로드</span>
+                </button>
+              </div>
             </div>
 
             <motion.div 
