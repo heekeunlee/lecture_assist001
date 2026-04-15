@@ -8,8 +8,9 @@ import terminologyData from './data/terminology.json';
 import examplesData from './data/examples.json';
 import ExcelJS from 'exceljs';
 import { saveAs } from 'file-saver';
+import ProcessAnalysis from './ProcessAnalysis';
 
-type TabType = 'faq' | 'curriculum' | 'terminology' | 'examples';
+type TabType = 'faq' | 'curriculum' | 'terminology' | 'examples' | 'analysis';
 
 const SplashScreen = () => {
   return (
@@ -124,7 +125,7 @@ const CurriculumVisuals = () => {
 };
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<TabType>('curriculum');
+  const [activeTab, setActiveTab] = useState<TabType>('analysis');
   const [selectedId, setSelectedId] = useState<number | string | null>(null);
   const [isPresenting, setIsPresenting] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -308,6 +309,12 @@ export default function App() {
           >
             <BookOpen size={18} /> 업계용어 2000
           </button>
+          <button 
+            className={`tab-button ${activeTab === 'analysis' ? 'active' : ''}`} 
+            onClick={() => { setActiveTab('analysis'); setSelectedId(null); }}
+          >
+            <Zap size={18} /> 실전 공정 분석
+          </button>
         </div>
         
         <div className="nav-group">
@@ -334,15 +341,14 @@ export default function App() {
             <Layers className="accent-color" size={32} />
             <span className="logo-text">VIBE CODING 101</span>
           </div>
-          <h1>
             {activeTab === 'curriculum' 
               ? (showOfficial ? 'Vibe Coding 교육과정' : '디스플레이 엔지니어 실무 로드맵')
-              : (activeTab === 'faq' ? '바이브코딩 쌩기초 Q&A' : (activeTab === 'examples' ? '실무 해결 예제 10선' : '업계용어 2000'))}
+              : (activeTab === 'faq' ? '바이브코딩 쌩기초 Q&A' : (activeTab === 'examples' ? '실무 해결 예제 10선' : (activeTab === 'analysis' ? '디스플레이 엔지니어링 실전 분석' : '업계용어 2000')))}
           </h1>
           <p className="header-subtitle">
             {activeTab === 'curriculum'
               ? (showOfficial ? 'AI와 함께 기술의 한계를 넘어서는 미래 Display 엔지니어로의 도약' : '조기 전력화를 위한 단계별 학습 과정')
-              : (activeTab === 'faq' ? '비전공자를 위한 시원한 코딩 문답' : (activeTab === 'examples' ? '강의를 통해 마스터할 디스플레이 현장 실습 시나리오' : '실무에서 바로 만나는 엔지니어 핵심 가이드'))}
+              : (activeTab === 'faq' ? '비전공자를 위한 시원한 코딩 문답' : (activeTab === 'examples' ? '강의를 통해 마스터할 디스플레이 현장 실습 시나리오' : (activeTab === 'analysis' ? '10세대 대형 기판의 포토 공정 및 선폭(CD) 데이터 시각화 분석' : '실무에서 바로 만나는 엔지니어 핵심 가이드')))}
           </p>
         </motion.div>
       </header>
@@ -504,6 +510,8 @@ export default function App() {
               </table>
             </motion.div>
           </div>
+        ) : activeTab === 'analysis' ? (
+          <ProcessAnalysis />
         ) : (
           <div className="terminology-container">
             <div className="terminology-nav">
