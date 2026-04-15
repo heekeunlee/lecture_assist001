@@ -1,6 +1,6 @@
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { Layers, Zap, Search, Activity, Cpu, Settings, AlertTriangle, CheckCircle, BarChart3, LayoutGrid, Sparkles } from 'lucide-react';
+import { Layers, Zap, Search, Activity, Cpu, Settings, AlertTriangle, BarChart3, LayoutGrid, Sparkles } from 'lucide-react';
 
 // --- Types ---
 interface CDData {
