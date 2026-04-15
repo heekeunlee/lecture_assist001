@@ -341,6 +341,7 @@ export default function App() {
             <Layers className="accent-color" size={32} />
             <span className="logo-text">VIBE CODING 101</span>
           </div>
+          <h1>
             {activeTab === 'curriculum' 
               ? (showOfficial ? 'Vibe Coding 교육과정' : '디스플레이 엔지니어 실무 로드맵')
               : (activeTab === 'faq' ? '바이브코딩 쌩기초 Q&A' : (activeTab === 'examples' ? '실무 해결 예제 10선' : (activeTab === 'analysis' ? '디스플레이 엔지니어링 실전 분석' : '업계용어 2000')))}
