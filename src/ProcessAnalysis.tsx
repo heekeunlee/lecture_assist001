@@ -231,7 +231,6 @@ const ProcessAnalysis = () => {
               borderRadius: '12px'
             }}>
               {cdData.map((d, i) => {
-                const ratio = Math.min(Math.max((d.cd - 3.4) / 0.6, 0), 1);
                 // Color scale: Green (Low CD) -> White (Target) -> Red (High CD)
                 const color = d.deviation > 0.3 ? '#ff4d4d' : d.deviation < -0.3 ? '#4d7cff' : '#22c55e';
                 const opacity = 0.3 + Math.abs(d.deviation) * 1.5;
