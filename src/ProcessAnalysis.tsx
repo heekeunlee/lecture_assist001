@@ -556,18 +556,18 @@ const ProcessAnalysis = () => {
         <div className="advanced-stats-grid">
           {/* Left: Pastel Heatmap Overlay */}
           <div className="heatmap-column">
-            <div className="glass-rect heatmap-overlay pastel glowing">
+            <div className="glass-rect heatmap-overlay vivid glowing">
               <div className="coordinate origin">(0, 0)</div>
               <div className="coordinate x-max">2,880mm</div>
               <div className="coordinate y-max">3,130mm</div>
               <div className="axis-label x">X Position</div>
               <div className="axis-label y">Y Position</div>
               
-              {/* Soccer-style Glowing Heatmap Layer */}
+              {/* Vivid Rainbow Heatmap Layer (Stylish Pro Version) */}
               <div className="soccer-heatmap-layer">
-                 <div className="glow-circle core" />
-                 <div className="glow-circle mid" />
-                 <div className="glow-circle outer" />
+                 <div className="glow-circle vivid-core" />
+                 <div className="glow-circle vivid-mid" />
+                 <div className="glow-circle vivid-outer" />
                  {/* 7 Realistic Organic Isolines (Solid 0.5px) */}
                  <svg viewBox="0 0 100 100" className="contour-svg-overlay">
                     <path d="M50,15 C80,17 93,38 91,62 C89,88 55,94 38,90 C18,85 12,62 16,38 C20,15 35,12 50,15 Z" className="c-path r1" />
@@ -714,15 +714,13 @@ const ProcessAnalysis = () => {
 
         .advanced-stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start; }
         .heatmap-column { display: flex; flex-direction: column; align-items: center; gap: 2rem; }
-        .heatmap-overlay.pastel { width: 100%; max-width: 400px; aspect-ratio: 0.9; border: 2px solid var(--border); background: #f8fafc; position: relative; overflow: hidden; border-radius: 12px; }
+        .heatmap-overlay.vivid { width: 100%; max-width: 400px; aspect-ratio: 0.9; border: 2px solid var(--border); background: #ffffff; position: relative; overflow: hidden; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
         .soccer-heatmap-layer { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; z-index: 2; overflow: hidden; }
-        .glow-circle { position: absolute; border-radius: 40px; filter: blur(40px); opacity: 0.7; } /** Changed to Rounded Rect style **/
-        .glow-circle.core { width: 160px; height: 160px; background: radial-gradient(circle, #7f1d1d, #ef4444, #f59e0b); z-index: 5; }
-        .glow-circle.mid { width: 300px; height: 300px; background: radial-gradient(circle, #f59e0b, #eab308, #84cc16, #10b981); z-index: 4; opacity: 0.6; }
-        .glow-circle.outer { width: 500px; height: 500px; background: radial-gradient(circle, #06b6d4, #3b82f6, #6366f1, #312e81, transparent); z-index: 3; opacity: 0.5; }
+        .glow-circle { position: absolute; border-radius: 40px; filter: blur(45px); opacity: 0.85; }
+        .glow-circle.vivid-core { width: 160px; height: 160px; background: radial-gradient(circle, #7f1d1d, #ef4444, #f59e0b); z-index: 5; }
+        .glow-circle.vivid-mid { width: 300px; height: 300px; background: radial-gradient(circle, #f59e0b, #eab308, #84cc16, #10b981); z-index: 4; }
+        .glow-circle.vivid-outer { width: 480px; height: 480px; background: radial-gradient(circle, #06b6d4, #1d4ed8, #4338ca, #312e81, transparent); z-index: 3; }
         .contour-svg-overlay { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 6; pointer-events: none; }
-        .c-path { fill: none; stroke: rgba(255, 255, 255, 0.2); stroke-width: 0.5; stroke-dasharray: none; }
-        .c-path.r1 { stroke-opacity: 0.4; stroke-width: 0.8; }
         .c-path.r2 { stroke-opacity: 0.3; }
         .c-path.r3 { stroke-opacity: 0.4; }
         .c-path.r4 { stroke-opacity: 0.5; }
