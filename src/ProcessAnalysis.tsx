@@ -356,11 +356,10 @@ const DiagnosticFactorScanner = () => {
 const SankeyProcessFlow = () => {
   const col1 = ['Exposure', 'Coating', 'Dev', 'Etch'];
   const col2 = Array.from({ length: 25 }, (_, i) => `P-${i+100}`);
-  const col3 = ['Temp Layer #3', 'Pressure L1', 'Slit #1 Flow', 'Vibe Sensor', 'Heater #2'];
-  const col4 = ['Center CD Bias'];
+  const col3 = ['Temp Layer #3', 'P-L1', 'Slit #1', 'Vibe', 'Heat'];
 
   const renderLinks = () => {
-    const links: JSX.Element[] = [];
+    const links = [];
     
     // Layer 1 -> 2 (Dense Mesh)
     col1.forEach((_, i) => {
@@ -453,7 +452,7 @@ const SankeyProcessFlow = () => {
              {/* Column 2: Parameters (Small Dots) */}
              <g transform="translate(200, 0)">
                 <text x="0" y="10" textAnchor="middle" fontSize="9" fontWeight="900" fill="var(--accent)" opacity="0.8">500+ Parameter Nodes</text>
-                {col2.map((item, i) => (
+                {col2.map((_, i) => (
                   <circle key={i} cx="0" cy={15 + i * 6} r="2" fill={i === 4 ? "#f97316" : "var(--border)"} filter={i === 4 ? "url(#orange-glow)" : "none"} />
                 ))}
              </g>
