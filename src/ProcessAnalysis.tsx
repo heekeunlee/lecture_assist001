@@ -212,21 +212,22 @@ const DistributionChart = ({ data, stats }: { data: CDData[], stats: any }) => {
           <path d={densityPath} fill="rgba(0, 113, 227, 0.1)" stroke="var(--accent)" strokeWidth="2.5" />
 
           {/* Consistent Boxplot Overlay (Matching Step 3) */}
+          {/* Consistent Boxplot Overlay (Matching Step 3) */}
           <g transform={`translate(0, ${height/2})`}>
             {/* Whiskers */}
             <line x1={mapX(stats.min)} y1="0" x2={mapX(stats.max)} y2="0" stroke="var(--accent)" strokeWidth="1.5" opacity="0.6" />
             
-            {/* Box (Narrower: height 30) */}
+            {/* Box (Extra Slim: height 20) */}
             <rect 
-              x={mapX(stats.q1)} y="-15" 
-              width={mapX(stats.q3) - mapX(stats.q1)} height="30" 
-              fill="transparent" stroke="var(--accent)" strokeWidth="2" rx="3"
+              x={mapX(stats.q1)} y="-10" 
+              width={mapX(stats.q3) - mapX(stats.q1)} height="20" 
+              fill="transparent" stroke="var(--accent)" strokeWidth="2" rx="2"
             />
             {/* Median Line */}
-            <line x1={mapX(stats.median)} y1="-15" x2={mapX(stats.median)} y2="15" stroke="var(--accent)" strokeWidth="3" />
+            <line x1={mapX(stats.median)} y1="-10" x2={mapX(stats.median)} y2="10" stroke="var(--accent)" strokeWidth="3" />
             
             {/* Mean Line (Blue Bar) */}
-            <line x1={mapX(stats.avg)} y1="-15" x2={mapX(stats.avg)} y2="15" stroke="#3b82f6" strokeWidth="3" strokeDasharray="2 1" />
+            <line x1={mapX(stats.avg)} y1="-10" x2={mapX(stats.avg)} y2="10" stroke="#3b82f6" strokeWidth="3" strokeDasharray="2 1" />
           </g>
 
           <text x={width/2} y="30" fontSize="12" fontWeight="900" textAnchor="middle" fill="var(--text-primary)">CD Distribution & Density Analysis</text>
@@ -375,33 +376,24 @@ const ProcessAnalysis = () => {
               <line x1="60" y1="300" x2="350" y2="300" stroke="var(--text-primary)" strokeWidth="1.5" />
               
               {/* Whiskers */}
-              <line x1="180" y1={mapY(stats.max)} x2="220" y2={mapY(stats.max)} stroke="var(--accent)" strokeWidth="2" />
+              <line x1="185" y1={mapY(stats.max)} x2="215" y2={mapY(stats.max)} stroke="var(--accent)" strokeWidth="2" />
               <line x1="200" y1={mapY(stats.max)} x2="200" y2={mapY(stats.q3)} stroke="var(--accent)" strokeWidth="2" />
               
+              {/* Single Slim Box (Corrected & Consolidated) */}
               <motion.rect 
                 initial={{ height: 0, y: mapY(stats.median) }} 
                 animate={{ height: mapY(stats.q1) - mapY(stats.q3), y: mapY(stats.q3) }}
-                x="150" width="100" fill="transparent" stroke="var(--accent)" strokeWidth="2" rx="4"
-              />
-              
-              {/* Whiskers */}
-              <line x1="180" y1={mapY(stats.max)} x2="220" y2={mapY(stats.max)} stroke="var(--accent)" strokeWidth="2" />
-              <line x1="200" y1={mapY(stats.max)} x2="200" y2={mapY(stats.q3)} stroke="var(--accent)" strokeWidth="2" />
-              
-              <motion.rect 
-                initial={{ height: 0, y: mapY(stats.median) }} 
-                animate={{ height: mapY(stats.q1) - mapY(stats.q3), y: mapY(stats.q3) }}
-                x="170" width="60" fill="transparent" stroke="var(--accent)" strokeWidth="2" rx="4"
+                x="180" width="40" fill="transparent" stroke="var(--accent)" strokeWidth="2" rx="3"
               />
               
               {/* Median Line */}
-              <line x1="170" y1={mapY(stats.median)} x2="230" y2={mapY(stats.median)} stroke="var(--accent)" strokeWidth="3" />
+              <line x1="180" y1={mapY(stats.median)} x2="220" y2={mapY(stats.median)} stroke="var(--accent)" strokeWidth="3" />
               
               <line x1="200" y1={mapY(stats.q1)} x2="200" y2={mapY(stats.min)} stroke="var(--accent)" strokeWidth="2" />
-              <line x1="180" y1={mapY(stats.min)} x2="220" y2={mapY(stats.min)} stroke="var(--accent)" strokeWidth="2" />
+              <line x1="185" y1={mapY(stats.min)} x2="215" y2={mapY(stats.min)} stroke="var(--accent)" strokeWidth="2" />
 
               {/* Mean Marker (Blue Bar) */}
-              <line x1="170" y1={mapY(stats.avg)} x2="230" y2={mapY(stats.avg)} stroke="#3b82f6" strokeWidth="3" strokeDasharray="3 2" />
+              <line x1="180" y1={mapY(stats.avg)} x2="220" y2={mapY(stats.avg)} stroke="#3b82f6" strokeWidth="3" strokeDasharray="3 2" />
               
               {/* Annotation Labels */}
               <g fontSize="11" fontWeight="700" fill="var(--text-primary)">
@@ -459,9 +451,12 @@ const ProcessAnalysis = () => {
                  <div className="glow-circle core" />
                  <div className="glow-circle mid" />
                  <div className="glow-circle outer" />
-                 <div className="contour-line c1" />
-                 <div className="contour-line c2" />
-                 <div className="contour-line c3" />
+                 {/* Irregular Contour Lines using SVG Path for realism */}
+                 <svg viewBox="0 0 100 100" className="contour-svg-overlay">
+                    <path d="M50,30 C65,32 72,45 70,55 C68,68 55,75 45,72 C35,70 28,58 30,45 C32,32 45,28 50,30 Z" className="c-path p1" />
+                    <path d="M50,20 C75,22 88,40 85,60 C82,85 55,95 40,90 C20,85 15,60 20,40 C25,20 40,18 50,20 Z" className="c-path p2" />
+                    <path d="M50,10 C85,12 98,35 95,65 C92,95 55,100 35,95 C10,90 5,65 10,35 C15,10 40,8 50,10 Z" className="c-path p3" />
+                 </svg>
               </div>
 
               {/* The Technical Site Dots (Layered on top) */}
@@ -587,10 +582,11 @@ const ProcessAnalysis = () => {
         .glow-circle.core { width: 160px; height: 160px; background: radial-gradient(circle, #ef4444, #f59e0b); z-index: 5; }
         .glow-circle.mid { width: 300px; height: 300px; background: radial-gradient(circle, #f59e0b, #fbbf24); z-index: 4; opacity: 0.6; }
         .glow-circle.outer { width: 480px; height: 480px; background: radial-gradient(circle, #fbbf24, #10b981, transparent); z-index: 3; opacity: 0.4; }
-        .contour-line { position: absolute; border: 1.5px solid rgba(0,0,0,0.06); border-radius: 40px; z-index: 6; pointer-events: none; }
-        .contour-line.c1 { width: 140px; height: 140px; }
-        .contour-line.c2 { width: 260px; height: 260px; opacity: 0.6; }
-        .contour-line.c3 { width: 380px; height: 380px; opacity: 0.3; }
+        .contour-svg-overlay { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 6; pointer-events: none; }
+        .c-path { fill: none; stroke: rgba(0, 0, 0, 0.4); stroke-width: 0.8; stroke-dasharray: 2 1; }
+        .c-path.p1 { stroke-opacity: 0.8; stroke-width: 1.2; stroke-dasharray: none; }
+        .c-path.p2 { stroke-opacity: 0.5; }
+        .c-path.p3 { stroke-opacity: 0.3; }
         
         .heatmap-v2-grid.dots-only { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(${GRID_COLS}, 1fr); gap: 0; z-index: 10; pointer-events: none; }
         .heatmap-dot.technical { width: 2px; height: 2px; background: #475569; opacity: 0.4; }
