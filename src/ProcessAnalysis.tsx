@@ -451,11 +451,15 @@ const ProcessAnalysis = () => {
                  <div className="glow-circle core" />
                  <div className="glow-circle mid" />
                  <div className="glow-circle outer" />
-                 {/* Irregular Contour Lines using SVG Path for realism */}
+                 {/* 7 Realistic Organic Isolines (Solid 0.5px) */}
                  <svg viewBox="0 0 100 100" className="contour-svg-overlay">
-                    <path d="M50,30 C65,32 72,45 70,55 C68,68 55,75 45,72 C35,70 28,58 30,45 C32,32 45,28 50,30 Z" className="c-path p1" />
-                    <path d="M50,20 C75,22 88,40 85,60 C82,85 55,95 40,90 C20,85 15,60 20,40 C25,20 40,18 50,20 Z" className="c-path p2" />
-                    <path d="M50,10 C85,12 98,35 95,65 C92,95 55,100 35,95 C10,90 5,65 10,35 C15,10 40,8 50,10 Z" className="c-path p3" />
+                    <path d="M50,15 C80,17 93,38 91,62 C89,88 55,94 38,90 C18,85 12,62 16,38 C20,15 35,12 50,15 Z" className="c-path r1" />
+                    <path d="M50,22 C75,24 85,42 83,62 C81,82 55,87 42,84 C25,80 20,62 23,42 C26,22 38,20 50,22 Z" className="c-path r2" />
+                    <path d="M50,30 C68,32 75,45 73,60 C71,75 55,80 46,77 C35,74 28,62 30,47 C32,32 42,28 50,30 Z" className="c-path r3" />
+                    <path d="M50,38 C62,39 68,48 66,58 C64,68 55,72 49,70 C42,68 36,60 38,50 C40,40 45,37 50,38 Z" className="c-path r4" />
+                    <path d="M52,44 C60,45 63,52 61,58 C59,64 53,66 48,64 C43,62 42,56 45,50 C48,44 50,43 52,44 Z" className="c-path r5" />
+                    <path d="M51,48 C54,49 56,52 55,56 C54,59 50,60 47,58 C44,56 45,52 48,49 C50,47 50,48 51,48 Z" className="c-path r6" />
+                    <path d="M50,51 C52,51 53,52 52,54 C51,55 49,55 48,54 C47,53 48,52 49,51 C50,50 50,51 50,51 Z" className="c-path r7" />
                  </svg>
               </div>
 
@@ -583,10 +587,14 @@ const ProcessAnalysis = () => {
         .glow-circle.mid { width: 300px; height: 300px; background: radial-gradient(circle, #f59e0b, #fbbf24); z-index: 4; opacity: 0.6; }
         .glow-circle.outer { width: 480px; height: 480px; background: radial-gradient(circle, #fbbf24, #10b981, transparent); z-index: 3; opacity: 0.4; }
         .contour-svg-overlay { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 6; pointer-events: none; }
-        .c-path { fill: none; stroke: rgba(0, 0, 0, 0.25); stroke-width: 0.6; stroke-dasharray: 2 2; }
-        .c-path.p1 { stroke-opacity: 0.7; }
-        .c-path.p2 { stroke-opacity: 0.4; }
-        .c-path.p3 { stroke-opacity: 0.2; }
+        .c-path { fill: none; stroke: rgba(0, 0, 0, 0.35); stroke-width: 0.5; stroke-dasharray: none; }
+        .c-path.r1 { stroke-opacity: 0.2; }
+        .c-path.r2 { stroke-opacity: 0.3; }
+        .c-path.r3 { stroke-opacity: 0.4; }
+        .c-path.r4 { stroke-opacity: 0.5; }
+        .c-path.r5 { stroke-opacity: 0.6; }
+        .c-path.r6 { stroke-opacity: 0.7; }
+        .c-path.r7 { stroke-opacity: 0.8; }
         
         .heatmap-v2-grid.dots-only { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(${GRID_COLS}, 1fr); gap: 0; z-index: 10; pointer-events: none; }
         .heatmap-dot.technical { width: 2px; height: 2px; background: #475569; opacity: 0.4; }
