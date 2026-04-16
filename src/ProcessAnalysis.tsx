@@ -848,11 +848,14 @@ const ProcessAnalysis = () => {
           <div className="heatmap-column">
             <IndustrialHeatmap data={cdData} />
             
-            <div className="heatmap-legend-v4 industrial-style">
-              <div className="l-item-v4"><div className="c-box h-map-peak" /> Peak Critical Defect</div>
-              <div className="l-item-v4"><div className="c-box h-map-high" /> High Risk Region</div>
-              <div className="l-item-v4"><div className="c-box h-map-nominal" /> Nominal Process Range</div>
-              <div className="l-item-v4"><div className="c-box h-map-bg" /> Baseline Substrate</div>
+            <div className="industrial-spectrum-legend">
+              <div className="spectrum-title">CD MEASUREMENT SPECTRUM (um)</div>
+              <div className="spectrum-bar" />
+              <div className="spectrum-labels">
+                <div className="s-label"><span>3.3</span><br/>Baseline</div>
+                <div className="s-label center"><span>3.5</span><br/>Nominal</div>
+                <div className="s-label text-red"><span>4.8+</span><br/>Critical</div>
+              </div>
             </div>
           </div>
 
@@ -1008,6 +1011,24 @@ const ProcessAnalysis = () => {
 
         .industrial-style { margin-top: 1rem; background: #020617 !important; border-color: rgba(0, 229, 255, 0.3) !important; border-radius: 8px !important; }
         .industrial-style .l-item-v4 { color: #e2e8f0 !important; }
+
+        .industrial-spectrum-legend { 
+          width: 100%; max-width: 500px; margin-top: 1.5rem; background: #020617; 
+          border: 1px solid rgba(0, 229, 255, 0.2); border-radius: 8px; padding: 15px 20px;
+          box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+        .spectrum-title { font-size: 0.6rem; color: rgba(0, 229, 255, 0.8); font-weight: 800; margin-bottom: 8px; font-family: monospace; letter-spacing: 0.5px; }
+        .spectrum-bar { 
+          height: 12px; width: 100%; border-radius: 2px;
+          background: linear-gradient(to right, #102a71, #1e40af, #0ea5e9, #22c55e, #eab308, #ef4444, #ffffff);
+          margin-bottom: 8px; border: 1px solid rgba(255,255,255,0.1);
+        }
+        .spectrum-labels { display: flex; justify-content: space-between; position: relative; }
+        .s-label { font-size: 0.65rem; color: #94a3b8; font-weight: 700; line-height: 1.3; }
+        .s-label span { color: #e2e8f0; font-size: 0.75rem; font-family: monospace; }
+        .s-label.center { text-align: center; }
+        .s-label.text-red { text-align: right; color: #ef4444; }
+        .s-label.text-red span { color: #ef4444; }
         .c-box.h-map-peak { width: 12px; height: 12px; background: #ffffff; border-radius: 2px; box-shadow: 0 0 8px #ffffff; }
         .c-box.h-map-high { width: 12px; height: 12px; background: #ef4444; border-radius: 2px; }
         .c-box.h-map-nominal { width: 12px; height: 12px; background: #22c55e; border-radius: 2px; }
