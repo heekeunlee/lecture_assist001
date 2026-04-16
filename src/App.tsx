@@ -299,19 +299,19 @@ export default function App() {
           </button>
           <button 
             className={`tab-button ${activeTab === 'faq' ? 'active' : ''}`} 
-            onClick={() => { setActiveTab('faq'); setSelectedId(null); setShowOfficial(false); }}
+            onClick={() => { setActiveTab('faq'); setSelectedId(null); setShowOfficial(false); setCurrentPage(1); }}
           >
             <HelpCircle size={18} /> 바이브코딩 쌩기초 Q&A
           </button>
           <button 
             className={`tab-button ${activeTab === 'terminology' ? 'active' : ''}`} 
-            onClick={() => { setActiveTab('terminology'); setSelectedId(null); }}
+            onClick={() => { setActiveTab('terminology'); setSelectedId(null); setCurrentPage(1); }}
           >
             <BookOpen size={18} /> 업계용어 2000
           </button>
           <button 
             className={`tab-button ${activeTab === 'analysis' ? 'active' : ''}`} 
-            onClick={() => { setActiveTab('analysis'); setSelectedId(null); }}
+            onClick={() => { setActiveTab('analysis'); setSelectedId(null); setCurrentPage(1); }}
           >
             <Zap size={18} /> 실전 공정 분석
           </button>
@@ -356,21 +356,61 @@ export default function App() {
 
       <main>
         {activeTab === 'faq' ? (
-          <div className="questions-grid">
-            {questionsData.map((q: any, idx) => (
-              <motion.div
-                key={q.id}
-                className="card"
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: idx * 0.03 }}
-                onClick={() => openModal(q.id)}
+          <div className="faq-container">
+            {/* FAQ Pagination Control */}
+            <div className="pagination faq-top-pagination">
+              <button 
+                onClick={() => setCurrentPage(p => Math.max(1, p - 1))} 
+                disabled={currentPage === 1} 
+                className="nav-btn"
               >
-                <div className="badge">Q{q.id}</div>
-                <h2>{q.question}</h2>
-                <p className="card-desc">{q.answer.substring(0, 50)}...</p>
-              </motion.div>
-            ))}
+                <ChevronLeft size={20} />
+              </button>
+              <span className="page-indicator">Q&A Page {currentPage} / {Math.ceil(questionsData.length / 20)}</span>
+              <button 
+                onClick={() => setCurrentPage(p => Math.min(Math.ceil(questionsData.length / 20), p + 1))} 
+                disabled={currentPage === Math.ceil(questionsData.length / 20)} 
+                className="nav-btn"
+              >
+                <ChevronRight size={20} />
+              </button>
+            </div>
+
+            <div className="questions-grid">
+              {questionsData.slice((currentPage - 1) * 20, currentPage * 20).map((q: any, idx) => (
+                <motion.div
+                  key={q.id}
+                  className="card"
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: idx * 0.03 }}
+                  onClick={() => openModal(q.id)}
+                >
+                  <div className="badge">Q{q.id}</div>
+                  <h2>{q.question}</h2>
+                  <p className="card-desc">{q.answer.substring(0, 100)}...</p>
+                </motion.div>
+              ))}
+            </div>
+
+            {/* Bottom Pagination */}
+            <div className="pagination" style={{ marginTop: '3rem' }}>
+              <button 
+                onClick={() => { setCurrentPage(p => Math.max(1, p - 1)); window.scrollTo(0, 0); }} 
+                disabled={currentPage === 1} 
+                className="nav-btn"
+              >
+                <ChevronLeft size={20} />
+              </button>
+              <span className="page-indicator">{currentPage} / {Math.ceil(questionsData.length / 20)}</span>
+              <button 
+                onClick={() => { setCurrentPage(p => Math.min(Math.ceil(questionsData.length / 20), p + 1)); window.scrollTo(0, 0); }} 
+                disabled={currentPage === Math.ceil(questionsData.length / 20)} 
+                className="nav-btn"
+              >
+                <ChevronRight size={20} />
+              </button>
+            </div>
           </div>
         ) : activeTab === 'examples' ? (
           <div className="examples-showcase">
