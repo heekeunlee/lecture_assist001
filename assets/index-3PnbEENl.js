@@ -100,6 +100,8 @@ use chrome, FireFox or Internet Explorer 11`)}var a=e(`safe-buffer`),o=e(`random
         .glow-circle.vivid-mid { width: 320px; height: 320px; background: radial-gradient(circle, #ffff00 0%, #adff2f 40%, #32cd32 70%, transparent 100%); z-index: 4; opacity: 0.8; }
         .glow-circle.vivid-outer { width: 500px; height: 500px; background: radial-gradient(circle, #00ced1 0%, #1e90ff 40%, #4b0082 80%, transparent 100%); z-index: 3; opacity: 0.6; }
         .contour-svg-overlay { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 6; pointer-events: none; }
+        .c-path { fill: none; stroke: rgba(0, 0, 0, 0.4); stroke-width: 0.5; stroke-dasharray: none; }
+        .c-path.r1 { stroke-opacity: 0.5; stroke-width: 0.8; }
         .c-path.r2 { stroke-opacity: 0.3; }
         .c-path.r3 { stroke-opacity: 0.4; }
         .c-path.r4 { stroke-opacity: 0.5; }
