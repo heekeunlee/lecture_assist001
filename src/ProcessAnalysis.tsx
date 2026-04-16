@@ -568,15 +568,26 @@ const ProcessAnalysis = () => {
                  <div className="glow-circle vivid-core" />
                  <div className="glow-circle vivid-mid" />
                  <div className="glow-circle vivid-outer" />
-                 {/* 7 Realistic Organic Isolines (Solid 0.5px) */}
+                 {/* Technical Blueprint Isolines (Styled with Filter) */}
                  <svg viewBox="0 0 100 100" className="contour-svg-overlay">
-                    <path d="M50,15 C80,17 93,38 91,62 C89,88 55,94 38,90 C18,85 12,62 16,38 C20,15 35,12 50,15 Z" className="c-path r1" />
-                    <path d="M50,22 C75,24 85,42 83,62 C81,82 55,87 42,84 C25,80 20,62 23,42 C26,22 38,20 50,22 Z" className="c-path r2" />
-                    <path d="M50,30 C68,32 75,45 73,60 C71,75 55,80 46,77 C35,74 28,62 30,47 C32,32 42,28 50,30 Z" className="c-path r3" />
-                    <path d="M50,38 C62,39 68,48 66,58 C64,68 55,72 49,70 C42,68 36,60 38,50 C40,40 45,37 50,38 Z" className="c-path r4" />
-                    <path d="M52,44 C60,45 63,52 61,58 C59,64 53,66 48,64 C43,62 42,56 45,50 C48,44 50,43 52,44 Z" className="c-path r5" />
-                    <path d="M51,48 C54,49 56,52 55,56 C54,59 50,60 47,58 C44,56 45,52 48,49 C50,47 50,48 51,48 Z" className="c-path r6" />
-                    <path d="M50,51 C52,51 53,52 52,54 C51,55 49,55 48,54 C47,53 48,52 49,51 C50,50 50,51 50,51 Z" className="c-path r7" />
+                    <defs>
+                      <filter id="contour-relief">
+                        <feDropShadow dx="0" dy="0.5" stdDeviation="0.4" floodOpacity="0.3" />
+                      </filter>
+                    </defs>
+                    <g filter="url(#contour-relief)">
+                      <path d="M50,15 C80,17 93,38 91,62 C89,88 55,94 38,90 C18,85 12,62 16,38 C20,15 35,12 50,15 Z" className="c-path r1" />
+                      <path d="M50,22 C75,24 85,42 83,62 C81,82 55,87 42,84 C25,80 20,62 23,42 C26,22 38,20 50,22 Z" className="c-path r2" />
+                      <path d="M50,30 C68,32 75,45 73,60 C71,75 55,80 46,77 C35,74 28,62 30,47 C32,32 42,28 50,30 Z" className="c-path r3" />
+                      <path d="M50,38 C62,39 68,48 66,58 C64,68 55,72 49,70 C42,68 36,60 38,50 C40,40 45,37 50,38 Z" className="c-path r4" />
+                    </g>
+                    {/* Floating Labels */}
+                    <g fontSize="2.5" fontWeight="900" fill="rgba(0,0,0,0.6)" className="contour-labels">
+                       <text x="50" y="16">+0.2um</text>
+                       <text x="50" y="23">+0.4um</text>
+                       <text x="50" y="31">+0.6um</text>
+                       <text x="50" y="39">+0.8um</text>
+                    </g>
                  </svg>
               </div>
 
@@ -721,14 +732,12 @@ const ProcessAnalysis = () => {
         .glow-circle.vivid-mid { width: 320px; height: 320px; background: radial-gradient(circle, #ffff00 0%, #adff2f 40%, #32cd32 70%, transparent 100%); z-index: 4; opacity: 0.8; }
         .glow-circle.vivid-outer { width: 500px; height: 500px; background: radial-gradient(circle, #00ced1 0%, #1e90ff 40%, #4b0082 80%, transparent 100%); z-index: 3; opacity: 0.6; }
         .contour-svg-overlay { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 6; pointer-events: none; }
-        .c-path { fill: none; stroke: rgba(0, 0, 0, 0.4); stroke-width: 0.5; stroke-dasharray: none; }
-        .c-path.r1 { stroke-opacity: 0.5; stroke-width: 0.8; }
-        .c-path.r2 { stroke-opacity: 0.3; }
-        .c-path.r3 { stroke-opacity: 0.4; }
-        .c-path.r4 { stroke-opacity: 0.5; }
-        .c-path.r5 { stroke-opacity: 0.6; }
-        .c-path.r6 { stroke-opacity: 0.7; }
-        .c-path.r7 { stroke-opacity: 0.8; }
+        .c-path { fill: none; stroke: rgba(255, 255, 255, 0.4); stroke-width: 0.5; stroke-dasharray: 2 1; }
+        .c-path.r1 { stroke-opacity: 0.6; stroke-width: 0.8; stroke-dasharray: none; }
+        .c-path.r2 { stroke-opacity: 0.7; }
+        .c-path.r3 { stroke-opacity: 0.8; }
+        .c-path.r4 { stroke-opacity: 0.9; }
+        .contour-labels { pointer-events: none; opacity: 0.6; }
         
         .heatmap-v2-grid.dots-only { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(${GRID_COLS}, 1fr); gap: 0; z-index: 10; pointer-events: none; }
         .heatmap-dot.technical { width: 2px; height: 2px; background: #475569; opacity: 0.4; }
