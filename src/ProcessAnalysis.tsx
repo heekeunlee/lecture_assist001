@@ -205,8 +205,8 @@ const ProcessAnalysis = () => {
 
   // Helper to map CD values to Y coordinate (0-300px scale)
   const mapY = (val: number) => {
-    const minRange = 2.5;
-    const maxRange = 5.0;
+    const minRange = 0.0;
+    const maxRange = 8.0;
     return 300 - ((val - minRange) / (maxRange - minRange)) * 250;
   };
 
@@ -280,18 +280,22 @@ const ProcessAnalysis = () => {
       <section className="analysis-card-section">
         <div className="section-header-v2">
           <BarChart3 className="text-accent" />
-          <h2>STEP 3. 통계적 선폭 산포 분석</h2>
+          <h2>STEP 3. 통계적 선폭 산포 분석 (엑셀, 미니탭 기존통계 툴)</h2>
         </div>
         <div className="boxplot-advanced-grid">
           <div className="boxplot-visual-container">
             <svg viewBox="0 0 400 350" className="box-svg">
               {/* Grid Lines */}
-              {[2.5, 3.0, 3.5, 4.0, 4.5, 5.0].map(v => (
+              {[0, 2, 4, 6, 8].map(v => (
                 <g key={v}>
                   <line x1="60" y1={mapY(v)} x2="350" y2={mapY(v)} stroke="var(--border)" strokeDasharray="4 2" opacity="0.5" />
-                  <text x="50" y={mapY(v) + 4} fontSize="10" textAnchor="end" fill="var(--text-secondary)">{v.toFixed(1)}</text>
+                  <text x="50" y={mapY(v) + 4} fontSize="10" textAnchor="end" fill="var(--text-secondary)">{v}</text>
                 </g>
               ))}
+              
+              {/* Axis Labels */}
+              <text x="15" y="150" transform="rotate(-90, 15, 150)" fontSize="11" fontWeight="800" fill="var(--accent)" textAnchor="middle">CD (um)</text>
+              <text x="200" y="325" fontSize="11" fontWeight="800" fill="var(--accent)" textAnchor="middle">Total Population (All Sites)</text>
               
               <line x1="60" y1="20" x2="60" y2="300" stroke="var(--text-primary)" strokeWidth="1.5" />
               <line x1="60" y1="300" x2="350" y2="300" stroke="var(--text-primary)" strokeWidth="1.5" />
@@ -455,8 +459,8 @@ const ProcessAnalysis = () => {
         .insight-card { background: rgba(0, 113, 227, 0.04); padding: 2.5rem; border-radius: 24px; border-left: 5px solid var(--accent); display: flex; flex-direction: column; gap: 1.5rem; }
         .statistical-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem; }
         .stat-pill-v2 { background: var(--bg-primary); padding: 12px; border-radius: 12px; border: 1px solid var(--border); display: flex; flex-direction: column; gap: 4px; }
-        .stat-pill-v2 span { font-size: 0.6rem; color: var(--text-secondary); font-weight: 700; text-transform: uppercase; }
-        .stat-pill-v2 strong { font-size: 0.85rem; color: var(--accent); }
+        .stat-pill-v2 span { font-size: 0.65rem; color: var(--text-secondary); font-weight: 700; text-transform: uppercase; }
+        .stat-pill-v2 strong { font-size: 1.2rem; color: var(--accent); }
         .engineer-comment { display: flex; align-items: center; gap: 8px; font-size: 0.75rem; color: var(--text-secondary); margin-top: auto; padding-top: 1rem; border-top: 1px solid var(--border); }
 
         .heatmap-pro-container { background: #020617; padding: 1.5rem; border-radius: 24px; }
