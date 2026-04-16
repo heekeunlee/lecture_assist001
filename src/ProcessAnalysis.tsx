@@ -352,6 +352,69 @@ const DiagnosticFactorScanner = () => {
   );
 };
 
+// --- Sankey Diagram for Traceability ---
+const SankeyProcessFlow = () => {
+  const nodes = [
+    { label: 'Process Stages', items: ['Exposure', 'Coating', 'Dev', 'Etch'] },
+    { label: '500+ Parameters', items: ['Temp', 'Press', 'Chemical', 'Lens', 'Stage', 'Laser'] },
+    { label: 'AI Selected Influences', items: ['Thermal #3', 'Slit #1'] },
+    { label: 'Final Outcome', items: ['Center CD Bias'] }
+  ];
+
+  const renderLinks = () => {
+    const links = [];
+    // Column 1 -> 2
+    for(let i=0; i<4; i++) {
+      for(let j=0; j<6; j++) {
+        const isRoot = (i === 0 && j === 0); // Highlighting Thermal path
+        links.push(
+          <path 
+            key={`l1-${i}-${j}`}
+            d={`M 80,${30 + i * 35} C 130,${30 + i * 35} 120,${30 + j * 24} 170,${30 + j * 24}`}
+            fill="none"
+            stroke={isRoot ? "#f97316" : "rgba(148, 163, 184, 0.15)"}
+            strokeWidth={isRoot ? "3" : "0.5"}
+            opacity={isRoot ? 0.8 : 0.4}
+          />
+        );
+      }
+    }
+    // Column 2 -> 3
+    links.push(<path d="M 230,30 C 270,30 290,40 330,40" fill="none" stroke="#f97316" strokeWidth="3" opacity="0.8" />);
+    links.push(<path d="M 230,54 C 270,54 290,75 330,75" fill="none" stroke="rgba(148, 163, 184, 0.4)" strokeWidth="1" />);
+    // Column 3 -> 4
+    links.push(<path d="M 390,40 C 440,40 450,75 500,75" fill="none" stroke="#f97316" strokeWidth="4" opacity="1" />);
+    return links;
+  };
+
+  return (
+    <div className="sankey-card">
+       <div className="sankey-header">
+          <h4><Layers size={16}/> AI Multi-Dimensional Traceability Map</h4>
+          <p>Analyzing 500+ correlations: Identifying critical path to Center Anomaly</p>
+       </div>
+       <div className="sankey-canvas-box">
+          <svg viewBox="0 0 600 180" className="sankey-svg">
+             {renderLinks()}
+             {/* Node Labels */}
+             {nodes.map((col, idx) => (
+               <g key={idx} transform={`translate(${80 + idx * 150}, 0)`}>
+                  <text y="10" textAnchor="middle" fontSize="9" fontWeight="900" fill="var(--accent)">{col.label}</text>
+                  {col.items.map((item, i) => (
+                    <g key={i} transform={`translate(0, ${30 + i * (idx === 1 ? 24 : 35)})`}>
+                       <rect x="-35" y="-10" width="70" height="20" rx="4" fill="var(--bg-primary)" stroke="var(--border)" />
+                       <text y="3" textAnchor="middle" fontSize="7" fontWeight="700" fill="var(--text-secondary)">{item}</text>
+                       {item.includes('Thermal') && <circle cx="38" cy="0" r="4" fill="#f97316" className="pulse-circle" />}
+                    </g>
+                  ))}
+               </g>
+             ))}
+          </svg>
+       </div>
+    </div>
+  );
+};
+
 const DistributionChart = ({ data, stats }: { data: CDData[], stats: any }) => {
   const width = 400;
   const height = 350;
@@ -740,13 +803,17 @@ const ProcessAnalysis = () => {
           </div>
         </div>
 
-        <div className="ai-report-banner">
-           <Sparkles size={24} className="sparkle-icon" />
+        <div className="summary-banner">
            <div className="banner-content">
               <h4>Engineering Decision Support:</h4>
               <p>AI 진단 결과에 따라 **'중심부 냉각 채널 노즐 압력 15% 상향'** 및 **'베이킹 프로파일 2구역 온도 0.5도 하향'** 조치를 권고합니다.</p>
            </div>
            <button className="apply-btn">자동 설비 최적화 적용 (Auto-Optimize)</button>
+        </div>
+
+        {/* Sankey Traceability Row */}
+        <div className="trace-row">
+           <SankeyProcessFlow />
         </div>
       </section>
 
@@ -854,11 +921,11 @@ const ProcessAnalysis = () => {
         .ai-badge { background: rgba(0, 113, 227, 0.1); color: var(--accent); padding: 4px 10px; border-radius: 6px; font-size: 0.65rem; font-weight: 800; }
         
         .diag-main { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
-        .correlation-view { background: #f8fafc; border-radius: 16px; padding: 1rem; position: relative; border: 1px solid var(--border); min-height: 200px; }
+        .correlation-view { background: #f8fafc; border-radius: 16px; padding: 1rem 1.5rem; position: relative; border: 1px solid var(--border); min-height: 200px; }
         .corr-svg { width: 100%; height: auto; }
         .x-axis-label, .y-axis-label { position: absolute; font-size: 0.55rem; font-weight: 800; color: var(--text-secondary); }
-        .y-axis-label { top: 30px; left: -20px; transform: rotate(-90deg); }
-        .x-axis-label { bottom: 5px; right: 10px; }
+        .y-axis-label { top: 50%; left: 10px; transform: rotate(-90deg) translate(-50%, -50%); transform-origin: top left; white-space: nowrap; }
+        .x-axis-label { bottom: 10px; left: 50%; transform: translateX(-50%); text-align: center; }
 
         .influence-list { display: flex; flex-direction: column; gap: 1.2rem; }
         .influence-item { padding: 1rem; border-radius: 14px; border: 1px solid transparent; transition: all 0.3s; }
@@ -870,12 +937,16 @@ const ProcessAnalysis = () => {
         .diag-conclusion { background: #1e293b; color: #f1f5f9; padding: 1.5rem; border-radius: 16px; font-size: 0.85rem; line-height: 1.6; }
         .conclusion-label { font-weight: 800; color: #f97316; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
 
-        .ai-report-banner { background: var(--accent-gradient); color: white; padding: 2rem 3rem; border-radius: 28px; display: flex; align-items: center; gap: 2rem; box-shadow: 0 15px 40px rgba(0, 113, 227, 0.25); margin-top: 2rem; }
-        .banner-content { flex: 1; }
-        .banner-content h4 { font-size: 1.1rem; margin-bottom: 4px; color: #fcd34d; margin: 0 0 4px 0; }
-        .banner-content p { font-size: 0.9rem; font-weight: 600; opacity: 0.95; margin: 0; }
-        .apply-btn { background: white; color: var(--accent); border: none; padding: 12px 24px; border-radius: 12px; font-weight: 900; font-size: 0.9rem; cursor: pointer; transition: transform 0.2s; white-space: nowrap; }
-        .apply-btn:hover { transform: scale(1.05); }
+        .ai-report-banner, .summary-banner { background: var(--accent-gradient); color: white; padding: 2rem 3rem; border-radius: 28px; display: flex; align-items: center; gap: 2rem; box-shadow: 0 15px 40px rgba(0, 113, 227, 0.25); margin-top: 2rem; }
+
+        .trace-row { margin-top: 2rem; }
+        .sankey-card { background: var(--bg-primary); border: 1px solid var(--border); border-radius: 28px; padding: 2.5rem; box-shadow: var(--shadow); }
+        .sankey-svg { width: 100%; height: auto; }
+        .sankey-header { margin-bottom: 2rem; }
+        .sankey-header h4 { font-size: 1.2rem; color: var(--accent); margin-bottom: 5px; }
+        .sankey-header p { font-size: 0.8rem; color: var(--text-secondary); }
+        .pulse-circle { animation: pulseSankey 1.5s infinite; }
+        @keyframes pulseSankey { 0% { r: 3; opacity: 1; } 50% { r: 6; opacity: 0.4; } 100% { r: 3; opacity: 1; } }
 
         .pro-insight { border: 1px solid var(--border) !important; position: relative; }
         .pro-insight.border-blue { border-left: 5px solid #3b82f6 !important; }
