@@ -278,6 +278,80 @@ const SurfaceTopography3D = ({ data }: { data: CDData[] }) => {
   );
 };
 
+// --- AI Diagnostic Result Component ---
+const DiagnosticFactorScanner = () => {
+  const [activeFactor, setActiveFactor] = useState(0);
+  const factors = [
+    { title: 'Thermal Gradient (Temperature)', impact: 68, corr: 0.92, desc: '중심부 베이킹 온도 불균형에 따른 감광액 반응 속도 차이' },
+    { title: 'Chemical Flow Rate', impact: 22, corr: 0.45, desc: '슬릿 노즐 토출 시 중심부 약액 정체 현상 감지' },
+    { title: 'Mechanical Vibration', impact: 10, corr: 0.12, desc: '스테이지 이동 시 미세 진동에 의한 노광 산란' }
+  ];
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setActiveFactor(prev => (prev + 1) % factors.length);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, []);
+
+  return (
+    <div className="diagnostic-engine-card">
+       <div className="diag-header">
+          <div className="pulse-dot orange" />
+          <h4>AI Deep-Root Diagnostics</h4>
+          <span className="ai-badge">Processing Correlation...</span>
+       </div>
+       
+       <div className="diag-main">
+          {/* Correlation Chart View */}
+          <div className="correlation-view">
+             <div className="y-axis-label">CD Deviation (um)</div>
+             <div className="x-axis-label">{factors[activeFactor].title}</div>
+             <svg viewBox="0 0 200 150" className="corr-svg">
+                {/* Dots simulating correlation */}
+                {Array.from({ length: 30 }).map((_, i) => (
+                  <circle 
+                    key={i} 
+                    cx={30 + i * 5} 
+                    cy={120 - (i * (factors[activeFactor].corr * 3) + Math.random() * 20)} 
+                    r="2" 
+                    fill={factors[activeFactor].impact > 50 ? "#ef4444" : "#3b82f6"} 
+                    opacity="0.6"
+                  />
+                ))}
+                {/* Trend Line */}
+                <line x1="30" y1="110" x2="180" y2={110 - factors[activeFactor].corr * 80} stroke="#f97316" strokeWidth="2" strokeDasharray="4 2" />
+             </svg>
+          </div>
+
+          {/* Influence List */}
+          <div className="influence-list">
+             {factors.map((f, i) => (
+               <div key={i} className={`influence-item ${activeFactor === i ? 'active' : ''}`}>
+                  <div className="inf-header">
+                     <span>{f.title}</span>
+                     <strong>{f.impact}%</strong>
+                  </div>
+                  <div className="inf-bar-bg">
+                     <motion.div 
+                        initial={{ width: 0 }} 
+                        animate={{ width: activeFactor === i ? `${f.impact}%` : '0%' }}
+                        className="inf-bar-fill" 
+                     />
+                  </div>
+               </div>
+             ))}
+          </div>
+       </div>
+
+       <div className="diag-conclusion">
+          <div className="conclusion-label"><Zap size={14}/> AI Insight Conclusion:</div>
+          <p>{factors[activeFactor].desc}</p>
+       </div>
+    </div>
+  );
+};
+
 const DistributionChart = ({ data, stats }: { data: CDData[], stats: any }) => {
   const width = 400;
   const height = 350;
@@ -638,38 +712,41 @@ const ProcessAnalysis = () => {
         </div>
       </section>
 
-      {/* 5. Root Cause */}
-      <section className="analysis-card-section root-cause-section">
+      {/* 5. Root Cause Analysis */}
+      <section className="analysis-card-section root-cause-section" id="step5">
         <div className="section-header-v2">
           <AlertTriangle className="text-danger" />
-          <h2>STEP 5. 이상 패턴 근인 분석 (Root Cause Analysis)</h2>
+          <h2>STEP 5. AI 기반 원인 추적 및 상관관계 분석 (Root Cause Diagnostic)</h2>
         </div>
-        
-        <div className="analysis-cards-grid">
-          <div className="a-card danger">
-            <div className="a-card-header"><AlertTriangle size={18}/> Anomaly Detection</div>
-            <p>기판 우측 상단 구역에서 선폭이 <strong>+0.5um 이상</strong> 크게 형성되는 클러스터 패턴 확인.</p>
-          </div>
-          <div className="a-card">
-            <div className="a-card-header"><Settings size={18}/> Technical Review</div>
-            <ul className="review-list">
-              <li><strong>노광 공정:</strong> Stitching 정렬 오차 0.2um 초과</li>
-              <li><strong>PR 도포:</strong> EBR 노즐 막힘 현상</li>
-              <li><strong>냉각판:</strong> #3 Plate 온도 편차 발생</li>
-            </ul>
-          </div>
-          <div className="a-card vibe">
-            <div className="a-card-header"><Zap size={18}/> AI Action Plan</div>
-            <p>설비 파워 보정 및 이상 구역 실시간 집중 모니터링 활성.</p>
+        <p className="step-desc">1,400개 측정 포인트와 공정 인자 간의 상관계수를 AI가 실시간으로 분석하여 이상 원인을 추적합니다.</p>
+
+        <div className="diagnostic-grid-v2">
+          {/* Left: AI Diagnostic Engine (Interactive Scanner Component) */}
+          <DiagnosticFactorScanner />
+
+          {/* Right: Insight Cards */}
+          <div className="analysis-cards-grid">
+            <div className="a-card pro-insight">
+              <div className="a-card-header text-danger"><TrendingUp size={24} /> Thermal Profile Anomaly</div>
+              <p>기판 중심부의 베이킹 온도가 타 영역 대비 **0.8°C 높게** 유지됨에 따라 CD가 상향 편향되는 경향을 보입니다.</p>
+              <div className="a-tag">Impact: 68% (Critical)</div>
+            </div>
+            
+            <div className="a-card pro-insight border-blue">
+              <div className="a-card-header text-blue"><Layers size={24} /> Chemical Fluid Dynamics</div>
+              <p>슬릿 노즐의 중심부 토출 압력이 불균일하여 약액 정체 시간이 **1.2초 지연**됨을 유체 시뮬레이션 결과 감지하였습니다.</p>
+              <div className="a-tag">Impact: 22% (Major)</div>
+            </div>
           </div>
         </div>
 
-        <div className="summary-banner">
-          <div className="banner-content">
-            <h3>종합 진단 결과</h3>
-            <p>공정 보완 시 <strong>수율 2.1% 향상</strong> 및 원가 절감 기대.</p>
-          </div>
-          <button className="download-btn-v2">Full Report Export</button>
+        <div className="ai-report-banner">
+           <Sparkles size={24} className="sparkle-icon" />
+           <div className="banner-content">
+              <h4>Engineering Decision Support:</h4>
+              <p>AI 진단 결과에 따라 **'중심부 냉각 채널 노즐 압력 15% 상향'** 및 **'베이킹 프로파일 2구역 온도 0.5도 하향'** 조치를 권고합니다.</p>
+           </div>
+           <button className="apply-btn">자동 설비 최적화 적용 (Auto-Optimize)</button>
         </div>
       </section>
 
@@ -769,16 +846,42 @@ const ProcessAnalysis = () => {
         .ai-feature-list li { background: rgba(255, 255, 255, 0.1); padding: 1rem; border-radius: 12px; font-size: 0.85rem; border: 1px solid rgba(255, 255, 255, 0.2); }
         .ai-feature-list strong { color: #fcd34d; font-weight: 900; }
 
-        .root-cause-section { margin-top: 1rem; }
-        .analysis-cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin: 2rem 0; }
-        .a-card { background: var(--bg-primary); border: 1px solid var(--border); border-radius: 20px; padding: 1.8rem; }
-        .a-card-header { display: flex; align-items: center; gap: 10px; font-weight: 800; margin-bottom: 1rem; color: var(--accent); }
-        .a-card.danger { border-left: 5px solid #ff4d4d; }
-        .a-card.vibe { background: var(--accent-gradient); color: white; border: none; }
-        .a-card.vibe .a-card-header { color: white; }
-        .review-list { padding-left: 1rem; font-size: 0.85rem; line-height: 1.6; color: var(--text-secondary); }
-        .summary-banner { background: var(--bg-secondary); border-radius: 20px; padding: 2rem; display: flex; justify-content: space-between; align-items: center; border-left: 8px solid var(--accent); }
-        .download-btn-v2 { background: var(--accent); color: white; border: none; padding: 12px 24px; border-radius: 12px; font-weight: 800; cursor: pointer; }
+        .diagnostic-grid-v2 { display: grid; grid-template-columns: 1.2fr 1fr; gap: 3rem; margin: 2rem 0; }
+        .diagnostic-engine-card { background: #ffffff; border: 1px solid var(--border); border-radius: 28px; padding: 2rem; box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 1.5rem; border-top: 6px solid #f97316; }
+        .diag-header { display: flex; align-items: center; gap: 12px; }
+        .diag-header h4 { font-size: 1.1rem; flex: 1; margin: 0; }
+        .pulse-dot.orange { width: 8px; height: 8px; background: #f97316; border-radius: 50%; display: inline-block; animation: pulse 1.5s infinite; }
+        .ai-badge { background: rgba(0, 113, 227, 0.1); color: var(--accent); padding: 4px 10px; border-radius: 6px; font-size: 0.65rem; font-weight: 800; }
+        
+        .diag-main { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+        .correlation-view { background: #f8fafc; border-radius: 16px; padding: 1rem; position: relative; border: 1px solid var(--border); min-height: 200px; }
+        .corr-svg { width: 100%; height: auto; }
+        .x-axis-label, .y-axis-label { position: absolute; font-size: 0.55rem; font-weight: 800; color: var(--text-secondary); }
+        .y-axis-label { top: 30px; left: -20px; transform: rotate(-90deg); }
+        .x-axis-label { bottom: 5px; right: 10px; }
+
+        .influence-list { display: flex; flex-direction: column; gap: 1.2rem; }
+        .influence-item { padding: 1rem; border-radius: 14px; border: 1px solid transparent; transition: all 0.3s; }
+        .influence-item.active { background: rgba(249, 115, 22, 0.05); border-color: rgba(249, 115, 22, 0.2); }
+        .inf-header { display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 700; margin-bottom: 6px; }
+        .inf-bar-bg { height: 6px; background: #e2e8f0; border-radius: 3px; overflow: hidden; }
+        .inf-bar-fill { height: 100%; background: #f97316; border-radius: 3px; }
+
+        .diag-conclusion { background: #1e293b; color: #f1f5f9; padding: 1.5rem; border-radius: 16px; font-size: 0.85rem; line-height: 1.6; }
+        .conclusion-label { font-weight: 800; color: #f97316; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+
+        .ai-report-banner { background: var(--accent-gradient); color: white; padding: 2rem 3rem; border-radius: 28px; display: flex; align-items: center; gap: 2rem; box-shadow: 0 15px 40px rgba(0, 113, 227, 0.25); margin-top: 2rem; }
+        .banner-content { flex: 1; }
+        .banner-content h4 { font-size: 1.1rem; margin-bottom: 4px; color: #fcd34d; margin: 0 0 4px 0; }
+        .banner-content p { font-size: 0.9rem; font-weight: 600; opacity: 0.95; margin: 0; }
+        .apply-btn { background: white; color: var(--accent); border: none; padding: 12px 24px; border-radius: 12px; font-weight: 900; font-size: 0.9rem; cursor: pointer; transition: transform 0.2s; white-space: nowrap; }
+        .apply-btn:hover { transform: scale(1.05); }
+
+        .pro-insight { border: 1px solid var(--border) !important; position: relative; }
+        .pro-insight.border-blue { border-left: 5px solid #3b82f6 !important; }
+        .text-blue { color: #3b82f6; }
+        .a-tag { margin-top: 1rem; font-size: 0.75rem; font-weight: 900; color: var(--accent); background: rgba(0,113,227,0.05); padding: 4px 10px; border-radius: 6px; display: inline-block; }
+        .step-desc { color: var(--text-secondary); margin-bottom: 2rem; }
 
         @media (max-width: 900px) {
           .schematic-layout, .plan-view-split, .boxplot-advanced-grid { grid-template-columns: 1fr; }
