@@ -278,10 +278,10 @@ const ProcessAnalysis = () => {
     return { min, max, median, q1, q3, avg, outliers };
   }, [cdData]);
 
-  // Helper to map CD values to Y coordinate (0-300px scale)
+  // Helper to map CD values to Y coordinate (2.0 - 6.0 range as requested)
   const mapY = (val: number) => {
-    const minRange = 0.0;
-    const maxRange = 8.0;
+    const minRange = 2.0;
+    const maxRange = 6.0;
     return 300 - ((val - minRange) / (maxRange - minRange)) * 250;
   };
 
@@ -360,8 +360,8 @@ const ProcessAnalysis = () => {
         <div className="boxplot-advanced-grid">
           <div className="boxplot-visual-container">
             <svg viewBox="0 0 400 350" className="box-svg">
-              {/* Grid Lines */}
-              {[0, 2, 4, 6, 8].map(v => (
+              {/* Grid Lines (Zoomed to 2-6 range) */}
+              {[2, 3, 4, 5, 6].map(v => (
                 <g key={v}>
                   <line x1="60" y1={mapY(v)} x2="350" y2={mapY(v)} stroke="var(--border)" strokeDasharray="4 2" opacity="0.5" />
                   <text x="50" y={mapY(v) + 4} fontSize="10" textAnchor="end" fill="var(--text-secondary)">{v}</text>
@@ -406,8 +406,8 @@ const ProcessAnalysis = () => {
                 <text x="140" y={mapY(stats.avg) + 4} textAnchor="end" fill="#ff4d4d">Mean: {stats.avg.toFixed(3)}</text>
               </g>
 
-              {/* Outliers */}
-              {stats.outliers.slice(0, 30).map((o, i) => (
+              {/* Outliers (Filtered for new 2-6 range display) */}
+              {stats.outliers.filter(o => o.cd >= 2.0 && o.cd <= 6.0).slice(0, 30).map((o, i) => (
                 <circle key={i} cx="200" cy={mapY(o.cd)} r="2.5" fill="#ff4d4d" opacity="0.4" />
               ))}
             </svg>
@@ -583,10 +583,10 @@ const ProcessAnalysis = () => {
         .glow-circle.mid { width: 300px; height: 300px; background: radial-gradient(circle, #f59e0b, #fbbf24); z-index: 4; opacity: 0.6; }
         .glow-circle.outer { width: 480px; height: 480px; background: radial-gradient(circle, #fbbf24, #10b981, transparent); z-index: 3; opacity: 0.4; }
         .contour-svg-overlay { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 6; pointer-events: none; }
-        .c-path { fill: none; stroke: rgba(0, 0, 0, 0.4); stroke-width: 0.8; stroke-dasharray: 2 1; }
-        .c-path.p1 { stroke-opacity: 0.8; stroke-width: 1.2; stroke-dasharray: none; }
-        .c-path.p2 { stroke-opacity: 0.5; }
-        .c-path.p3 { stroke-opacity: 0.3; }
+        .c-path { fill: none; stroke: rgba(0, 0, 0, 0.25); stroke-width: 0.6; stroke-dasharray: 2 2; }
+        .c-path.p1 { stroke-opacity: 0.7; }
+        .c-path.p2 { stroke-opacity: 0.4; }
+        .c-path.p3 { stroke-opacity: 0.2; }
         
         .heatmap-v2-grid.dots-only { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(${GRID_COLS}, 1fr); gap: 0; z-index: 10; pointer-events: none; }
         .heatmap-dot.technical { width: 2px; height: 2px; background: #475569; opacity: 0.4; }
