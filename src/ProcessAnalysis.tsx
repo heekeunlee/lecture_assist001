@@ -978,8 +978,8 @@ const ProcessAnalysis = () => {
         /* Industrial Monitor Styles */
         .industrial-monitor-wrapper { width: 100%; max-width: 500px; padding: 20px; background: #0f172a; border-radius: 12px; position: relative; }
         .monitor-frame { 
-          border: 4px solid #00e5ff; border-radius: 8px; position: relative; padding: 10px;
-          box-shadow: 0 0 20px rgba(0, 229, 255, 0.4), inset 0 0 15px rgba(0, 229, 255, 0.2);
+          border: 1px solid rgba(0, 229, 255, 0.4); border-radius: 8px; position: relative; padding: 10px;
+          box-shadow: 0 0 30px rgba(0, 229, 255, 0.2), inset 0 0 20px rgba(0, 229, 255, 0.1);
           background: #020617; overflow: hidden;
         }
         .monitor-inner-glow { position: absolute; inset: 0; pointer-events: none; box-shadow: inset 0 0 40px rgba(0, 229, 255, 0.1); }
@@ -1006,7 +1006,8 @@ const ProcessAnalysis = () => {
         .scan-line { position: absolute; top: 0; left: 0; width: 100%; height: 2px; background: rgba(0, 229, 255, 0.1); animation: scan 4s linear infinite; pointer-events: none; }
         @keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
 
-        .industrial-style { margin-top: 1rem; background: #020617 !important; border-color: #00e5ff !important; border-radius: 8px !important; }
+        .industrial-style { margin-top: 1rem; background: #020617 !important; border-color: rgba(0, 229, 255, 0.3) !important; border-radius: 8px !important; }
+        .industrial-style .l-item-v4 { color: #e2e8f0 !important; }
         .c-box.h-map-peak { width: 12px; height: 12px; background: #ffffff; border-radius: 2px; box-shadow: 0 0 8px #ffffff; }
         .c-box.h-map-high { width: 12px; height: 12px; background: #ef4444; border-radius: 2px; }
         .c-box.h-map-nominal { width: 12px; height: 12px; background: #22c55e; border-radius: 2px; }
