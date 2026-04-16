@@ -144,8 +144,8 @@ const GlassPlanView = ({ data }: { data: CDData[] }) => (
             cx={d.col} 
             cy={d.row} 
             r="0.2" 
-            fill={Math.abs(d.deviation) > 0.4 ? "#ff4d4d" : "var(--accent)"} 
-            opacity="0.6"
+            fill="#d1d5db" 
+            opacity="0.8"
           />
         ))}
       </svg>
@@ -433,7 +433,7 @@ const ProcessAnalysis = () => {
         .plan-info { text-align: center; margin-top: 5rem; }
 
         .data-table-preview { background: var(--bg-primary); border: 1px solid var(--border); border-radius: 20px; padding: 1.5rem; }
-        .scroll-table-box { max-height: 250px; overflow-y: auto; }
+        .scroll-table-box { max-height: 450px; overflow-y: auto; }
         .mini-table { width: 100%; border-collapse: collapse; font-family: monospace; font-size: 0.7rem; }
         .mini-table th { position: sticky; top: 0; background: var(--bg-secondary); padding: 8px; text-align: left; }
         .mini-table td { padding: 6px 8px; border-bottom: 1px solid var(--border); }
