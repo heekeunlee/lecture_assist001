@@ -226,8 +226,8 @@ const DistributionChart = ({ data, stats }: { data: CDData[], stats: any }) => {
             {/* Median Line */}
             <line x1={mapX(stats.median)} y1="-10" x2={mapX(stats.median)} y2="10" stroke="var(--accent)" strokeWidth="3" />
             
-            {/* Mean Line (Blue Bar) */}
-            <line x1={mapX(stats.avg)} y1="-10" x2={mapX(stats.avg)} y2="10" stroke="#3b82f6" strokeWidth="3" strokeDasharray="2 1" />
+            {/* Mean Line (Orange Bar as requested) */}
+            <line x1={mapX(stats.avg)} y1="-15" x2={mapX(stats.avg)} y2="15" stroke="#f97316" strokeWidth="3" strokeDasharray="2 1" />
           </g>
 
           <text x={width/2} y="30" fontSize="12" fontWeight="900" textAnchor="middle" fill="var(--text-primary)">CD Distribution & Density Analysis</text>
@@ -392,8 +392,8 @@ const ProcessAnalysis = () => {
               <line x1="200" y1={mapY(stats.q1)} x2="200" y2={mapY(stats.min)} stroke="var(--accent)" strokeWidth="2" />
               <line x1="185" y1={mapY(stats.min)} x2="215" y2={mapY(stats.min)} stroke="var(--accent)" strokeWidth="2" />
 
-              {/* Mean Marker (Blue Bar) */}
-              <line x1="180" y1={mapY(stats.avg)} x2="220" y2={mapY(stats.avg)} stroke="#3b82f6" strokeWidth="3" strokeDasharray="3 2" />
+              {/* Mean Marker (Orange Bar) */}
+              <line x1="180" y1={mapY(stats.avg)} x2="220" y2={mapY(stats.avg)} stroke="#f97316" strokeWidth="3" strokeDasharray="3 2" />
               
               {/* Annotation Labels */}
               <g fontSize="11" fontWeight="700" fill="var(--text-primary)">
@@ -477,9 +477,10 @@ const ProcessAnalysis = () => {
               </div>
             </div>
             <div className="heatmap-legend-v4">
-              <div className="l-item-v4"><div className="c-box h-red"/> Center Anomaly Focus (+0.5um)</div>
-              <div className="l-item-v4"><div className="c-box h-yellow"/> Thermal Variation Area (+0.2um)</div>
-              <div className="l-item-v4"><div className="c-box h-green"/> Stable Condition Zone</div>
+              <div className="l-item-v4"><div className="c-box h-deepred"/> +0.8um (High Center)</div>
+              <div className="l-item-v4"><div className="c-box h-yellow"/> +0.3um (Mid Ring)</div>
+              <div className="l-item-v4"><div className="c-box h-blue"/> -0.2um (Outer Edge)</div>
+              <div className="l-item-v4"><div className="c-box h-darkpurple"/> Min Limit Zone</div>
             </div>
           </div>
 
@@ -583,12 +584,12 @@ const ProcessAnalysis = () => {
         .heatmap-overlay.pastel { width: 100%; max-width: 400px; aspect-ratio: 0.9; border: 2px solid var(--border); background: #f8fafc; position: relative; overflow: hidden; border-radius: 12px; }
         .soccer-heatmap-layer { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; z-index: 2; overflow: hidden; }
         .glow-circle { position: absolute; border-radius: 40px; filter: blur(40px); opacity: 0.7; } /** Changed to Rounded Rect style **/
-        .glow-circle.core { width: 160px; height: 160px; background: radial-gradient(circle, #ef4444, #f59e0b); z-index: 5; }
-        .glow-circle.mid { width: 300px; height: 300px; background: radial-gradient(circle, #f59e0b, #fbbf24); z-index: 4; opacity: 0.6; }
-        .glow-circle.outer { width: 480px; height: 480px; background: radial-gradient(circle, #fbbf24, #10b981, transparent); z-index: 3; opacity: 0.4; }
+        .glow-circle.core { width: 160px; height: 160px; background: radial-gradient(circle, #7f1d1d, #ef4444, #f59e0b); z-index: 5; }
+        .glow-circle.mid { width: 300px; height: 300px; background: radial-gradient(circle, #f59e0b, #eab308, #84cc16, #10b981); z-index: 4; opacity: 0.6; }
+        .glow-circle.outer { width: 500px; height: 500px; background: radial-gradient(circle, #06b6d4, #3b82f6, #6366f1, #312e81, transparent); z-index: 3; opacity: 0.5; }
         .contour-svg-overlay { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 6; pointer-events: none; }
-        .c-path { fill: none; stroke: rgba(0, 0, 0, 0.35); stroke-width: 0.5; stroke-dasharray: none; }
-        .c-path.r1 { stroke-opacity: 0.2; }
+        .c-path { fill: none; stroke: rgba(255, 255, 255, 0.2); stroke-width: 0.5; stroke-dasharray: none; }
+        .c-path.r1 { stroke-opacity: 0.4; stroke-width: 0.8; }
         .c-path.r2 { stroke-opacity: 0.3; }
         .c-path.r3 { stroke-opacity: 0.4; }
         .c-path.r4 { stroke-opacity: 0.5; }
@@ -602,9 +603,10 @@ const ProcessAnalysis = () => {
         
         .heatmap-legend-v4 { display: flex; flex-direction: column; gap: 0.8rem; background: var(--bg-secondary); padding: 1.5rem; border-radius: 20px; width: 100%; border: 1px solid var(--border); }
         .l-item-v4 { display: flex; align-items: center; gap: 12px; font-size: 0.78rem; font-weight: 800; color: var(--text-secondary); }
-        .c-box.h-red { width: 12px; height: 12px; background: #ef4444; border-radius: 3px; }
-        .c-box.h-yellow { width: 12px; height: 12px; background: #f59e0b; border-radius: 3px; }
-        .c-box.h-green { width: 12px; height: 12px; background: #10b981; border-radius: 3px; }
+        .c-box.h-deepred { width: 12px; height: 12px; background: #7f1d1d; border-radius: 3px; }
+        .c-box.h-yellow { width: 12px; height: 12px; background: #eab308; border-radius: 3px; }
+        .c-box.h-blue { width: 12px; height: 12px; background: #3b82f6; border-radius: 3px; }
+        .c-box.h-darkpurple { width: 12px; height: 12px; background: #312e81; border-radius: 3px; }
 
         .dist-chart-container { background: var(--bg-primary); border: 1px solid var(--border); border-radius: 24px; padding: 1rem; box-shadow: var(--shadow); }
         .dist-insight { margin-top: 1.5rem; padding: 1.5rem; background: rgba(0, 113, 227, 0.05); border-radius: 16px; font-size: 0.85rem; line-height: 1.6; border-left: 4px solid var(--accent); }
