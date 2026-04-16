@@ -29,13 +29,32 @@ const CrossSectionVisual = ({ step }: { step: number }) => {
     beam: "#fcd34d"
   };
 
+  // Define persistent pattern positions for consistency across steps
+  const islands = [
+    { x: 50, w: 50 },
+    { x: 140, w: 110 },
+    { x: 290, w: 60 }
+  ];
+
   return (
     <div className="cross-section-container">
       <svg viewBox="0 0 400 150" className="cross-section-svg">
+        {/* Glass Substrate - Always bottom */}
         <rect x="50" y="100" width="300" height="30" fill={layers.glass} rx="2" />
         <text x="360" y="125" fontSize="10" fill="var(--text-secondary)">Glass Substrate</text>
-        <rect x="50" y="85" width="300" height="15" fill={layers.metal} />
+
+        {/* Metal Layer - Dynamic based on etching step */}
+        {step <= 2 ? (
+          // Steps 0, 1, 2: Metal is still a full solid layer
+          <rect x="50" y="85" width="300" height="15" fill={layers.metal} />
+        ) : (
+          // Steps 3, 4, 5: Metal has been ETCHED (only islands remain)
+          islands.map((seg, i) => (
+            <rect key={`metal-${i}`} x={seg.x} y={85} width={seg.w} height={15} fill={layers.metal} />
+          ))
+        )}
         
+        {/* PR (Photoresist) Layer - Dynamic based on process flow */}
         {step === 0 && ( // PR Coating
           <motion.rect 
             initial={{ width: 0 }} animate={{ width: 300 }} transition={{ duration: 1.5, ease: "easeOut" }}
@@ -46,56 +65,61 @@ const CrossSectionVisual = ({ step }: { step: number }) => {
         {step === 1 && ( // Exposure
           <>
             <rect x="50" y="70" width="300" height="15" fill={layers.pr} />
-            <rect x="50" y="30" width="300" height="10" fill="#1e293b" rx="2" />
-            <rect x="100" y="30" width="40" height="10" fill="white" opacity="0.4" />
-            <rect x="250" y="30" width="40" height="10" fill="white" opacity="0.4" />
+            {/* Mask */}
+            <rect x="50" y="25" width="300" height="8" fill="#1e293b" rx="2" />
+            <rect x="100" y="25" width="40" height="8" fill="white" opacity="0.4" />
+            <rect x="250" y="25" width="40" height="8" fill="white" opacity="0.4" />
+            {/* UV Beams hitting "exposed" areas */}
             <motion.path 
               initial={{ opacity: 0 }} animate={{ opacity: [0, 1, 0] }} transition={{ repeat: Infinity, duration: 1.2 }}
-              d="M120,40 L120,70 M270,40 L270,70" stroke={layers.beam} strokeWidth="2" strokeDasharray="4 2"
+              d="M120,33 L120,70 M270,33 L270,70" stroke={layers.beam} strokeWidth="3" strokeDasharray="4 2"
             />
+            {/* Chemical change in PR */}
             <rect x="100" y="70" width="40" height="15" fill={layers.pr_exposed} />
             <rect x="250" y="70" width="40" height="15" fill={layers.pr_exposed} />
           </>
         )}
 
-        {step === 2 && ( // Development
+        {step === 2 && ( // Development (Exposed areas removed - Positive PR example)
+          islands.map((seg, i) => (
+            <rect key={`pr-${i}`} x={seg.x} y={70} width={seg.w} height={15} fill={layers.pr} />
+          ))
+        )}
+
+        {step === 3 && ( // Etching (PR is still there, Metal is being cut)
           <>
-            <rect x="50" y="70" width="50" height="15" fill={layers.pr} />
-            <rect x="140" y="70" width="110" height="15" fill={layers.pr} />
-            <rect x="290" y="70" width="60" height="15" fill={layers.pr} />
+            {/* PR Islands on top */}
+            {islands.map((seg, i) => (
+              <rect key={`pr-etch-${i}`} x={seg.x} y={70} width={seg.w} height={15} fill={layers.pr} />
+            ))}
+            {/* Metal islands are already rendered by the "Metal Layer" logic above Step 3 */}
+            <motion.path 
+              animate={{ opacity: [0.2, 0.6, 0.2] }} transition={{ repeat: Infinity, duration: 1 }}
+              d="M100,85 L140,85 M250,85 L290,85" stroke="#ef4444" strokeWidth="2"
+            />
           </>
         )}
 
-        {step === 3 && ( // Etching
-          <>
-            <rect x="50" y="70" width="50" height="15" fill={layers.pr} />
-            <rect x="140" y="70" width="110" height="15" fill={layers.pr} />
-            <rect x="290" y="70" width="60" height="15" fill={layers.pr} />
-            <rect x="50" y="85" width="50" height="15" fill={layers.metal} />
-            <rect x="140" y="85" width="110" height="15" fill={layers.metal} />
-            <rect x="290" y="85" width="60" height="15" fill={layers.metal} />
-            <path d="M100,85 L140,85 L140,105 L100,105 Z" fill="var(--bg-primary)" />
-            <path d="M250,85 L290,85 L290,105 L250,105 Z" fill="var(--bg-primary)" />
-          </>
+        {step === 4 && ( // Strip (PR Is GONE, Metal Islands Remain)
+          // No PR here, Metal is rendered by top logic
+          <motion.g initial={{ opacity: 1 }} animate={{ opacity: 0 }} transition={{ duration: 1.5 }}>
+             {islands.map((seg, i) => (
+                <rect key={`pr-striping-${i}`} x={seg.x} y={70} width={seg.w} height={15} fill={layers.pr} />
+              ))}
+          </motion.g>
         )}
 
-        {step === 4 && ( // Strip
+        {step === 5 && ( // Inspection (Final Pattern + Scanning)
           <>
-            <rect x="50" y="85" width="50" height="15" fill={layers.metal} />
-            <rect x="140" y="85" width="110" height="15" fill={layers.metal} />
-            <rect x="290" y="85" width="60" height="15" fill={layers.metal} />
-          </>
-        )}
-
-        {step === 5 && ( // Inspection
-          <>
-            <rect x="50" y="85" width="50" height="15" fill={layers.metal} />
-            <rect x="140" y="85" width="110" height="15" fill={layers.metal} />
-            <rect x="290" y="85" width="60" height="15" fill={layers.metal} />
             <motion.line 
               animate={{ x: [0, 250, 0] }} transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
-              x1="75" y1="20" x2="75" y2="85" stroke="#3b82f6" strokeWidth="2" strokeDasharray="5 3"
+              x1="75" y1="10" x2="75" y2="100" stroke="#3b82f6" strokeWidth="2" strokeDasharray="5 3"
             />
+            <motion.circle 
+              animate={{ x: [0, 250, 0] }} transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
+              cx="75" cy="100" r="4" fill="#3b82f6" opacity="0.4"
+            />
+            <text x="360" y="95" fontSize="10" fill="#3b82f6" fontWeight="bold">Scanning...</text>
           </>
         )}
       </svg>
