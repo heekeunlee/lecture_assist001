@@ -216,14 +216,17 @@ const DistributionChart = ({ data, stats }: { data: CDData[], stats: any }) => {
             {/* Whiskers */}
             <line x1={mapX(stats.min)} y1="0" x2={mapX(stats.max)} y2="0" stroke="var(--accent)" strokeWidth="1.5" opacity="0.6" />
             
-            {/* Box (Transparent with Accent Border) */}
+            {/* Box (Narrower: height 30) */}
             <rect 
-              x={mapX(stats.q1)} y="-25" 
-              width={mapX(stats.q3) - mapX(stats.q1)} height="50" 
-              fill="transparent" stroke="var(--accent)" strokeWidth="2.5" rx="4"
+              x={mapX(stats.q1)} y="-15" 
+              width={mapX(stats.q3) - mapX(stats.q1)} height="30" 
+              fill="transparent" stroke="var(--accent)" strokeWidth="2" rx="3"
             />
             {/* Median Line */}
-            <line x1={mapX(stats.median)} y1="-25" x2={mapX(stats.median)} y2="25" stroke="var(--accent)" strokeWidth="4" />
+            <line x1={mapX(stats.median)} y1="-15" x2={mapX(stats.median)} y2="15" stroke="var(--accent)" strokeWidth="3" />
+            
+            {/* Mean Line (Blue Bar) */}
+            <line x1={mapX(stats.avg)} y1="-15" x2={mapX(stats.avg)} y2="15" stroke="#3b82f6" strokeWidth="3" strokeDasharray="2 1" />
           </g>
 
           <text x={width/2} y="30" fontSize="12" fontWeight="900" textAnchor="middle" fill="var(--text-primary)">CD Distribution & Density Analysis</text>
@@ -381,14 +384,24 @@ const ProcessAnalysis = () => {
                 x="150" width="100" fill="transparent" stroke="var(--accent)" strokeWidth="2" rx="4"
               />
               
+              {/* Whiskers */}
+              <line x1="180" y1={mapY(stats.max)} x2="220" y2={mapY(stats.max)} stroke="var(--accent)" strokeWidth="2" />
+              <line x1="200" y1={mapY(stats.max)} x2="200" y2={mapY(stats.q3)} stroke="var(--accent)" strokeWidth="2" />
+              
+              <motion.rect 
+                initial={{ height: 0, y: mapY(stats.median) }} 
+                animate={{ height: mapY(stats.q1) - mapY(stats.q3), y: mapY(stats.q3) }}
+                x="170" width="60" fill="transparent" stroke="var(--accent)" strokeWidth="2" rx="4"
+              />
+              
               {/* Median Line */}
-              <line x1="150" y1={mapY(stats.median)} x2="250" y2={mapY(stats.median)} stroke="white" strokeWidth="3" />
+              <line x1="170" y1={mapY(stats.median)} x2="230" y2={mapY(stats.median)} stroke="var(--accent)" strokeWidth="3" />
               
               <line x1="200" y1={mapY(stats.q1)} x2="200" y2={mapY(stats.min)} stroke="var(--accent)" strokeWidth="2" />
               <line x1="180" y1={mapY(stats.min)} x2="220" y2={mapY(stats.min)} stroke="var(--accent)" strokeWidth="2" />
 
-              {/* Mean Marker */}
-              <path d={`M192,${mapY(stats.avg)-8} L208,${mapY(stats.avg)+8} M208,${mapY(stats.avg)-8} L192,${mapY(stats.avg)+8}`} stroke="#ff4d4d" strokeWidth="2.5" />
+              {/* Mean Marker (Blue Bar) */}
+              <line x1="170" y1={mapY(stats.avg)} x2="230" y2={mapY(stats.avg)} stroke="#3b82f6" strokeWidth="3" strokeDasharray="3 2" />
               
               {/* Annotation Labels */}
               <g fontSize="11" fontWeight="700" fill="var(--text-primary)">
@@ -446,6 +459,9 @@ const ProcessAnalysis = () => {
                  <div className="glow-circle core" />
                  <div className="glow-circle mid" />
                  <div className="glow-circle outer" />
+                 <div className="contour-line c1" />
+                 <div className="contour-line c2" />
+                 <div className="contour-line c3" />
               </div>
 
               {/* The Technical Site Dots (Layered on top) */}
@@ -571,6 +587,10 @@ const ProcessAnalysis = () => {
         .glow-circle.core { width: 160px; height: 160px; background: radial-gradient(circle, #ef4444, #f59e0b); z-index: 5; }
         .glow-circle.mid { width: 300px; height: 300px; background: radial-gradient(circle, #f59e0b, #fbbf24); z-index: 4; opacity: 0.6; }
         .glow-circle.outer { width: 480px; height: 480px; background: radial-gradient(circle, #fbbf24, #10b981, transparent); z-index: 3; opacity: 0.4; }
+        .contour-line { position: absolute; border: 1.5px solid rgba(0,0,0,0.06); border-radius: 40px; z-index: 6; pointer-events: none; }
+        .contour-line.c1 { width: 140px; height: 140px; }
+        .contour-line.c2 { width: 260px; height: 260px; opacity: 0.6; }
+        .contour-line.c3 { width: 380px; height: 380px; opacity: 0.3; }
         
         .heatmap-v2-grid.dots-only { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(${GRID_COLS}, 1fr); gap: 0; z-index: 10; pointer-events: none; }
         .heatmap-dot.technical { width: 2px; height: 2px; background: #475569; opacity: 0.4; }
