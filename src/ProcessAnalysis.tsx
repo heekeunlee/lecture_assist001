@@ -169,27 +169,19 @@ const DistributionChart = ({ data, stats }: { data: CDData[], stats: any }) => {
   const mapX = (val: number) => padding + ((val - 2.0) / (6.0 - 2.0)) * (width - 2 * padding);
   const mapY = (val: number) => (height - padding) - (val * (height - 2 * padding));
 
-  // Improved Unimodal Density Curve logic
-  const bins = 50;
-  const cdValues = data.map(d => d.cd);
-  const histogram = new Array(bins).fill(0);
-  cdValues.forEach(v => {
-    const binIdx = Math.min(bins - 1, Math.max(0, Math.floor(((v - 2.5) / 3.0) * bins)));
-    histogram[binIdx]++;
-  });
+  // Perfectly Unimodal Gaussian Curve logic for Instruction
+  const mean = stats.avg;
+  const stdDev = 0.5; // Fixed for a broad, perfect curve as requested
+  const points = 60;
   
-  // Apply smoothing to ensure unimodal appearance
-  const smoothed = histogram.map((_, i) => {
-    const start = Math.max(0, i - 2);
-    const end = Math.min(bins - 1, i + 2);
-    const sub = histogram.slice(start, end + 1);
-    return sub.reduce((a, b) => a + b, 0) / sub.length;
-  });
+  const gaussian = (x: number) => {
+    return Math.exp(-0.5 * Math.pow((x - mean) / stdDev, 2));
+  };
 
-  const maxBin = Math.max(...smoothed);
-  const densityPath = smoothed.map((count, i) => {
-    const x = padding + (i / bins) * (width - 2 * padding);
-    const y = mapY(count / maxBin);
+  const densityPath = Array.from({ length: points }).map((_, i) => {
+    const cdVal = 2.0 + (i / points) * 4.0;
+    const x = mapX(cdVal);
+    const y = mapY(gaussian(cdVal));
     return `${i === 0 ? 'M' : 'L'}${x},${y}`;
   }).join(' ');
 
@@ -237,20 +229,19 @@ const ProcessAnalysis = () => {
 
   const cdData = useMemo(() => {
     const data: CDData[] = [];
+    const maxDist = Math.sqrt(Math.pow(GRID_ROWS/2, 2) + Math.pow(GRID_COLS/2, 2));
+    
     for (let r = 0; r < GRID_ROWS; r++) {
       for (let c = 0; c < GRID_COLS; c++) {
         const centerDist = Math.sqrt(Math.pow(r - GRID_ROWS/2, 2) + Math.pow(c - GRID_COLS/2, 2));
-        const edgeEffect = (r < 5 || r > GRID_ROWS - 6 || c < 5 || c > GRID_COLS - 6) ? 0.4 : 0;
-        const radialVar = centerDist * 0.04;
-
-        let anomaly = 0;
-        if (Math.random() > 0.99) anomaly = (Math.random() - 0.5) * 1.5;
-        // Specific cluster for instruction
-        if (Math.abs(r - GRID_ROWS*0.3) < 3 && Math.abs(c - GRID_COLS*0.7) < 3) {
-          anomaly += 0.8;
-        }
-
-        const cd = TARGET_CD + (Math.random() - 0.5) * 0.4 + radialVar + edgeEffect + anomaly;
+        
+        // Strong Radial Effect (Concentric)
+        const radialEffect = (1 - (centerDist / maxDist)) * 1.2;
+        const edgeEffect = (r < 3 || r > GRID_ROWS - 4 || c < 3 || c > GRID_COLS - 4) ? 0.3 : 0;
+        
+        let noise = (Math.random() - 0.5) * 0.2;
+        const cd = TARGET_CD + radialEffect - edgeEffect + noise;
+        
         data.push({
           row: r, col: c,
           x: (c * SUBSTRATE_WIDTH) / GRID_COLS,
@@ -444,9 +435,11 @@ const ProcessAnalysis = () => {
               
               <div className="heatmap-v2-grid overlay grid-lines">
                 {cdData.map((d, i) => {
-                  let bgColor = "rgba(165, 180, 252, 0.1)"; // Stable (Pastel Indigo)
-                  if (d.deviation > 0.5) bgColor = "rgba(251, 113, 133, 0.6)"; // Anomaly (Pastel Pink)
-                  else if (d.deviation > 0.25) bgColor = "rgba(192, 132, 252, 0.45)"; // Caution (Pastel Purple)
+                  // Contour Mapping logic
+                  let bgColor = "rgba(165, 180, 252, 0.1)"; // Default Indigo
+                  if (d.deviation > 0.8) bgColor = "rgba(251, 113, 133, 0.9)"; // Center Red
+                  else if (d.deviation > 0.4) bgColor = "rgba(251, 113, 133, 0.5)"; // Mid Light Red
+                  else if (d.deviation > 0.1) bgColor = "rgba(192, 132, 252, 0.45)"; // Outer Purple
                   
                   return (
                     <div key={i} className="h-cell overlay-cell" style={{ background: bgColor }}>
