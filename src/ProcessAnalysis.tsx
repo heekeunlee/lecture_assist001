@@ -359,7 +359,7 @@ const SankeyProcessFlow = () => {
   const col3 = ['Temp Layer #3', 'P-L1', 'Slit #1', 'Vibe', 'Heat'];
 
   const renderLinks = () => {
-    const links = [];
+    const links: any[] = [];
     
     // Layer 1 -> 2 (Dense Mesh)
     col1.forEach((_, i) => {
