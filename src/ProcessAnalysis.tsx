@@ -362,25 +362,25 @@ const ProcessAnalysis = () => {
         </div>
         <div className="heatmap-plan-overlay-container">
           <div className="glass-rect heatmap-overlay">
+            {/* Axis Labels */}
             <div className="coordinate origin">(0, 0)</div>
             <div className="coordinate x-max">2,880mm</div>
             <div className="coordinate y-max">3,130mm</div>
-            <div className="axis-label x">X-Axis Position</div>
-            <div className="axis-label y">Y-Axis Position</div>
+            <div className="axis-label x">X-Axis Position (mm)</div>
+            <div className="axis-label y">Y-Axis Position (mm)</div>
             
+            {/* The Integrated Heatmap + Sites Overlay */}
             <div className="heatmap-v2-grid overlay">
               {cdData.map((d, i) => {
-                // Red-Purple Palette mapping
-                // High Deviation (>0.45) -> Red
-                // Normal -> Purple/Violet
-                // Low -> Indigo
-                let color = "rgba(79, 70, 229, 0.4)"; // Default Indigo/Purple
-                if (d.deviation > 0.45) color = "rgba(239, 68, 68, 0.9)"; // Sharp Red
-                else if (d.deviation > 0.2) color = "rgba(168, 85, 247, 0.7)"; // Purple
-                else if (d.deviation < -0.3) color = "rgba(79, 70, 229, 0.8)"; // Deep Indigo
+                // Red-Purple Palette mapping for background
+                let bgColor = "rgba(79, 70, 229, 0.1)"; // Normal
+                if (d.deviation > 0.45) bgColor = "rgba(239, 68, 68, 0.7)"; // Red Anomaly
+                else if (d.deviation > 0.2) bgColor = "rgba(168, 85, 247, 0.5)"; // Purple Caution
                 
                 return (
-                  <div key={i} className="h-cell" style={{ background: color }} title={`CD: ${d.cd}`}/>
+                  <div key={i} className="h-cell overlay-cell" style={{ background: bgColor }}>
+                    <div className="site-dot" />
+                  </div>
                 );
               })}
             </div>
@@ -392,8 +392,8 @@ const ProcessAnalysis = () => {
           
           <div className="heatmap-legend-v3">
             <div className="l-item-v3"><div className="c-box red-bold"/> Critical Anomaly (+0.5um)</div>
-            <div className="l-item-v3"><div className="c-box purple-mid"/> Caution Area</div>
-            <div className="l-item-v3"><div className="c-box indigo-soft"/> Normal / Stable</div>
+            <div className="l-item-v3"><div className="c-box purple-mid"/> Caution Area (+0.2um)</div>
+            <div className="l-item-v3"><div className="c-box indigo-soft"/> Stable Spec Range</div>
           </div>
         </div>
       </section>
@@ -483,11 +483,13 @@ const ProcessAnalysis = () => {
         .stat-pill-v2 strong { font-size: 1.2rem; color: var(--accent); }
         .engineer-comment { display: flex; align-items: center; gap: 8px; font-size: 0.75rem; color: var(--text-secondary); margin-top: auto; padding-top: 1rem; border-top: 1px solid var(--border); }
 
-        .heatmap-plan-overlay-container { display: flex; flex-direction: column; align-items: center; gap: 4rem; margin-top: 1rem; }
-        .heatmap-overlay { width: 450px; border: 2px solid #8b5cf6; }
+        .heatmap-plan-overlay-container { display: flex; flex-direction: column; align-items: center; gap: 4rem; margin-top: 2rem; position: relative; }
+        .heatmap-overlay { width: 500px; height: 555px; border: 3px solid var(--accent); }
         .heatmap-v2-grid.overlay { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(${GRID_COLS}, 1fr); gap: 0; z-index: 5; }
+        .overlay-cell { position: relative; display: flex; align-items: center; justify-content: center; overflow: visible; }
+        .site-dot { width: 2px; height: 2px; background: #94a3b8; border-radius: 50%; opacity: 0.8; z-index: 10; }
         
-        .heatmap-legend-v3 { display: flex; gap: 3rem; background: var(--bg-primary); padding: 1.2rem 2.5rem; border-radius: 50px; border: 1px solid var(--border); box-shadow: var(--shadow); }
+        .heatmap-legend-v3 { display: flex; gap: 3rem; background: var(--bg-primary); padding: 1.5rem 3rem; border-radius: 50px; border: 1px solid var(--border); box-shadow: var(--shadow); }
         .l-item-v3 { display: flex; align-items: center; gap: 10px; font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); }
         .c-box.red-bold { background: #ef4444; }
         .c-box.purple-mid { background: #a855f7; }
