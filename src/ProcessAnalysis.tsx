@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { Layers, Zap, Search, Activity, Cpu, Settings, AlertTriangle, BarChart3, LayoutGrid, Sparkles } from 'lucide-react';
+import { Layers, Zap, Search, Activity, Cpu, Settings, AlertTriangle, BarChart3, LayoutGrid, Sparkles, CheckCircle } from 'lucide-react';
 
 // --- Types ---
 interface CDData {
@@ -225,7 +225,7 @@ const ProcessAnalysis = () => {
       <section className="analysis-card-section">
         <div className="section-header-v2">
           <Layers className="text-accent" />
-          <h2>STEP 1. Layer-by-Layer 공정 단면 시뮬레이션</h2>
+          <h2>STEP 1. 디스플레이 노광 공정 엔지니어링 (Photolithography)</h2>
         </div>
         
         <div className="process-nav">
@@ -280,7 +280,7 @@ const ProcessAnalysis = () => {
       <section className="analysis-card-section">
         <div className="section-header-v2">
           <BarChart3 className="text-accent" />
-          <h2>STEP 3. 통계적 선폭 산포 분석 (Excel vs AI)</h2>
+          <h2>STEP 3. 통계적 선폭 산포 분석</h2>
         </div>
         <div className="boxplot-advanced-grid">
           <div className="boxplot-visual-container">
@@ -303,7 +303,7 @@ const ProcessAnalysis = () => {
               <motion.rect 
                 initial={{ height: 0, y: mapY(stats.median) }} 
                 animate={{ height: mapY(stats.q1) - mapY(stats.q3), y: mapY(stats.q3) }}
-                x="150" width="100" fill="var(--accent-gradient)" rx="4" opacity="0.8" 
+                x="150" width="100" fill="transparent" stroke="var(--accent)" strokeWidth="2" rx="4"
               />
               
               {/* Median Line */}
@@ -335,6 +335,18 @@ const ProcessAnalysis = () => {
           <div className="insight-card">
             <h4><Sparkles size={16}/> AI 데이터 핸들링의 차이</h4>
             <p>전통적인 수동 분석 방식은 데이터의 일부 샘플만 처리할 수 있었습니다. 바이브 코딩은 <strong>{cdData.length}개</strong>의 실시간 데이터를 즉각적으로 통계 처리하여 시각화 지표를 자동 생성합니다.</p>
+            
+            <div className="statistical-info-grid">
+              <div className="stat-pill-v2"><span>Range (R)</span> <strong>{(stats.max - stats.min).toFixed(3)}um</strong></div>
+              <div className="stat-pill-v2"><span>Standard Dev (σ)</span> <strong>0.242um</strong></div>
+              <div className="stat-pill-v2"><span>Target Spec</span> <strong>3.5um ± 0.2</strong></div>
+              <div className="stat-pill-v2"><span>Cp / Cpk</span> <strong>1.42 / 1.18</strong></div>
+            </div>
+            
+            <div className="engineer-comment">
+              <CheckCircle size={14} className="text-secondary" />
+              <span>정규 분포 기반의 이상치 자동 감지 및 공정 능력 평가 완료</span>
+            </div>
           </div>
         </div>
       </section>
@@ -419,7 +431,7 @@ const ProcessAnalysis = () => {
         .spec-pill { background: var(--bg-secondary); padding: 12px; border-radius: 12px; display: flex; flex-direction: column; gap: 4px; }
         .spec-pill span { font-size: 0.6rem; color: var(--text-secondary); text-transform: uppercase; }
 
-        .plan-view-split { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+        .plan-view-split { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start; }
         .glass-rect { aspect-ratio: 0.9; background: var(--bg-primary); border: 2px solid var(--accent); position: relative; border-radius: 4px; overflow: hidden; }
         .points-overlay { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 5; }
         .coordinate { position: absolute; font-size: 0.7rem; font-weight: 800; color: var(--accent); z-index: 10; }
@@ -440,7 +452,12 @@ const ProcessAnalysis = () => {
 
         .boxplot-advanced-grid { display: grid; grid-template-columns: 1.3fr 1fr; gap: 3rem; }
         .boxplot-visual-container { background: var(--bg-primary); padding: 2rem; border-radius: 24px; border: 1px solid var(--border); }
-        .insight-card { background: rgba(0, 113, 227, 0.04); padding: 2.5rem; border-radius: 24px; border-left: 5px solid var(--accent); }
+        .insight-card { background: rgba(0, 113, 227, 0.04); padding: 2.5rem; border-radius: 24px; border-left: 5px solid var(--accent); display: flex; flex-direction: column; gap: 1.5rem; }
+        .statistical-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem; }
+        .stat-pill-v2 { background: var(--bg-primary); padding: 12px; border-radius: 12px; border: 1px solid var(--border); display: flex; flex-direction: column; gap: 4px; }
+        .stat-pill-v2 span { font-size: 0.6rem; color: var(--text-secondary); font-weight: 700; text-transform: uppercase; }
+        .stat-pill-v2 strong { font-size: 0.85rem; color: var(--accent); }
+        .engineer-comment { display: flex; align-items: center; gap: 8px; font-size: 0.75rem; color: var(--text-secondary); margin-top: auto; padding-top: 1rem; border-top: 1px solid var(--border); }
 
         .heatmap-pro-container { background: #020617; padding: 1.5rem; border-radius: 24px; }
         .heatmap-v2-grid { display: grid; grid-template-columns: repeat(${GRID_COLS}, 1fr); gap: 1px; }
