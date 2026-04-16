@@ -53,12 +53,12 @@ const CrossSectionVisual = ({ step }: { step: number }) => {
             <rect key={`metal-${i}`} x={seg.x} y={85} width={seg.w} height={15} fill={layers.metal} />
           ))
         )}
-        
+
         {/* PR (Photoresist) Layer - Dynamic based on process flow */}
         {step === 0 && ( // PR Coating
-          <motion.rect 
+          <motion.rect
             initial={{ width: 0 }} animate={{ width: 300 }} transition={{ duration: 1.5, ease: "easeOut" }}
-            x="50" y="70" height="15" fill={layers.pr} rx="2" 
+            x="50" y="70" height="15" fill={layers.pr} rx="2"
           />
         )}
 
@@ -70,7 +70,7 @@ const CrossSectionVisual = ({ step }: { step: number }) => {
             <rect x="100" y="25" width="40" height="8" fill="white" opacity="0.4" />
             <rect x="250" y="25" width="40" height="8" fill="white" opacity="0.4" />
             {/* UV Beams hitting "exposed" areas */}
-            <motion.path 
+            <motion.path
               initial={{ opacity: 0 }} animate={{ opacity: [0, 1, 0] }} transition={{ repeat: Infinity, duration: 1.2 }}
               d="M120,33 L120,70 M270,33 L270,70" stroke={layers.beam} strokeWidth="3" strokeDasharray="4 2"
             />
@@ -93,7 +93,7 @@ const CrossSectionVisual = ({ step }: { step: number }) => {
               <rect key={`pr-etch-${i}`} x={seg.x} y={70} width={seg.w} height={15} fill={layers.pr} />
             ))}
             {/* Metal islands are already rendered by the "Metal Layer" logic above Step 3 */}
-            <motion.path 
+            <motion.path
               animate={{ opacity: [0.2, 0.6, 0.2] }} transition={{ repeat: Infinity, duration: 1 }}
               d="M100,85 L140,85 M250,85 L290,85" stroke="#ef4444" strokeWidth="2"
             />
@@ -103,19 +103,19 @@ const CrossSectionVisual = ({ step }: { step: number }) => {
         {step === 4 && ( // Strip (PR Is GONE, Metal Islands Remain)
           // No PR here, Metal is rendered by top logic
           <motion.g initial={{ opacity: 1 }} animate={{ opacity: 0 }} transition={{ duration: 1.5 }}>
-             {islands.map((seg, i) => (
-                <rect key={`pr-striping-${i}`} x={seg.x} y={70} width={seg.w} height={15} fill={layers.pr} />
-              ))}
+            {islands.map((seg, i) => (
+              <rect key={`pr-striping-${i}`} x={seg.x} y={70} width={seg.w} height={15} fill={layers.pr} />
+            ))}
           </motion.g>
         )}
 
         {step === 5 && ( // Inspection (Final Pattern + Scanning)
           <>
-            <motion.line 
+            <motion.line
               animate={{ x: [0, 250, 0] }} transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
               x1="75" y1="10" x2="75" y2="100" stroke="#3b82f6" strokeWidth="2" strokeDasharray="5 3"
             />
-            <motion.circle 
+            <motion.circle
               animate={{ x: [0, 250, 0] }} transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
               cx="75" cy="100" r="4" fill="#3b82f6" opacity="0.4"
             />
@@ -135,27 +135,27 @@ const GlassPlanView = ({ data }: { data: CDData[] }) => (
       <div className="coordinate y-max">3,130mm</div>
       <div className="axis-label x">X-Axis Position</div>
       <div className="axis-label y">Y-Axis Position</div>
-      
+
       {/* Show all 1400 measurement points */}
       <svg viewBox="0 0 35 40" className="points-overlay">
         {data.map((d, i) => (
-          <circle 
-            key={i} 
-            cx={d.col} 
-            cy={d.row} 
-            r="0.2" 
-            fill="#d1d5db" 
+          <circle
+            key={i}
+            cx={d.col}
+            cy={d.row}
+            r="0.2"
+            fill="#d1d5db"
             opacity="0.8"
           />
         ))}
       </svg>
-      
+
       <div className="plan-grid">
         {[...Array(12)].map((_, i) => <div key={i} className="plan-line" />)}
       </div>
     </div>
     <div className="plan-info">
-      <h4><LayoutGrid size={14}/> 10.5G Substrate (2,880 x 3,130mm)</h4>
+      <h4><LayoutGrid size={14} /> 10.5G Substrate (2,880 x 3,130mm)</h4>
       <p>Total {data.length} measurement sites mapped</p>
     </div>
   </div>
@@ -164,7 +164,7 @@ const GlassPlanView = ({ data }: { data: CDData[] }) => (
 const SurfaceTopography3D = ({ data }: { data: CDData[] }) => {
   const [rotation, setRotation] = useState({ x: 20, y: 0, z: 0 }); // Initial: Near-plan view
   const [isHovered, setIsHovered] = useState(false);
-  
+
   // High-fidelity Rainbow Scale for Meshing
   const getHeightColor = (deviation: number) => {
     // Map deviation (~ -0.5 to +1.2) to Rainbow Spectrum
@@ -183,12 +183,12 @@ const SurfaceTopography3D = ({ data }: { data: CDData[] }) => {
     if (norm > 0.4) return "#facc15";
     return "#3b82f6";
   };
-  
+
   // Projection logic
   const project = (x: number, y: number, z: number) => {
     const radX = (rotation.x * Math.PI) / 180;
     const radZ = (rotation.z * Math.PI) / 180;
-    
+
     // Simple Isometric-ish projection
     const px = (x - y) * Math.cos(radZ);
     const py = (x + y) * Math.sin(radZ) * Math.cos(radX) - z * Math.sin(radX);
@@ -197,7 +197,7 @@ const SurfaceTopography3D = ({ data }: { data: CDData[] }) => {
 
   const meshRows = 15; // Downsampled for performance/visuals
   const meshCols = 15;
-  
+
   const meshPaths = useMemo(() => {
     const paths = [];
     const stepR = Math.floor(GRID_ROWS / meshRows);
@@ -223,7 +223,7 @@ const SurfaceTopography3D = ({ data }: { data: CDData[] }) => {
         const stroke = getStrokeColor(d1.deviation);
 
         paths.push(
-          <path 
+          <path
             key={`${r}-${c}`}
             d={`M${p1.x},${p1.y} L${p2.x},${p2.y} L${p3.x},${p3.y} L${p4.x},${p4.y} Z`}
             fill={color}
@@ -237,7 +237,7 @@ const SurfaceTopography3D = ({ data }: { data: CDData[] }) => {
   }, [data, rotation]);
 
   return (
-    <div 
+    <div
       className={`topo-3d-card ${isHovered ? 'active' : ''}`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => {
@@ -252,8 +252,8 @@ const SurfaceTopography3D = ({ data }: { data: CDData[] }) => {
       }}
     >
       <div className="topo-header">
-         <h4><Sparkles size={16}/> AI Digital Twin: Real-time 3D Insights</h4>
-         <p>Plan View (Initial) ↔ Spatial Topography (Hover & Move)</p>
+        <h4><Sparkles size={16} /> AI Digital Twin: Real-time 3D Insights</h4>
+        <p>Plan View (Initial) ↔ Spatial Topography (Hover & Move)</p>
       </div>
       <div className="topo-canvas dark">
         <svg viewBox="-150 -100 300 250" className="topo-svg">
@@ -278,6 +278,92 @@ const SurfaceTopography3D = ({ data }: { data: CDData[] }) => {
   );
 };
 
+// --- Industrial Heatmap Component (Step 4) ---
+const IndustrialHeatmap = ({ data }: { data: CDData[] }) => {
+  const getColor = (cd: number) => {
+    // Normalizing CD for the specific palette in the reference image
+    // TARGET_CD is 3.5. We map the range [3.3, 4.8] to colors.
+    const val = (cd - 3.3) / 1.5;
+    const n = Math.max(0, Math.min(1, val));
+
+    if (n < 0.15) return '#102a71'; // Deep Blue (Background)
+    if (n < 0.3) return '#1e40af';  // Blue
+    if (n < 0.45) return '#0ea5e9'; // Cyan
+    if (n < 0.6) return '#22c55e';  // Green
+    if (n < 0.75) return '#eab308'; // Yellow
+    if (n < 0.9) return '#ef4444';  // Red
+    return '#ffffff';               // Peak (White)
+  };
+
+  return (
+    <div className="industrial-monitor-wrapper">
+      <div className="monitor-frame">
+        <div className="monitor-inner-glow" />
+        
+        {/* Header Metadata */}
+        <div className="monitor-header">
+          <div className="monitor-title">
+            OLED SUBSTRATE - DEFECT ANALYSIS [REV. 12C]
+          </div>
+          <div className="monitor-icons">
+            <div className="monitor-token" />
+            <div className="monitor-token" />
+            <div className="monitor-token circle" />
+          </div>
+        </div>
+
+        <div className="monitor-content">
+          {/* Heatmap Grid */}
+          <div className="industrial-heatmap-grid">
+            {data.map((d, i) => (
+              <div 
+                key={i} 
+                className="heatmap-pixel"
+                style={{ backgroundColor: getColor(d.cd) }}
+              />
+            ))}
+          </div>
+
+          {/* Grid Lines Overlay */}
+          <div className="monitor-grid-overlay">
+            {[...Array(5)].map((_, i) => <div key={`v-${i}`} className="grid-line vertical" style={{ left: `${i * 25}%` }} />)}
+            {[...Array(5)].map((_, i) => <div key={`h-${i}`} className="grid-line horizontal" style={{ top: `${i * 25}%` }} />)}
+          </div>
+
+          {/* Axis Labels */}
+          <div className="monitor-labels labels-x">
+            <span>0</span>
+            <span>100</span>
+            <span>200</span>
+            <span>300</span>
+            <span>400</span>
+          </div>
+
+          <div className="monitor-labels labels-y-left">
+            <span>0</span>
+            <span>100</span>
+            <span>200</span>
+            <span>100</span>
+            <span>0</span>
+          </div>
+
+          <div className="monitor-labels labels-y-right">
+            <span>420</span>
+            <span>310</span>
+            <span>200</span>
+            <span>100</span>
+            <span>0</span>
+          </div>
+        </div>
+      </div>
+      
+      <div className="monitor-decoration">
+        <div className="scan-line" />
+      </div>
+    </div>
+  );
+};
+
 // --- AI Diagnostic Result Component ---
 const DiagnosticFactorScanner = () => {
   const [activeFactor, setActiveFactor] = useState(0);
@@ -296,58 +382,58 @@ const DiagnosticFactorScanner = () => {
 
   return (
     <div className="diagnostic-engine-card">
-       <div className="diag-header">
-          <div className="pulse-dot orange" />
-          <h4>AI Deep-Root Diagnostics</h4>
-          <span className="ai-badge">Processing Correlation...</span>
-       </div>
-       
-       <div className="diag-main">
-          {/* Correlation Chart View */}
-          <div className="correlation-view">
-             <div className="y-axis-label">CD Deviation (um)</div>
-             <div className="x-axis-label">{factors[activeFactor].title}</div>
-             <svg viewBox="0 0 200 150" className="corr-svg">
-                {/* Dots simulating correlation */}
-                {Array.from({ length: 30 }).map((_, i) => (
-                  <circle 
-                    key={i} 
-                    cx={30 + i * 5} 
-                    cy={120 - (i * (factors[activeFactor].corr * 3) + Math.random() * 20)} 
-                    r="2" 
-                    fill={factors[activeFactor].impact > 50 ? "#ef4444" : "#3b82f6"} 
-                    opacity="0.6"
-                  />
-                ))}
-                {/* Trend Line */}
-                <line x1="30" y1="110" x2="180" y2={110 - factors[activeFactor].corr * 80} stroke="#f97316" strokeWidth="2" strokeDasharray="4 2" />
-             </svg>
-          </div>
+      <div className="diag-header">
+        <div className="pulse-dot orange" />
+        <h4>AI Deep-Root Diagnostics</h4>
+        <span className="ai-badge">Processing Correlation...</span>
+      </div>
 
-          {/* Influence List */}
-          <div className="influence-list">
-             {factors.map((f, i) => (
-               <div key={i} className={`influence-item ${activeFactor === i ? 'active' : ''}`}>
-                  <div className="inf-header">
-                     <span>{f.title}</span>
-                     <strong>{f.impact}%</strong>
-                  </div>
-                  <div className="inf-bar-bg">
-                     <motion.div 
-                        initial={{ width: 0 }} 
-                        animate={{ width: activeFactor === i ? `${f.impact}%` : '0%' }}
-                        className="inf-bar-fill" 
-                     />
-                  </div>
-               </div>
-             ))}
-          </div>
-       </div>
+      <div className="diag-main">
+        {/* Correlation Chart View */}
+        <div className="correlation-view">
+          <div className="y-axis-label">CD Deviation (um)</div>
+          <div className="x-axis-label">{factors[activeFactor].title}</div>
+          <svg viewBox="0 0 200 150" className="corr-svg">
+            {/* Dots simulating correlation */}
+            {Array.from({ length: 30 }).map((_, i) => (
+              <circle
+                key={i}
+                cx={30 + i * 5}
+                cy={120 - (i * (factors[activeFactor].corr * 3) + Math.random() * 20)}
+                r="2"
+                fill={factors[activeFactor].impact > 50 ? "#ef4444" : "#3b82f6"}
+                opacity="0.6"
+              />
+            ))}
+            {/* Trend Line */}
+            <line x1="30" y1="110" x2="180" y2={110 - factors[activeFactor].corr * 80} stroke="#f97316" strokeWidth="2" strokeDasharray="4 2" />
+          </svg>
+        </div>
 
-       <div className="diag-conclusion">
-          <div className="conclusion-label"><Zap size={14}/> AI Insight Conclusion:</div>
-          <p>{factors[activeFactor].desc}</p>
-       </div>
+        {/* Influence List */}
+        <div className="influence-list">
+          {factors.map((f, i) => (
+            <div key={i} className={`influence-item ${activeFactor === i ? 'active' : ''}`}>
+              <div className="inf-header">
+                <span>{f.title}</span>
+                <strong>{f.impact}%</strong>
+              </div>
+              <div className="inf-bar-bg">
+                <motion.div
+                  initial={{ width: 0 }}
+                  animate={{ width: activeFactor === i ? `${f.impact}%` : '0%' }}
+                  className="inf-bar-fill"
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="diag-conclusion">
+        <div className="conclusion-label"><Zap size={14} /> AI Insight Conclusion:</div>
+        <p>{factors[activeFactor].desc}</p>
+      </div>
     </div>
   );
 };
@@ -355,18 +441,18 @@ const DiagnosticFactorScanner = () => {
 // --- Hyper-Dense Sankey Diagram (AI Traceability Mesh) ---
 const SankeyProcessFlow = () => {
   const col1 = ['Exposure', 'Coating', 'Dev', 'Etch'];
-  const col2 = Array.from({ length: 25 }, (_, i) => `P-${i+100}`);
+  const col2 = Array.from({ length: 25 }, (_, i) => `P-${i + 100}`);
   const col3 = ['Temp Layer #3', 'P-L1', 'Slit #1', 'Vibe', 'Heat'];
 
   const renderLinks = () => {
     const links: any[] = [];
-    
+
     // Layer 1 -> 2 (Dense Mesh)
     col1.forEach((_, i) => {
       col2.forEach((_, j) => {
         const isRoot = (i === 0 && j === 4); // Example root start
         links.push(
-          <path 
+          <path
             key={`l1-${i}-${j}`}
             d={`M 70,${35 + i * 30} C 120,${35 + i * 30} 120,${15 + j * 6} 170,${15 + j * 6}`}
             fill="none"
@@ -384,7 +470,7 @@ const SankeyProcessFlow = () => {
       const targetIdx = Math.floor(i / 5);
       const isRoot = (i === 4 && targetIdx === 0);
       links.push(
-        <path 
+        <path
           key={`l2-${i}`}
           d={`M 230,${15 + i * 6} C 280,${15 + i * 6} 280,${35 + targetIdx * 25} 330,${35 + targetIdx * 25}`}
           fill="none"
@@ -400,7 +486,7 @@ const SankeyProcessFlow = () => {
     col3.forEach((_, i) => {
       const isRoot = (i === 0);
       links.push(
-        <path 
+        <path
           key={`l3-${i}`}
           d={`M 390,${35 + i * 25} C 440,${35 + i * 25} 440,80 500,80`}
           fill="none"
@@ -417,67 +503,67 @@ const SankeyProcessFlow = () => {
 
   return (
     <div className="sankey-card">
-       <div className="sankey-header">
-          <div className="sh-left">
-             <h4><Zap size={18}/> AI Multi-Dimensional Traceability Mesh</h4>
-             <p>Cross-analyzing 500+ correlations: Isolating the 'Center Anomaly' logic thread</p>
-          </div>
-          <div className="sh-status">Status: Deep-Scan Ready</div>
-       </div>
-       <div className="sankey-canvas-box">
-          <svg viewBox="0 0 600 180" className="sankey-svg">
-             <defs>
-               <filter id="orange-glow" x="-50%" y="-50%" width="200%" height="200%">
-                 <feGaussianBlur in="SourceGraphic" stdDeviation="1.5" result="blur" />
-                 <feMerge>
-                   <feMergeNode in="blur" />
-                   <feMergeNode in="SourceGraphic" />
-                 </feMerge>
-               </filter>
-             </defs>
-             
-             {renderLinks()}
+      <div className="sankey-header">
+        <div className="sh-left">
+          <h4><Zap size={18} /> AI Multi-Dimensional Traceability Mesh</h4>
+          <p>Cross-analyzing 500+ correlations: Isolating the 'Center Anomaly' logic thread</p>
+        </div>
+        <div className="sh-status">Status: Deep-Scan Ready</div>
+      </div>
+      <div className="sankey-canvas-box">
+        <svg viewBox="0 0 600 180" className="sankey-svg">
+          <defs>
+            <filter id="orange-glow" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="1.5" result="blur" />
+              <feMerge>
+                <feMergeNode in="blur" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+          </defs>
 
-             {/* Column 1: Stages */}
-             <g transform="translate(60, 0)">
-                <text x="10" y="10" textAnchor="middle" fontSize="9" fontWeight="900" fill="var(--accent)" opacity="0.8">Process Stages</text>
-                {col1.map((item, i) => (
-                  <g key={i} transform={`translate(0, ${35 + i * 30})`}>
-                     <rect x="-40" y="-12" width="70" height="24" rx="6" fill="#f8fafc" stroke="var(--border)" strokeWidth="1.5" />
-                     <text y="4" textAnchor="middle" fontSize="7" fontWeight="900" fill="#334155">{item}</text>
-                  </g>
-                ))}
-             </g>
+          {renderLinks()}
 
-             {/* Column 2: Parameters (Small Dots) */}
-             <g transform="translate(200, 0)">
-                <text x="0" y="10" textAnchor="middle" fontSize="9" fontWeight="900" fill="var(--accent)" opacity="0.8">500+ Parameter Nodes</text>
-                {col2.map((_, i) => (
-                  <circle key={i} cx="0" cy={15 + i * 6} r="2" fill={i === 4 ? "#f97316" : "var(--border)"} filter={i === 4 ? "url(#orange-glow)" : "none"} />
-                ))}
-             </g>
+          {/* Column 1: Stages */}
+          <g transform="translate(60, 0)">
+            <text x="10" y="10" textAnchor="middle" fontSize="9" fontWeight="900" fill="var(--accent)" opacity="0.8">Process Stages</text>
+            {col1.map((item, i) => (
+              <g key={i} transform={`translate(0, ${35 + i * 30})`}>
+                <rect x="-40" y="-12" width="70" height="24" rx="6" fill="#f8fafc" stroke="var(--border)" strokeWidth="1.5" />
+                <text y="4" textAnchor="middle" fontSize="7" fontWeight="900" fill="#334155">{item}</text>
+              </g>
+            ))}
+          </g>
 
-             {/* Column 3: AI Filters */}
-             <g transform="translate(360, 0)">
-                <text x="0" y="10" textAnchor="middle" fontSize="9" fontWeight="900" fill="var(--accent)" opacity="0.8">AI Selected Factors</text>
-                {col3.map((item, i) => (
-                  <g key={i} transform={`translate(0, ${35 + i * 25})`}>
-                     <rect x="-35" y="-10" width="70" height="20" rx="4" fill="var(--bg-primary)" stroke={i === 0 ? "#f97316" : "var(--border)"} strokeWidth={i === 0 ? 2 : 1} />
-                     <text y="3" textAnchor="middle" fontSize="6.5" fontWeight="800" fill={i === 0 ? "#f97316" : "var(--text-secondary)"}>{item}</text>
-                  </g>
-                ))}
-             </g>
+          {/* Column 2: Parameters (Small Dots) */}
+          <g transform="translate(200, 0)">
+            <text x="0" y="10" textAnchor="middle" fontSize="9" fontWeight="900" fill="var(--accent)" opacity="0.8">500+ Parameter Nodes</text>
+            {col2.map((_, i) => (
+              <circle key={i} cx="0" cy={15 + i * 6} r="2" fill={i === 4 ? "#f97316" : "var(--border)"} filter={i === 4 ? "url(#orange-glow)" : "none"} />
+            ))}
+          </g>
 
-             {/* Column 4: Outcome */}
-             <g transform="translate(530, 0)">
-                <text x="0" y="10" textAnchor="middle" fontSize="9" fontWeight="900" fill="#ef4444" opacity="0.8">Final Decision</text>
-                <g transform="translate(0, 80)">
-                   <rect x="-35" y="-15" width="70" height="30" rx="6" fill="#1e293b" />
-                   <text y="5" textAnchor="middle" fontSize="7" fontWeight="900" fill="white">Center CD Anomaly</text>
-                </g>
-             </g>
-          </svg>
-       </div>
+          {/* Column 3: AI Filters */}
+          <g transform="translate(360, 0)">
+            <text x="0" y="10" textAnchor="middle" fontSize="9" fontWeight="900" fill="var(--accent)" opacity="0.8">AI Selected Factors</text>
+            {col3.map((item, i) => (
+              <g key={i} transform={`translate(0, ${35 + i * 25})`}>
+                <rect x="-35" y="-10" width="70" height="20" rx="4" fill="var(--bg-primary)" stroke={i === 0 ? "#f97316" : "var(--border)"} strokeWidth={i === 0 ? 2 : 1} />
+                <text y="3" textAnchor="middle" fontSize="6.5" fontWeight="800" fill={i === 0 ? "#f97316" : "var(--text-secondary)"}>{item}</text>
+              </g>
+            ))}
+          </g>
+
+          {/* Column 4: Outcome */}
+          <g transform="translate(530, 0)">
+            <text x="0" y="10" textAnchor="middle" fontSize="9" fontWeight="900" fill="#ef4444" opacity="0.8">Final Decision</text>
+            <g transform="translate(0, 80)">
+              <rect x="-35" y="-15" width="70" height="30" rx="6" fill="#1e293b" />
+              <text y="5" textAnchor="middle" fontSize="7" fontWeight="900" fill="white">Center CD Anomaly</text>
+            </g>
+          </g>
+        </svg>
+      </div>
     </div>
   );
 };
@@ -494,7 +580,7 @@ const DistributionChart = ({ data, stats }: { data: CDData[], stats: any }) => {
   const mean = stats.avg;
   const stdDev = 0.5; // Fixed for a broad, perfect curve as requested
   const points = 60;
-  
+
   const gaussian = (x: number) => {
     return Math.exp(-0.5 * Math.pow((x - mean) / stdDev, 2));
   };
@@ -509,49 +595,49 @@ const DistributionChart = ({ data, stats }: { data: CDData[], stats: any }) => {
   return (
     <div className="dist-chart-container">
       <svg viewBox={`0 0 ${width} ${height}`} className="dist-svg">
-          {/* Grid lines */}
-          {[2, 3, 4, 5, 6].map(v => (
-            <g key={v}>
-              <line x1={mapX(v)} y1={padding} x2={mapX(v)} y2={height-padding} stroke="var(--border)" strokeDasharray="3 2" />
-              <text x={mapX(v)} y={height-padding+20} fontSize="10" textAnchor="middle" fill="var(--text-secondary)">{v}um</text>
-            </g>
-          ))}
-
-          {/* Scatter dots (Jitter) */}
-          {data.filter((_, i) => i % 2 === 0).map((d, i) => (
-            <circle 
-              key={i} 
-              cx={mapX(d.cd)} 
-              cy={padding + Math.random() * (height - 2 * padding)} 
-              r="1.5" 
-              fill="var(--accent)" 
-              opacity="0.1" 
-            />
-          ))}
-
-          {/* Density Curve */}
-          <path d={densityPath} fill="rgba(0, 113, 227, 0.1)" stroke="var(--accent)" strokeWidth="2.5" />
-
-          {/* Consistent Boxplot Overlay (Matching Step 3) */}
-          {/* Consistent Boxplot Overlay (Matching Step 3) */}
-          <g transform={`translate(0, ${height/2})`}>
-            {/* Whiskers */}
-            <line x1={mapX(stats.min)} y1="0" x2={mapX(stats.max)} y2="0" stroke="var(--accent)" strokeWidth="1.5" opacity="0.6" />
-            
-            {/* Box (Extra Slim: height 20) */}
-            <rect 
-              x={mapX(stats.q1)} y="-10" 
-              width={mapX(stats.q3) - mapX(stats.q1)} height="20" 
-              fill="transparent" stroke="var(--accent)" strokeWidth="2" rx="2"
-            />
-            {/* Median Line */}
-            <line x1={mapX(stats.median)} y1="-10" x2={mapX(stats.median)} y2="10" stroke="var(--accent)" strokeWidth="3" />
-            
-            {/* Mean Line (Orange Bar as requested) */}
-            <line x1={mapX(stats.avg)} y1="-15" x2={mapX(stats.avg)} y2="15" stroke="#f97316" strokeWidth="3" strokeDasharray="2 1" />
+        {/* Grid lines */}
+        {[2, 3, 4, 5, 6].map(v => (
+          <g key={v}>
+            <line x1={mapX(v)} y1={padding} x2={mapX(v)} y2={height - padding} stroke="var(--border)" strokeDasharray="3 2" />
+            <text x={mapX(v)} y={height - padding + 20} fontSize="10" textAnchor="middle" fill="var(--text-secondary)">{v}um</text>
           </g>
+        ))}
 
-          <text x={width/2} y="30" fontSize="12" fontWeight="900" textAnchor="middle" fill="var(--text-primary)">CD Distribution & Density Analysis</text>
+        {/* Scatter dots (Jitter) */}
+        {data.filter((_, i) => i % 2 === 0).map((d, i) => (
+          <circle
+            key={i}
+            cx={mapX(d.cd)}
+            cy={padding + Math.random() * (height - 2 * padding)}
+            r="1.5"
+            fill="var(--accent)"
+            opacity="0.1"
+          />
+        ))}
+
+        {/* Density Curve */}
+        <path d={densityPath} fill="rgba(0, 113, 227, 0.1)" stroke="var(--accent)" strokeWidth="2.5" />
+
+        {/* Consistent Boxplot Overlay (Matching Step 3) */}
+        {/* Consistent Boxplot Overlay (Matching Step 3) */}
+        <g transform={`translate(0, ${height / 2})`}>
+          {/* Whiskers */}
+          <line x1={mapX(stats.min)} y1="0" x2={mapX(stats.max)} y2="0" stroke="var(--accent)" strokeWidth="1.5" opacity="0.6" />
+
+          {/* Box (Extra Slim: height 20) */}
+          <rect
+            x={mapX(stats.q1)} y="-10"
+            width={mapX(stats.q3) - mapX(stats.q1)} height="20"
+            fill="transparent" stroke="var(--accent)" strokeWidth="2" rx="2"
+          />
+          {/* Median Line */}
+          <line x1={mapX(stats.median)} y1="-10" x2={mapX(stats.median)} y2="10" stroke="var(--accent)" strokeWidth="3" />
+
+          {/* Mean Line (Orange Bar as requested) */}
+          <line x1={mapX(stats.avg)} y1="-15" x2={mapX(stats.avg)} y2="15" stroke="#f97316" strokeWidth="3" strokeDasharray="2 1" />
+        </g>
+
+        <text x={width / 2} y="30" fontSize="12" fontWeight="900" textAnchor="middle" fill="var(--text-primary)">CD Distribution & Density Analysis</text>
       </svg>
     </div>
   );
@@ -562,19 +648,19 @@ const ProcessAnalysis = () => {
 
   const cdData = useMemo(() => {
     const data: CDData[] = [];
-    const maxDist = Math.sqrt(Math.pow(GRID_ROWS/2, 2) + Math.pow(GRID_COLS/2, 2));
-    
+    const maxDist = Math.sqrt(Math.pow(GRID_ROWS / 2, 2) + Math.pow(GRID_COLS / 2, 2));
+
     for (let r = 0; r < GRID_ROWS; r++) {
       for (let c = 0; c < GRID_COLS; c++) {
-        const centerDist = Math.sqrt(Math.pow(r - GRID_ROWS/2, 2) + Math.pow(c - GRID_COLS/2, 2));
-        
+        const centerDist = Math.sqrt(Math.pow(r - GRID_ROWS / 2, 2) + Math.pow(c - GRID_COLS / 2, 2));
+
         // Strong Radial Effect (Concentric)
         const radialEffect = (1 - (centerDist / maxDist)) * 1.2;
         const edgeEffect = (r < 3 || r > GRID_ROWS - 4 || c < 3 || c > GRID_COLS - 4) ? 0.3 : 0;
-        
+
         let noise = (Math.random() - 0.5) * 0.2;
         const cd = TARGET_CD + radialEffect - edgeEffect + noise;
-        
+
         data.push({
           row: r, col: c,
           x: (c * SUBSTRATE_WIDTH) / GRID_COLS,
@@ -595,7 +681,7 @@ const ProcessAnalysis = () => {
     const q1 = sorted[Math.floor(sorted.length * 0.25)];
     const q3 = sorted[Math.floor(sorted.length * 0.75)];
     const avg = sorted.reduce((a, b) => a + b, 0) / sorted.length;
-    const outliers = cdData.filter(d => d.cd < q1 - 1.5*(q3-q1) || d.cd > q3 + 1.5*(q3-q1));
+    const outliers = cdData.filter(d => d.cd < q1 - 1.5 * (q3 - q1) || d.cd > q3 + 1.5 * (q3 - q1));
     return { min, max, median, q1, q3, avg, outliers };
   }, [cdData]);
 
@@ -623,7 +709,7 @@ const ProcessAnalysis = () => {
           <Layers className="text-accent" />
           <h2>STEP 1. 디스플레이 노광 공정 엔지니어링 (Photolithography)</h2>
         </div>
-        
+
         <div className="process-nav">
           {steps.map((s, i) => (
             <button key={i} className={`nav-item ${selectedStep === i ? 'active' : ''}`} onClick={() => setSelectedStep(i)}>
@@ -635,7 +721,7 @@ const ProcessAnalysis = () => {
 
         <div className="schematic-layout">
           <div className="schematic-box">
-             <CrossSectionVisual step={selectedStep} />
+            <CrossSectionVisual step={selectedStep} />
           </div>
           <div className="process-info-box">
             <h3>{steps[selectedStep].title} 상세 분석</h3>
@@ -688,34 +774,34 @@ const ProcessAnalysis = () => {
                   <text x="50" y={mapY(v) + 4} fontSize="10" textAnchor="end" fill="var(--text-secondary)">{v}</text>
                 </g>
               ))}
-              
+
               {/* Axis Labels */}
               <text x="15" y="150" transform="rotate(-90, 15, 150)" fontSize="11" fontWeight="800" fill="var(--accent)" textAnchor="middle">CD (um)</text>
               <text x="200" y="325" fontSize="11" fontWeight="800" fill="var(--accent)" textAnchor="middle">Total Population (All Sites)</text>
-              
+
               <line x1="60" y1="20" x2="60" y2="300" stroke="var(--text-primary)" strokeWidth="1.5" />
               <line x1="60" y1="300" x2="350" y2="300" stroke="var(--text-primary)" strokeWidth="1.5" />
-              
+
               {/* Whiskers */}
               <line x1="185" y1={mapY(stats.max)} x2="215" y2={mapY(stats.max)} stroke="var(--accent)" strokeWidth="2" />
               <line x1="200" y1={mapY(stats.max)} x2="200" y2={mapY(stats.q3)} stroke="var(--accent)" strokeWidth="2" />
-              
+
               {/* Single Slim Box (Corrected & Consolidated) */}
-              <motion.rect 
-                initial={{ height: 0, y: mapY(stats.median) }} 
+              <motion.rect
+                initial={{ height: 0, y: mapY(stats.median) }}
                 animate={{ height: mapY(stats.q1) - mapY(stats.q3), y: mapY(stats.q3) }}
                 x="180" width="40" fill="transparent" stroke="var(--accent)" strokeWidth="2" rx="3"
               />
-              
+
               {/* Median Line */}
               <line x1="180" y1={mapY(stats.median)} x2="220" y2={mapY(stats.median)} stroke="var(--accent)" strokeWidth="3" />
-              
+
               <line x1="200" y1={mapY(stats.q1)} x2="200" y2={mapY(stats.min)} stroke="var(--accent)" strokeWidth="2" />
               <line x1="185" y1={mapY(stats.min)} x2="215" y2={mapY(stats.min)} stroke="var(--accent)" strokeWidth="2" />
 
               {/* Mean Marker (Orange Bar) */}
               <line x1="180" y1={mapY(stats.avg)} x2="220" y2={mapY(stats.avg)} stroke="#f97316" strokeWidth="3" strokeDasharray="3 2" />
-              
+
               {/* Annotation Labels */}
               <g fontSize="11" fontWeight="700" fill="var(--text-primary)">
                 <text x="260" y={mapY(stats.max)}>Max: {stats.max}</text>
@@ -734,16 +820,16 @@ const ProcessAnalysis = () => {
             </svg>
           </div>
           <div className="insight-card">
-            <h4><Sparkles size={16}/> AI 데이터 핸들링의 차이</h4>
+            <h4><Sparkles size={16} /> AI 데이터 핸들링의 차이</h4>
             <p>전통적인 수동 분석 방식은 데이터의 일부 샘플만 처리할 수 있었습니다. 바이브 코딩은 <strong>{cdData.length}개</strong>의 실시간 데이터를 즉각적으로 통계 처리하여 시각화 지표를 자동 생성합니다.</p>
-            
+
             <div className="statistical-info-grid">
               <div className="stat-pill-v2"><span>Range (R)</span> <strong>{(stats.max - stats.min).toFixed(3)}um</strong></div>
               <div className="stat-pill-v2"><span>Standard Dev (σ)</span> <strong>0.242um</strong></div>
               <div className="stat-pill-v2"><span>Target Spec</span> <strong>3.5um ± 0.2</strong></div>
               <div className="stat-pill-v2"><span>Cp / Cpk</span> <strong>1.42 / 1.18</strong></div>
             </div>
-            
+
             <div className="engineer-comment">
               <CheckCircle size={14} className="text-secondary" />
               <span>정규 분포 기반의 이상치 자동 감지 및 공정 능력 평가 완료</span>
@@ -758,87 +844,41 @@ const ProcessAnalysis = () => {
           <h2>STEP 4. AI를 활용한 데이터 시각화 처리 예시</h2>
         </div>
         <div className="advanced-stats-grid">
-          {/* Left: Pastel Heatmap Overlay */}
+          {/* Left: Industrial Monitor Heatmap */}
           <div className="heatmap-column">
-            <div className="glass-rect heatmap-overlay vivid glowing">
-              <div className="coordinate origin">(0, 0)</div>
-              <div className="coordinate x-max">2,880mm</div>
-              <div className="coordinate y-max">3,130mm</div>
-              <div className="axis-label x">X Position</div>
-              <div className="axis-label y">Y Position</div>
-              
-              {/* Vivid Rainbow Heatmap Layer (Stylish Pro Version) */}
-              <div className="soccer-heatmap-layer">
-                 <div className="glow-circle vivid-core" />
-                 <div className="glow-circle vivid-mid" />
-                 <div className="glow-circle vivid-outer" />
-                 {/* Technical Blueprint Isolines (Styled with Filter) */}
-                 <svg viewBox="0 0 100 100" className="contour-svg-overlay">
-                    <defs>
-                      <filter id="contour-relief">
-                        <feDropShadow dx="0" dy="0.5" stdDeviation="0.4" floodOpacity="0.3" />
-                      </filter>
-                    </defs>
-                    <g filter="url(#contour-relief)">
-                      <path d="M50,15 C80,17 93,38 91,62 C89,88 55,94 38,90 C18,85 12,62 16,38 C20,15 35,12 50,15 Z" className="c-path r1" />
-                      <path d="M50,22 C75,24 85,42 83,62 C81,82 55,87 42,84 C25,80 20,62 23,42 C26,22 38,20 50,22 Z" className="c-path r2" />
-                      <path d="M50,30 C68,32 75,45 73,60 C71,75 55,80 46,77 C35,74 28,62 30,47 C32,32 42,28 50,30 Z" className="c-path r3" />
-                      <path d="M50,38 C62,39 68,48 66,58 C64,68 55,72 49,70 C42,68 36,60 38,50 C40,40 45,37 50,38 Z" className="c-path r4" />
-                    </g>
-                    {/* Floating Labels */}
-                    <g fontSize="2.5" fontWeight="900" fill="rgba(0,0,0,0.6)" className="contour-labels">
-                       <text x="50" y="16">+0.2um</text>
-                       <text x="50" y="23">+0.4um</text>
-                       <text x="50" y="31">+0.6um</text>
-                       <text x="50" y="39">+0.8um</text>
-                    </g>
-                 </svg>
-              </div>
-
-              {/* The Technical Site Dots (Layered on top) */}
-              <div className="heatmap-v2-grid dots-only">
-                {cdData.map((_, i) => (
-                  <div key={i} className="h-cell overlay-cell">
-                    <div className="heatmap-dot technical" />
-                  </div>
-                ))}
-              </div>
-
-              <div className="plan-grid pro">
-                {[...Array(8)].map((_, i) => <div key={i} className="plan-line" />)}
-              </div>
-            </div>
-            <div className="heatmap-legend-v4">
-              <div className="l-item-v4"><div className="c-box h-map-red"/> Peak Anomaly (High CD)</div>
-              <div className="l-item-v4"><div className="c-box h-map-yellow"/> Transition Zone</div>
-              <div className="l-item-v4"><div className="c-box h-map-green"/> Nominal Spec Area</div>
-              <div className="l-item-v4"><div className="c-box h-map-blue"/> Lower Limit Boundary</div>
+            <IndustrialHeatmap data={cdData} />
+            
+            <div className="heatmap-legend-v4 industrial-style">
+              <div className="l-item-v4"><div className="c-box h-map-peak" /> Peak Critical Defect</div>
+              <div className="l-item-v4"><div className="c-box h-map-high" /> High Risk Region</div>
+              <div className="l-item-v4"><div className="c-box h-map-nominal" /> Nominal Process Range</div>
+              <div className="l-item-v4"><div className="c-box h-map-bg" /> Baseline Substrate</div>
             </div>
           </div>
 
           {/* Right: Distribution Analysis */}
           <div className="distribution-column">
-             <DistributionChart data={cdData} stats={stats} />
-             <div className="dist-insight">
-                <p><Sparkles size={14}/> <strong>Kernel Density Estimation:</strong> 1,400개 전수 데이터를 활용한 비모수적 밀도 추정으로 공정의 안정성 및 멀티 모달(Multi-modal) 분포 자동 감지.</p>
-             </div>
+            <DistributionChart data={cdData} stats={stats} />
+            <div className="dist-insight">
+              <p><Sparkles size={14} /> <strong>Kernel Density Estimation:</strong> 1,400개 전수 데이터를 활용한 비모수적 밀도 추정으로 공정의 안정성 및 멀티 모달(Multi-modal) 분포 자동 감지.</p>
+            </div>
           </div>
         </div>
 
         {/* New 3rd Visualization Row: The WOW Factor */}
         <div className="wow-visualization-row">
-           <SurfaceTopography3D data={cdData} />
-           <div className="it-insight-card">
-              <div className="insight-header"><Zap size={20}/> Why AI Visualization?</div>
-              <div className="insight-body">
-                <p>전통적인 방식은 데이터를 '숫자'로만 인식하지만, AI 모델은 데이터를 **'공간적 실체'**로 재구성합니다. </p>
-                <ul className="ai-feature-list">
-                  <li><strong>Spatial Anomaly Mapping:</strong> 3D 공간 상의 편곡점(Inflection points) 실시간 감지</li>
-                  <li><strong>Correlation Rendering:</strong> 변수 간의 입체적 상관계수 시각화</li>
-                  <li><strong>Predictive Topography:</strong> 현재 추세 기반의 미래 시점 변형 예측</li>
-                </ul>
-              </div>
-           </div>
+          <SurfaceTopography3D data={cdData} />
+          <div className="it-insight-card">
+            <div className="insight-header"><Zap size={20} /> Why AI Visualization?</div>
+            <div className="insight-body">
+              <p>전통적인 방식은 데이터를 '숫자'로만 인식하지만, AI 모델은 데이터를 **'공간적 실체'**로 재구성합니다. </p>
+              <ul className="ai-feature-list">
+                <li><strong>Spatial Anomaly Mapping:</strong> 3D 공간 상의 편곡점(Inflection points) 실시간 감지</li>
+                <li><strong>Correlation Rendering:</strong> 변수 간의 입체적 상관계수 시각화</li>
+                <li><strong>Predictive Topography:</strong> 현재 추세 기반의 미래 시점 변형 예측</li>
+              </ul>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -861,7 +901,7 @@ const ProcessAnalysis = () => {
               <p>기판 중심부의 베이킹 온도가 타 영역 대비 **0.8°C 높게** 유지됨에 따라 CD가 상향 편향되는 경향을 보입니다.</p>
               <div className="a-tag">Impact: 68% (Critical)</div>
             </div>
-            
+
             <div className="a-card pro-insight border-blue">
               <div className="a-card-header text-blue"><Layers size={24} /> Chemical Fluid Dynamics</div>
               <p>슬릿 노즐의 중심부 토출 압력이 불균일하여 약액 정체 시간이 **1.2초 지연**됨을 유체 시뮬레이션 결과 감지하였습니다.</p>
@@ -871,16 +911,16 @@ const ProcessAnalysis = () => {
         </div>
 
         <div className="summary-banner">
-           <div className="banner-content">
-              <h4>Engineering Decision Support:</h4>
-              <p>AI 진단 결과에 따라 **'중심부 냉각 채널 노즐 압력 15% 상향'** 및 **'베이킹 프로파일 2구역 온도 0.5도 하향'** 조치를 권고합니다.</p>
-           </div>
-           <button className="apply-btn">자동 설비 최적화 적용 (Auto-Optimize)</button>
+          <div className="banner-content">
+            <h4>Engineering Decision Support:</h4>
+            <p>AI 진단 결과에 따라 **'중심부 냉각 채널 노즐 압력 15% 상향'** 및 **'베이킹 프로파일 2구역 온도 0.5도 하향'** 조치를 권고합니다.</p>
+          </div>
+          <button className="apply-btn">자동 설비 최적화 적용 (Auto-Optimize)</button>
         </div>
 
         {/* Sankey Traceability Row */}
         <div className="trace-row">
-           <SankeyProcessFlow />
+          <SankeyProcessFlow />
         </div>
       </section>
 
@@ -935,31 +975,42 @@ const ProcessAnalysis = () => {
         .engineer-comment { display: flex; align-items: center; gap: 8px; font-size: 0.75rem; color: var(--text-secondary); margin-top: auto; padding-top: 1rem; border-top: 1px solid var(--border); }
 
         .advanced-stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start; }
-        .heatmap-column { display: flex; flex-direction: column; align-items: center; gap: 2rem; }
-        .heatmap-overlay.vivid { width: 100%; max-width: 400px; aspect-ratio: 0.9; border: 2px solid var(--border); background: #ffffff; position: relative; overflow: hidden; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
-        .soccer-heatmap-layer { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; z-index: 2; overflow: hidden; }
-        .glow-circle { position: absolute; border-radius: 40px; filter: blur(45px); opacity: 0.85; }
-        .glow-circle.vivid-core { width: 160px; height: 160px; background: radial-gradient(circle, #ff0000 0%, #ff4500 70%, transparent 100%); z-index: 5; opacity: 0.95; }
-        .glow-circle.vivid-mid { width: 320px; height: 320px; background: radial-gradient(circle, #ffff00 0%, #adff2f 40%, #32cd32 70%, transparent 100%); z-index: 4; opacity: 0.8; }
-        .glow-circle.vivid-outer { width: 500px; height: 500px; background: radial-gradient(circle, #00ced1 0%, #1e90ff 40%, #4b0082 80%, transparent 100%); z-index: 3; opacity: 0.6; }
-        .contour-svg-overlay { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 6; pointer-events: none; }
-        .c-path { fill: none; stroke: rgba(255, 255, 255, 0.4); stroke-width: 0.5; stroke-dasharray: 2 1; }
-        .c-path.r1 { stroke-opacity: 0.6; stroke-width: 0.8; stroke-dasharray: none; }
-        .c-path.r2 { stroke-opacity: 0.7; }
-        .c-path.r3 { stroke-opacity: 0.8; }
-        .c-path.r4 { stroke-opacity: 0.9; }
-        .contour-labels { pointer-events: none; opacity: 0.6; }
+        /* Industrial Monitor Styles */
+        .industrial-monitor-wrapper { width: 100%; max-width: 500px; padding: 20px; background: #0f172a; border-radius: 12px; position: relative; }
+        .monitor-frame { 
+          border: 4px solid #00e5ff; border-radius: 8px; position: relative; padding: 10px;
+          box-shadow: 0 0 20px rgba(0, 229, 255, 0.4), inset 0 0 15px rgba(0, 229, 255, 0.2);
+          background: #020617; overflow: hidden;
+        }
+        .monitor-inner-glow { position: absolute; inset: 0; pointer-events: none; box-shadow: inset 0 0 40px rgba(0, 229, 255, 0.1); }
+        .monitor-header { display: flex; justify-content: space-between; align-items: center; padding: 4px 10px; border-bottom: 1px solid rgba(0, 229, 255, 0.3); margin-bottom: 10px; }
+        .monitor-title { font-size: 0.65rem; font-weight: 800; color: #00e5ff; letter-spacing: 1px; font-family: monospace; }
+        .monitor-icons { display: flex; gap: 6px; }
+        .monitor-token { width: 10px; height: 10px; border: 1px solid #00e5ff; }
+        .monitor-token.circle { border-radius: 50%; opacity: 0.6; }
         
-        .heatmap-v2-grid.dots-only { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(${GRID_COLS}, 1fr); gap: 0; z-index: 10; pointer-events: none; }
-        .heatmap-dot.technical { width: 2px; height: 2px; background: #475569; opacity: 0.4; }
-        .plan-grid.pro { opacity: 0.15; z-index: 15; pointer-events: none; }
+        .monitor-content { position: relative; padding: 10px 40px 40px 40px; }
+        .industrial-heatmap-grid { display: grid; grid-template-columns: repeat(${GRID_COLS}, 1fr); gap: 0; aspect-ratio: ${GRID_COLS}/${GRID_ROWS}; }
+        .heatmap-pixel { width: 100%; height: 100%; border: 0.1px solid rgba(0,0,0,0.1); }
         
-        .heatmap-legend-v4 { display: flex; flex-direction: column; gap: 0.8rem; background: var(--bg-secondary); padding: 1.5rem; border-radius: 20px; width: 100%; border: 1px solid var(--border); }
-        .l-item-v4 { display: flex; align-items: center; gap: 12px; font-size: 0.78rem; font-weight: 800; color: var(--text-secondary); }
-        .c-box.h-map-red { width: 12px; height: 12px; background: #ff0000; border-radius: 3px; box-shadow: 0 0 8px #ff0000; }
-        .c-box.h-map-yellow { width: 12px; height: 12px; background: #ffff00; border-radius: 3px; }
-        .c-box.h-map-green { width: 12px; height: 12px; background: #32cd32; border-radius: 3px; }
-        .c-box.h-map-blue { width: 12px; height: 12px; background: #1e90ff; border-radius: 3px; }
+        .monitor-grid-overlay { position: absolute; inset: 10px 40px 40px 40px; pointer-events: none; }
+        .grid-line { position: absolute; background: rgba(0, 229, 255, 0.15); }
+        .grid-line.vertical { width: 1px; height: 100%; }
+        .grid-line.horizontal { width: 100%; height: 1px; }
+
+        .monitor-labels { position: absolute; font-family: monospace; font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.7); display: flex; justify-content: space-between; }
+        .labels-x { bottom: 15px; left: 40px; right: 40px; }
+        .labels-y-left { top: 10px; bottom: 40px; left: 10px; flex-direction: column; }
+        .labels-y-right { top: 10px; bottom: 40px; right: 10px; flex-direction: column; text-align: right; }
+
+        .scan-line { position: absolute; top: 0; left: 0; width: 100%; height: 2px; background: rgba(0, 229, 255, 0.1); animation: scan 4s linear infinite; pointer-events: none; }
+        @keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
+
+        .industrial-style { margin-top: 1rem; background: #020617 !important; border-color: #00e5ff !important; border-radius: 8px !important; }
+        .c-box.h-map-peak { width: 12px; height: 12px; background: #ffffff; border-radius: 2px; box-shadow: 0 0 8px #ffffff; }
+        .c-box.h-map-high { width: 12px; height: 12px; background: #ef4444; border-radius: 2px; }
+        .c-box.h-map-nominal { width: 12px; height: 12px; background: #22c55e; border-radius: 2px; }
+        .c-box.h-map-bg { width: 12px; height: 12px; background: #102a71; border-radius: 2px; }
 
         .dist-chart-container { background: var(--bg-primary); border: 1px solid var(--border); border-radius: 24px; padding: 1rem; box-shadow: var(--shadow); }
         .dist-insight { margin-top: 1.5rem; padding: 1.5rem; background: rgba(0, 113, 227, 0.05); border-radius: 16px; font-size: 0.85rem; line-height: 1.6; border-left: 4px solid var(--accent); }
