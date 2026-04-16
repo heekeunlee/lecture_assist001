@@ -127,7 +127,7 @@ const CrossSectionVisual = ({ step }: { step: number }) => {
   );
 };
 
-const GlassPlanView = () => (
+const GlassPlanView = ({ data }: { data: CDData[] }) => (
   <div className="glass-plan-container">
     <div className="glass-rect">
       <div className="coordinate origin">(0, 0)</div>
@@ -135,13 +135,28 @@ const GlassPlanView = () => (
       <div className="coordinate y-max">3,130mm</div>
       <div className="axis-label x">X-Axis Position</div>
       <div className="axis-label y">Y-Axis Position</div>
+      
+      {/* Show all 1400 measurement points */}
+      <svg viewBox="0 0 35 40" className="points-overlay">
+        {data.map((d, i) => (
+          <circle 
+            key={i} 
+            cx={d.col} 
+            cy={d.row} 
+            r="0.2" 
+            fill={Math.abs(d.deviation) > 0.4 ? "#ff4d4d" : "var(--accent)"} 
+            opacity="0.6"
+          />
+        ))}
+      </svg>
+      
       <div className="plan-grid">
         {[...Array(12)].map((_, i) => <div key={i} className="plan-line" />)}
       </div>
     </div>
     <div className="plan-info">
-      <h4><LayoutGrid size={14}/> 10.5G Substrate Plan View</h4>
-      <p>실시간 센서 기반 전 영역 고해상도 품질 매핑</p>
+      <h4><LayoutGrid size={14}/> 10.5G Substrate (2,880 x 3,130mm)</h4>
+      <p>Total {data.length} measurement sites mapped</p>
     </div>
   </div>
 );
@@ -187,6 +202,13 @@ const ProcessAnalysis = () => {
     const outliers = cdData.filter(d => d.cd < q1 - 1.5*(q3-q1) || d.cd > q3 + 1.5*(q3-q1));
     return { min, max, median, q1, q3, avg, outliers };
   }, [cdData]);
+
+  // Helper to map CD values to Y coordinate (0-300px scale)
+  const mapY = (val: number) => {
+    const minRange = 2.5;
+    const maxRange = 5.0;
+    return 300 - ((val - minRange) / (maxRange - minRange)) * 250;
+  };
 
   const steps = [
     { title: "PR Coating", desc: "감광액 도포 및 Soft Bake", icon: <Layers /> },
@@ -237,7 +259,7 @@ const ProcessAnalysis = () => {
           <h2>STEP 2. 기판 평면도 및 좌표계 기반 샘플링</h2>
         </div>
         <div className="plan-view-split">
-          <GlassPlanView />
+          <GlassPlanView data={cdData} />
           <div className="data-table-preview">
             <div className="table-header">Raw Data (Top 100 / {cdData.length})</div>
             <div className="scroll-table-box">
@@ -262,35 +284,51 @@ const ProcessAnalysis = () => {
         </div>
         <div className="boxplot-advanced-grid">
           <div className="boxplot-visual-container">
-            <svg viewBox="0 0 400 320" className="box-svg">
-              <line x1="60" y1="20" x2="60" y2="280" stroke="var(--border)" />
-              <line x1="60" y1="280" x2="350" y2="280" stroke="var(--border)" />
+            <svg viewBox="0 0 400 350" className="box-svg">
+              {/* Grid Lines */}
+              {[2.5, 3.0, 3.5, 4.0, 4.5, 5.0].map(v => (
+                <g key={v}>
+                  <line x1="60" y1={mapY(v)} x2="350" y2={mapY(v)} stroke="var(--border)" strokeDasharray="4 2" opacity="0.5" />
+                  <text x="50" y={mapY(v) + 4} fontSize="10" textAnchor="end" fill="var(--text-secondary)">{v.toFixed(1)}</text>
+                </g>
+              ))}
               
-              <line x1="180" y1="30" x2="220" y2="30" stroke="var(--accent)" strokeWidth="2" />
-              <line x1="200" y1="30" x2="200" y2="80" stroke="var(--accent)" strokeWidth="2" />
+              <line x1="60" y1="20" x2="60" y2="300" stroke="var(--text-primary)" strokeWidth="1.5" />
+              <line x1="60" y1="300" x2="350" y2="300" stroke="var(--text-primary)" strokeWidth="1.5" />
+              
+              {/* Whiskers */}
+              <line x1="180" y1={mapY(stats.max)} x2="220" y2={mapY(stats.max)} stroke="var(--accent)" strokeWidth="2" />
+              <line x1="200" y1={mapY(stats.max)} x2="200" y2={mapY(stats.q3)} stroke="var(--accent)" strokeWidth="2" />
               
               <motion.rect 
-                initial={{ height: 0, y: 150 }} animate={{ height: 130, y: 80 }}
-                x="150" y="80" width="100" height="130" fill="var(--accent-gradient)" rx="6" opacity="0.9" 
+                initial={{ height: 0, y: mapY(stats.median) }} 
+                animate={{ height: mapY(stats.q1) - mapY(stats.q3), y: mapY(stats.q3) }}
+                x="150" width="100" fill="var(--accent-gradient)" rx="4" opacity="0.8" 
               />
-              <line x1="150" y1="140" x2="250" y2="140" stroke="white" strokeWidth="3" />
               
-              <line x1="200" y1="210" x2="200" y2="260" stroke="var(--accent)" strokeWidth="2" />
-              <line x1="180" y1="260" x2="220" y2="260" stroke="var(--accent)" strokeWidth="2" />
+              {/* Median Line */}
+              <line x1="150" y1={mapY(stats.median)} x2="250" y2={mapY(stats.median)} stroke="white" strokeWidth="3" />
+              
+              <line x1="200" y1={mapY(stats.q1)} x2="200" y2={mapY(stats.min)} stroke="var(--accent)" strokeWidth="2" />
+              <line x1="180" y1={mapY(stats.min)} x2="220" y2={mapY(stats.min)} stroke="var(--accent)" strokeWidth="2" />
 
-              <circle cx="200" cy="130" r="4" fill="#ff4d4d" />
+              {/* Mean Marker */}
+              <path d={`M192,${mapY(stats.avg)-8} L208,${mapY(stats.avg)+8} M208,${mapY(stats.avg)-8} L192,${mapY(stats.avg)+8}`} stroke="#ff4d4d" strokeWidth="2.5" />
               
-              <g fontSize="10" fontWeight="700" fill="var(--text-secondary)">
-                <text x="260" y="35">MAX: {stats.max}</text>
-                <text x="260" y="85">Q3: {stats.q3}</text>
-                <text x="260" y="145" fill="var(--text-primary)">MEDIAN: {stats.median}</text>
-                <text x="260" y="215">Q1: {stats.q1}</text>
-                <text x="260" y="265">MIN: {stats.min}</text>
-                <text x="140" y="135" textAnchor="end" fill="#ff4d4d">MEAN: {stats.avg.toFixed(3)}</text>
+              {/* Annotation Labels */}
+              <g fontSize="11" fontWeight="700" fill="var(--text-primary)">
+                <text x="260" y={mapY(stats.max)}>Max: {stats.max}</text>
+                <text x="260" y={mapY(stats.q3)} fill="var(--accent)">Q3: {stats.q3}</text>
+                <text x="260" y={mapY(stats.median) + 4} stroke="var(--bg-primary)" strokeWidth="3" paintOrder="stroke">Median: {stats.median}</text>
+                <text x="260" y={mapY(stats.median) + 4}>Median: {stats.median}</text>
+                <text x="260" y={mapY(stats.q1)} fill="var(--accent)">Q1: {stats.q1}</text>
+                <text x="260" y={mapY(stats.min)}>Min: {stats.min}</text>
+                <text x="140" y={mapY(stats.avg) + 4} textAnchor="end" fill="#ff4d4d">Mean: {stats.avg.toFixed(3)}</text>
               </g>
 
-              {stats.outliers.slice(0, 15).map((o, i) => (
-                <circle key={i} cx="200" cy={280 - (o.cd - 2) * 60} r="2.5" fill="#ff4d4d" opacity="0.6" />
+              {/* Outliers */}
+              {stats.outliers.slice(0, 30).map((o, i) => (
+                <circle key={i} cx="200" cy={mapY(o.cd)} r="2.5" fill="#ff4d4d" opacity="0.4" />
               ))}
             </svg>
           </div>
@@ -382,8 +420,9 @@ const ProcessAnalysis = () => {
         .spec-pill span { font-size: 0.6rem; color: var(--text-secondary); text-transform: uppercase; }
 
         .plan-view-split { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
-        .glass-rect { aspect-ratio: 0.9; background: var(--bg-primary); border: 2px solid var(--accent); position: relative; border-radius: 4px; }
-        .coordinate { position: absolute; font-size: 0.7rem; font-weight: 800; color: var(--accent); }
+        .glass-rect { aspect-ratio: 0.9; background: var(--bg-primary); border: 2px solid var(--accent); position: relative; border-radius: 4px; overflow: hidden; }
+        .points-overlay { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 5; }
+        .coordinate { position: absolute; font-size: 0.7rem; font-weight: 800; color: var(--accent); z-index: 10; }
         .coordinate.origin { bottom: -25px; left: -10px; }
         .coordinate.x-max { bottom: -25px; right: 0; }
         .coordinate.y-max { top: 0; left: -55px; transform: rotate(-90deg); }

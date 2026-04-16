@@ -129,7 +129,7 @@ export default function App() {
   const [selectedId, setSelectedId] = useState<number | string | null>(null);
   const [isPresenting, setIsPresenting] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [theme, setTheme] = useState('dark');
+  const [theme, setTheme] = useState('light');
   const [showOfficial, setShowOfficial] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [activeTermCat, setActiveTermCat] = useState('전체');
