@@ -161,6 +161,93 @@ const GlassPlanView = ({ data }: { data: CDData[] }) => (
   </div>
 );
 
+// --- 3D Topology Component ---
+const SurfaceTopography3D = ({ data }: { data: CDData[] }) => {
+  const [rotation, setRotation] = useState({ x: 60, y: 0, z: 45 });
+  
+  // Projection logic
+  const project = (x: number, y: number, z: number) => {
+    const radX = (rotation.x * Math.PI) / 180;
+    const radZ = (rotation.z * Math.PI) / 180;
+    
+    // Simple Isometric-ish projection
+    const px = (x - y) * Math.cos(radZ);
+    const py = (x + y) * Math.sin(radZ) * Math.cos(radX) - z * Math.sin(radX);
+    return { x: px, y: py };
+  };
+
+  const meshRows = 15; // Downsampled for performance/visuals
+  const meshCols = 15;
+  
+  const meshPaths = useMemo(() => {
+    const paths = [];
+    const stepR = Math.floor(GRID_ROWS / meshRows);
+    const stepC = Math.floor(GRID_COLS / meshCols);
+
+    for (let r = 0; r < meshRows - 1; r++) {
+      for (let c = 0; c < meshCols - 1; c++) {
+        const d1 = data[(r * stepR) * GRID_COLS + (c * stepC)];
+        const d2 = data[(r * stepR) * GRID_COLS + ((c + 1) * stepC)];
+        const d3 = data[((r + 1) * stepR) * GRID_COLS + ((c + 1) * stepC)];
+        const d4 = data[((r + 1) * stepR) * GRID_COLS + (c * stepC)];
+
+        if (!d1 || !d2 || !d3 || !d4) continue;
+
+        const scale = 8;
+        const hScale = 40;
+        const p1 = project(c * scale, r * scale, d1.deviation * hScale);
+        const p2 = project((c + 1) * scale, r * scale, d2.deviation * hScale);
+        const p3 = project((c + 1) * scale, (r + 1) * scale, d3.deviation * hScale);
+        const p4 = project(c * scale, (r + 1) * scale, d4.deviation * hScale);
+
+        const color = d1.deviation > 0.6 ? "rgba(239, 68, 68, 0.4)" : "rgba(59, 130, 246, 0.2)";
+        const stroke = d1.deviation > 0.6 ? "#ef4444" : "rgba(59, 130, 246, 0.5)";
+
+        paths.push(
+          <path 
+            key={`${r}-${c}`}
+            d={`M${p1.x},${p1.y} L${p2.x},${p2.y} L${p3.x},${p3.y} L${p4.x},${p4.y} Z`}
+            fill={color}
+            stroke={stroke}
+            strokeWidth="0.5"
+          />
+        );
+      }
+    }
+    return paths;
+  }, [data, rotation]);
+
+  return (
+    <div 
+      className="topo-3d-card"
+      onMouseMove={(e) => {
+        const rect = e.currentTarget.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width - 0.5) * 40;
+        const y = ((e.clientY - rect.top) / rect.height - 0.5) * 40;
+        setRotation(prev => ({ ...prev, z: 45 + x, x: 60 + y }));
+      }}
+    >
+      <div className="topo-header">
+         <h4><Cpu size={16}/> AI Digital Twin: 3D Topographical Analysis</h4>
+         <p>Interactive Mesh: Mouse move to tilt/rotate</p>
+      </div>
+      <div className="topo-canvas">
+        <svg viewBox="-150 -100 300 250" className="topo-svg">
+          <g transform="translate(0, 50)">
+            {/* Base Plate */}
+            <rect x="-80" y="-20" width="160" height="120" fill="var(--bg-secondary)" opacity="0.1" transform="skewX(-20)" />
+            {meshPaths}
+          </g>
+        </svg>
+      </div>
+      <div className="topo-footer">
+        <span>Height = Process Deviation</span>
+        <div className="pulse-dot red" /> <span>Detection Active</span>
+      </div>
+    </div>
+  );
+};
+
 const DistributionChart = ({ data, stats }: { data: CDData[], stats: any }) => {
   const width = 400;
   const height = 350;
@@ -492,6 +579,22 @@ const ProcessAnalysis = () => {
              </div>
           </div>
         </div>
+
+        {/* New 3rd Visualization Row: The WOW Factor */}
+        <div className="wow-visualization-row">
+           <SurfaceTopography3D data={cdData} />
+           <div className="it-insight-card">
+              <div className="insight-header"><Zap size={20}/> Why AI Visualization?</div>
+              <div className="insight-body">
+                <p>전통적인 방식은 데이터를 '숫자'로만 인식하지만, AI 모델은 데이터를 **'공간적 실체'**로 재구성합니다. </p>
+                <ul className="ai-feature-list">
+                  <li><strong>Spatial Anomaly Mapping:</strong> 3D 공간 상의 편곡점(Inflection points) 실시간 감지</li>
+                  <li><strong>Correlation Rendering:</strong> 변수 간의 입체적 상관계수 시각화</li>
+                  <li><strong>Predictive Topography:</strong> 현재 추세 기반의 미래 시점 변형 예측</li>
+                </ul>
+              </div>
+           </div>
+        </div>
       </section>
 
       {/* 5. Root Cause */}
@@ -610,6 +713,24 @@ const ProcessAnalysis = () => {
 
         .dist-chart-container { background: var(--bg-primary); border: 1px solid var(--border); border-radius: 24px; padding: 1rem; box-shadow: var(--shadow); }
         .dist-insight { margin-top: 1.5rem; padding: 1.5rem; background: rgba(0, 113, 227, 0.05); border-radius: 16px; font-size: 0.85rem; line-height: 1.6; border-left: 4px solid var(--accent); }
+
+        .wow-visualization-row { margin-top: 3rem; display: grid; grid-template-columns: 1.2fr 1fr; gap: 3rem; align-items: stretch; }
+        .topo-3d-card { background: var(--bg-primary); border: 1px solid var(--border); border-radius: 28px; padding: 2rem; display: flex; flex-direction: column; cursor: crosshair; transition: transform 0.3s ease; box-shadow: var(--shadow); overflow: hidden; position: relative; }
+        .topo-3d-card:hover { border-color: var(--accent); }
+        .topo-header h4 { color: var(--accent); margin-bottom: 4px; }
+        .topo-header p { font-size: 0.75rem; opacity: 0.6; }
+        .topo-canvas { flex: 1; display: flex; align-items: center; justify-content: center; min-height: 350px; }
+        .topo-svg { width: 100%; height: 100%; filter: drop-shadow(0 0 10px rgba(59, 130, 246, 0.2)); }
+        .topo-footer { padding-top: 1rem; border-top: 1px solid var(--border); font-size: 0.7rem; font-weight: 800; display: flex; align-items: center; gap: 10px; }
+        .pulse-dot.red { width: 8px; height: 8px; background: #ef4444; border-radius: 50%; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(1.5); } 100% { opacity: 1; transform: scale(1); } }
+
+        .it-insight-card { background: var(--accent-gradient); color: white; border-radius: 28px; padding: 3rem; display: flex; flex-direction: column; gap: 2rem; box-shadow: 0 20px 40px rgba(0, 113, 227, 0.2); }
+        .insight-header { display: flex; align-items: center; gap: 12px; font-size: 1.4rem; font-weight: 900; }
+        .insight-body p { font-size: 1rem; line-height: 1.8; opacity: 0.9; }
+        .ai-feature-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 1rem; margin-top: 1.5rem; }
+        .ai-feature-list li { background: rgba(255, 255, 255, 0.1); padding: 1rem; border-radius: 12px; font-size: 0.85rem; border: 1px solid rgba(255, 255, 255, 0.2); }
+        .ai-feature-list strong { color: #fcd34d; font-weight: 900; }
 
         .root-cause-section { margin-top: 1rem; }
         .analysis-cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin: 2rem 0; }
