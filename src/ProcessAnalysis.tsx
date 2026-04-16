@@ -442,7 +442,7 @@ const ProcessAnalysis = () => {
 
               {/* The Technical Site Dots (Layered on top) */}
               <div className="heatmap-v2-grid dots-only">
-                {cdData.map((d, i) => (
+                {cdData.map((_, i) => (
                   <div key={i} className="h-cell overlay-cell">
                     <div className="heatmap-dot technical" />
                   </div>
