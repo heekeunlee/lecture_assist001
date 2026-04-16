@@ -355,25 +355,45 @@ const ProcessAnalysis = () => {
         </div>
       </section>
 
-      {/* 4. Heatmap */}
       <section className="analysis-card-section">
         <div className="section-header-v2">
           <Activity className="text-accent" />
-          <h2>STEP 4. 초정밀 예지적 히트맵 (Predictive Mapping)</h2>
+          <h2>STEP 4. AI를 활용한 데이터 시각화 처리 예시</h2>
         </div>
-        <div className="heatmap-pro-container">
-          <div className="heatmap-v2-grid">
-            {cdData.map((d, i) => {
-              const color = d.deviation > 0.45 ? 'rgba(255, 77, 77, 1)' : d.deviation < -0.45 ? 'rgba(77, 124, 255, 1)' : 'rgba(34, 197, 94, 0.4)';
-              return (
-                <div key={i} className="h-cell" style={{ background: color }} title={`CD: ${d.cd}`}/>
-              );
-            })}
+        <div className="heatmap-plan-overlay-container">
+          <div className="glass-rect heatmap-overlay">
+            <div className="coordinate origin">(0, 0)</div>
+            <div className="coordinate x-max">2,880mm</div>
+            <div className="coordinate y-max">3,130mm</div>
+            <div className="axis-label x">X-Axis Position</div>
+            <div className="axis-label y">Y-Axis Position</div>
+            
+            <div className="heatmap-v2-grid overlay">
+              {cdData.map((d, i) => {
+                // Red-Purple Palette mapping
+                // High Deviation (>0.45) -> Red
+                // Normal -> Purple/Violet
+                // Low -> Indigo
+                let color = "rgba(79, 70, 229, 0.4)"; // Default Indigo/Purple
+                if (d.deviation > 0.45) color = "rgba(239, 68, 68, 0.9)"; // Sharp Red
+                else if (d.deviation > 0.2) color = "rgba(168, 85, 247, 0.7)"; // Purple
+                else if (d.deviation < -0.3) color = "rgba(79, 70, 229, 0.8)"; // Deep Indigo
+                
+                return (
+                  <div key={i} className="h-cell" style={{ background: color }} title={`CD: ${d.cd}`}/>
+                );
+              })}
+            </div>
+            
+            <div className="plan-grid">
+              {[...Array(12)].map((_, i) => <div key={i} className="plan-line" />)}
+            </div>
           </div>
-          <div className="heatmap-legend-v2">
-            <div className="l-item"><div className="c-box red"/> Over-Size (+0.5um)</div>
-            <div className="l-item"><div className="c-box green"/> Normal Range</div>
-            <div className="l-item"><div className="c-box blue"/> Under-Size (-0.5um)</div>
+          
+          <div className="heatmap-legend-v3">
+            <div className="l-item-v3"><div className="c-box red-bold"/> Critical Anomaly (+0.5um)</div>
+            <div className="l-item-v3"><div className="c-box purple-mid"/> Caution Area</div>
+            <div className="l-item-v3"><div className="c-box indigo-soft"/> Normal / Stable</div>
           </div>
         </div>
       </section>
@@ -463,14 +483,15 @@ const ProcessAnalysis = () => {
         .stat-pill-v2 strong { font-size: 1.2rem; color: var(--accent); }
         .engineer-comment { display: flex; align-items: center; gap: 8px; font-size: 0.75rem; color: var(--text-secondary); margin-top: auto; padding-top: 1rem; border-top: 1px solid var(--border); }
 
-        .heatmap-pro-container { background: #020617; padding: 1.5rem; border-radius: 24px; }
-        .heatmap-v2-grid { display: grid; grid-template-columns: repeat(${GRID_COLS}, 1fr); gap: 1px; }
-        .h-cell { aspect-ratio: 1; border-radius: 1px; }
-        .heatmap-legend-v2 { display: flex; justify-content: center; gap: 2rem; margin-top: 1.5rem; color: #94a3b8; font-size: 0.75rem; }
-        .c-box { width: 12px; height: 12px; border-radius: 2px; margin-right: 8px; }
-        .c-box.red { background: #ff4d4d; }
-        .c-box.green { background: rgba(34, 197, 94, 0.4); }
-        .c-box.blue { background: #4d7cff; }
+        .heatmap-plan-overlay-container { display: flex; flex-direction: column; align-items: center; gap: 4rem; margin-top: 1rem; }
+        .heatmap-overlay { width: 450px; border: 2px solid #8b5cf6; }
+        .heatmap-v2-grid.overlay { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(${GRID_COLS}, 1fr); gap: 0; z-index: 5; }
+        
+        .heatmap-legend-v3 { display: flex; gap: 3rem; background: var(--bg-primary); padding: 1.2rem 2.5rem; border-radius: 50px; border: 1px solid var(--border); box-shadow: var(--shadow); }
+        .l-item-v3 { display: flex; align-items: center; gap: 10px; font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); }
+        .c-box.red-bold { background: #ef4444; }
+        .c-box.purple-mid { background: #a855f7; }
+        .c-box.indigo-soft { background: rgba(79, 70, 229, 0.4); }
 
         .root-cause-section { margin-top: 1rem; }
         .analysis-cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin: 2rem 0; }
