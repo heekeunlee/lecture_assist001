@@ -372,18 +372,19 @@ const SankeyProcessFlow = () => {
             key={`l1-${i}-${j}`}
             d={`M 80,${30 + i * 35} C 130,${30 + i * 35} 120,${30 + j * 24} 170,${30 + j * 24}`}
             fill="none"
-            stroke={isRoot ? "#f97316" : "rgba(148, 163, 184, 0.15)"}
-            strokeWidth={isRoot ? "3" : "0.5"}
-            opacity={isRoot ? 0.8 : 0.4}
+            stroke={isRoot ? "#f97316" : "var(--sankey-link)"}
+            strokeWidth={isRoot ? "3" : "0.7"}
+            opacity={isRoot ? 1 : 0.6}
+            filter={isRoot ? "url(#orange-glow)" : "none"}
           />
         );
       }
     }
     // Column 2 -> 3
-    links.push(<path d="M 230,30 C 270,30 290,40 330,40" fill="none" stroke="#f97316" strokeWidth="3" opacity="0.8" />);
-    links.push(<path d="M 230,54 C 270,54 290,75 330,75" fill="none" stroke="rgba(148, 163, 184, 0.4)" strokeWidth="1" />);
+    links.push(<path d="M 230,30 C 270,30 290,40 330,40" fill="none" stroke="#f97316" strokeWidth="3" opacity="1" filter="url(#orange-glow)" />);
+    links.push(<path d="M 230,54 C 270,54 290,75 330,75" fill="none" stroke="var(--sankey-link)" strokeWidth="1" opacity="0.6" />);
     // Column 3 -> 4
-    links.push(<path d="M 390,40 C 440,40 450,75 500,75" fill="none" stroke="#f97316" strokeWidth="4" opacity="1" />);
+    links.push(<path d="M 390,40 C 440,40 450,75 500,75" fill="none" stroke="#f97316" strokeWidth="4" opacity="1" filter="url(#orange-glow)" />);
     return links;
   };
 
@@ -395,6 +396,15 @@ const SankeyProcessFlow = () => {
        </div>
        <div className="sankey-canvas-box">
           <svg viewBox="0 0 600 180" className="sankey-svg">
+             <defs>
+               <filter id="orange-glow" x="-50%" y="-50%" width="200%" height="200%">
+                 <feGaussianBlur in="SourceGraphic" stdDeviation="1.5" result="blur" />
+                 <feMerge>
+                   <feMergeNode in="blur" />
+                   <feMergeNode in="SourceGraphic" />
+                 </feMerge>
+               </filter>
+             </defs>
              {renderLinks()}
              {/* Node Labels */}
              {nodes.map((col, idx) => (
@@ -947,6 +957,9 @@ const ProcessAnalysis = () => {
         .sankey-header p { font-size: 0.8rem; color: var(--text-secondary); }
         .pulse-circle { animation: pulseSankey 1.5s infinite; }
         @keyframes pulseSankey { 0% { r: 3; opacity: 1; } 50% { r: 6; opacity: 0.4; } 100% { r: 3; opacity: 1; } }
+
+        :root { --sankey-link: rgba(71, 85, 105, 0.35); }
+        [data-theme='dark'] { --sankey-link: rgba(203, 213, 225, 0.25); }
 
         .pro-insight { border: 1px solid var(--border) !important; position: relative; }
         .pro-insight.border-blue { border-left: 5px solid #3b82f6 !important; }
