@@ -352,47 +352,78 @@ const DiagnosticFactorScanner = () => {
   );
 };
 
-// --- Sankey Diagram for Traceability ---
+// --- Hyper-Dense Sankey Diagram (AI Traceability Mesh) ---
 const SankeyProcessFlow = () => {
-  const nodes = [
-    { label: 'Process Stages', items: ['Exposure', 'Coating', 'Dev', 'Etch'] },
-    { label: '500+ Parameters', items: ['Temp', 'Press', 'Chemical', 'Lens', 'Stage', 'Laser'] },
-    { label: 'AI Selected Influences', items: ['Thermal #3', 'Slit #1'] },
-    { label: 'Final Outcome', items: ['Center CD Bias'] }
-  ];
+  const col1 = ['Exposure', 'Coating', 'Dev', 'Etch'];
+  const col2 = Array.from({ length: 25 }, (_, i) => `P-${i+100}`);
+  const col3 = ['Temp Layer #3', 'Pressure L1', 'Slit #1 Flow', 'Vibe Sensor', 'Heater #2'];
+  const col4 = ['Center CD Bias'];
 
   const renderLinks = () => {
-    const links = [];
-    // Column 1 -> 2
-    for(let i=0; i<4; i++) {
-      for(let j=0; j<6; j++) {
-        const isRoot = (i === 0 && j === 0); // Highlighting Thermal path
+    const links: JSX.Element[] = [];
+    
+    // Layer 1 -> 2 (Dense Mesh)
+    col1.forEach((_, i) => {
+      col2.forEach((_, j) => {
+        const isRoot = (i === 0 && j === 4); // Example root start
         links.push(
           <path 
             key={`l1-${i}-${j}`}
-            d={`M 80,${30 + i * 35} C 130,${30 + i * 35} 120,${30 + j * 24} 170,${30 + j * 24}`}
+            d={`M 70,${35 + i * 30} C 120,${35 + i * 30} 120,${15 + j * 6} 170,${15 + j * 6}`}
             fill="none"
             stroke={isRoot ? "#f97316" : "var(--sankey-link)"}
-            strokeWidth={isRoot ? "3" : "0.7"}
-            opacity={isRoot ? 1 : 0.6}
+            strokeWidth={isRoot ? "2" : "0.3"}
+            opacity={isRoot ? 1 : 0.4}
             filter={isRoot ? "url(#orange-glow)" : "none"}
           />
         );
-      }
-    }
-    // Column 2 -> 3
-    links.push(<path d="M 230,30 C 270,30 290,40 330,40" fill="none" stroke="#f97316" strokeWidth="3" opacity="1" filter="url(#orange-glow)" />);
-    links.push(<path d="M 230,54 C 270,54 290,75 330,75" fill="none" stroke="var(--sankey-link)" strokeWidth="1" opacity="0.6" />);
-    // Column 3 -> 4
-    links.push(<path d="M 390,40 C 440,40 450,75 500,75" fill="none" stroke="#f97316" strokeWidth="4" opacity="1" filter="url(#orange-glow)" />);
+      });
+    });
+
+    // Layer 2 -> 3 (Converging to Filters)
+    col2.forEach((_, i) => {
+      const targetIdx = Math.floor(i / 5);
+      const isRoot = (i === 4 && targetIdx === 0);
+      links.push(
+        <path 
+          key={`l2-${i}`}
+          d={`M 230,${15 + i * 6} C 280,${15 + i * 6} 280,${35 + targetIdx * 25} 330,${35 + targetIdx * 25}`}
+          fill="none"
+          stroke={isRoot ? "#f97316" : "var(--sankey-link)"}
+          strokeWidth={isRoot ? "3" : "0.4"}
+          opacity={isRoot ? 1 : 0.5}
+          filter={isRoot ? "url(#orange-glow)" : "none"}
+        />
+      );
+    });
+
+    // Layer 3 -> 4 (Final Conclusion)
+    col3.forEach((_, i) => {
+      const isRoot = (i === 0);
+      links.push(
+        <path 
+          key={`l3-${i}`}
+          d={`M 390,${35 + i * 25} C 440,${35 + i * 25} 440,80 500,80`}
+          fill="none"
+          stroke={isRoot ? "#f97316" : "var(--sankey-link)"}
+          strokeWidth={isRoot ? "4" : "0.5"}
+          opacity={isRoot ? 1 : 0.6}
+          filter={isRoot ? "url(#orange-glow)" : "none"}
+        />
+      );
+    });
+
     return links;
   };
 
   return (
     <div className="sankey-card">
        <div className="sankey-header">
-          <h4><Layers size={16}/> AI Multi-Dimensional Traceability Map</h4>
-          <p>Analyzing 500+ correlations: Identifying critical path to Center Anomaly</p>
+          <div className="sh-left">
+             <h4><Zap size={18}/> AI Multi-Dimensional Traceability Mesh</h4>
+             <p>Cross-analyzing 500+ correlations: Isolating the 'Center Anomaly' logic thread</p>
+          </div>
+          <div className="sh-status">Status: Deep-Scan Ready</div>
        </div>
        <div className="sankey-canvas-box">
           <svg viewBox="0 0 600 180" className="sankey-svg">
@@ -405,20 +436,47 @@ const SankeyProcessFlow = () => {
                  </feMerge>
                </filter>
              </defs>
+             
              {renderLinks()}
-             {/* Node Labels */}
-             {nodes.map((col, idx) => (
-               <g key={idx} transform={`translate(${80 + idx * 150}, 0)`}>
-                  <text y="10" textAnchor="middle" fontSize="9" fontWeight="900" fill="var(--accent)">{col.label}</text>
-                  {col.items.map((item, i) => (
-                    <g key={i} transform={`translate(0, ${30 + i * (idx === 1 ? 24 : 35)})`}>
-                       <rect x="-35" y="-10" width="70" height="20" rx="4" fill="var(--bg-primary)" stroke="var(--border)" />
-                       <text y="3" textAnchor="middle" fontSize="7" fontWeight="700" fill="var(--text-secondary)">{item}</text>
-                       {item.includes('Thermal') && <circle cx="38" cy="0" r="4" fill="#f97316" className="pulse-circle" />}
-                    </g>
-                  ))}
-               </g>
-             ))}
+
+             {/* Column 1: Stages */}
+             <g transform="translate(60, 0)">
+                <text x="10" y="10" textAnchor="middle" fontSize="9" fontWeight="900" fill="var(--accent)" opacity="0.8">Process Stages</text>
+                {col1.map((item, i) => (
+                  <g key={i} transform={`translate(0, ${35 + i * 30})`}>
+                     <rect x="-40" y="-12" width="70" height="24" rx="6" fill="#f8fafc" stroke="var(--border)" strokeWidth="1.5" />
+                     <text y="4" textAnchor="middle" fontSize="7" fontWeight="900" fill="#334155">{item}</text>
+                  </g>
+                ))}
+             </g>
+
+             {/* Column 2: Parameters (Small Dots) */}
+             <g transform="translate(200, 0)">
+                <text x="0" y="10" textAnchor="middle" fontSize="9" fontWeight="900" fill="var(--accent)" opacity="0.8">500+ Parameter Nodes</text>
+                {col2.map((item, i) => (
+                  <circle key={i} cx="0" cy={15 + i * 6} r="2" fill={i === 4 ? "#f97316" : "var(--border)"} filter={i === 4 ? "url(#orange-glow)" : "none"} />
+                ))}
+             </g>
+
+             {/* Column 3: AI Filters */}
+             <g transform="translate(360, 0)">
+                <text x="0" y="10" textAnchor="middle" fontSize="9" fontWeight="900" fill="var(--accent)" opacity="0.8">AI Selected Factors</text>
+                {col3.map((item, i) => (
+                  <g key={i} transform={`translate(0, ${35 + i * 25})`}>
+                     <rect x="-35" y="-10" width="70" height="20" rx="4" fill="var(--bg-primary)" stroke={i === 0 ? "#f97316" : "var(--border)"} strokeWidth={i === 0 ? 2 : 1} />
+                     <text y="3" textAnchor="middle" fontSize="6.5" fontWeight="800" fill={i === 0 ? "#f97316" : "var(--text-secondary)"}>{item}</text>
+                  </g>
+                ))}
+             </g>
+
+             {/* Column 4: Outcome */}
+             <g transform="translate(530, 0)">
+                <text x="0" y="10" textAnchor="middle" fontSize="9" fontWeight="900" fill="#ef4444" opacity="0.8">Final Decision</text>
+                <g transform="translate(0, 80)">
+                   <rect x="-35" y="-15" width="70" height="30" rx="6" fill="#1e293b" />
+                   <text y="5" textAnchor="middle" fontSize="7" fontWeight="900" fill="white">Center CD Anomaly</text>
+                </g>
+             </g>
           </svg>
        </div>
     </div>
@@ -950,11 +1008,12 @@ const ProcessAnalysis = () => {
         .ai-report-banner, .summary-banner { background: var(--accent-gradient); color: white; padding: 2rem 3rem; border-radius: 28px; display: flex; align-items: center; gap: 2rem; box-shadow: 0 15px 40px rgba(0, 113, 227, 0.25); margin-top: 2rem; }
 
         .trace-row { margin-top: 2rem; }
-        .sankey-card { background: var(--bg-primary); border: 1px solid var(--border); border-radius: 28px; padding: 2.5rem; box-shadow: var(--shadow); }
+        .sankey-card { background: var(--bg-primary); border: 1px solid var(--border); border-radius: 28px; padding: 2.5rem; box-shadow: var(--shadow); border-bottom: 8px solid var(--accent); }
         .sankey-svg { width: 100%; height: auto; }
-        .sankey-header { margin-bottom: 2rem; }
-        .sankey-header h4 { font-size: 1.2rem; color: var(--accent); margin-bottom: 5px; }
-        .sankey-header p { font-size: 0.8rem; color: var(--text-secondary); }
+        .sankey-header { margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: flex-end; }
+        .sankey-header h4 { font-size: 1.25rem; color: var(--accent); margin: 0 0 5px 0; font-weight: 900; }
+        .sankey-header p { font-size: 0.85rem; color: var(--text-secondary); margin: 0; }
+        .sh-status { font-size: 0.7rem; font-weight: 800; color: #34c759; background: rgba(52, 199, 89, 0.1); padding: 4px 10px; border-radius: 6px; }
         .pulse-circle { animation: pulseSankey 1.5s infinite; }
         @keyframes pulseSankey { 0% { r: 3; opacity: 1; } 50% { r: 6; opacity: 0.4; } 100% { r: 3; opacity: 1; } }
 
