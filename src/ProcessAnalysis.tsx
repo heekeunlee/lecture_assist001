@@ -161,9 +161,28 @@ const GlassPlanView = ({ data }: { data: CDData[] }) => (
   </div>
 );
 
-// --- 3D Topology Component ---
 const SurfaceTopography3D = ({ data }: { data: CDData[] }) => {
-  const [rotation, setRotation] = useState({ x: 60, y: 0, z: 45 });
+  const [rotation, setRotation] = useState({ x: 20, y: 0, z: 0 }); // Initial: Near-plan view
+  const [isHovered, setIsHovered] = useState(false);
+  
+  // High-fidelity Rainbow Scale for Meshing
+  const getHeightColor = (deviation: number) => {
+    // Map deviation (~ -0.5 to +1.2) to Rainbow Spectrum
+    const norm = Math.min(Math.max((deviation + 0.3) / 1.5, 0), 1);
+    if (norm > 0.8) return "rgba(127, 29, 29, 0.6)"; // Deep Red
+    if (norm > 0.6) return "rgba(239, 68, 68, 0.5)"; // Red
+    if (norm > 0.4) return "rgba(245, 158, 11, 0.4)"; // Orange/Yellow
+    if (norm > 0.3) return "rgba(132, 204, 22, 0.3)"; // Lime
+    if (norm > 0.1) return "rgba(59, 130, 246, 0.2)"; // Blue
+    return "rgba(49, 46, 129, 0.2)"; // Dark Purple
+  };
+
+  const getStrokeColor = (deviation: number) => {
+    const norm = Math.min(Math.max((deviation + 0.3) / 1.5, 0), 1);
+    if (norm > 0.8) return "#ef4444";
+    if (norm > 0.4) return "#facc15";
+    return "#3b82f6";
+  };
   
   // Projection logic
   const project = (x: number, y: number, z: number) => {
@@ -200,8 +219,8 @@ const SurfaceTopography3D = ({ data }: { data: CDData[] }) => {
         const p3 = project((c + 1) * scale, (r + 1) * scale, d3.deviation * hScale);
         const p4 = project(c * scale, (r + 1) * scale, d4.deviation * hScale);
 
-        const color = d1.deviation > 0.6 ? "rgba(239, 68, 68, 0.4)" : "rgba(59, 130, 246, 0.2)";
-        const stroke = d1.deviation > 0.6 ? "#ef4444" : "rgba(59, 130, 246, 0.5)";
+        const color = getHeightColor(d1.deviation);
+        const stroke = getStrokeColor(d1.deviation);
 
         paths.push(
           <path 
@@ -219,23 +238,34 @@ const SurfaceTopography3D = ({ data }: { data: CDData[] }) => {
 
   return (
     <div 
-      className="topo-3d-card"
+      className={`topo-3d-card ${isHovered ? 'active' : ''}`}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => {
+        setIsHovered(false);
+        setRotation({ x: 20, y: 0, z: 0 }); // Reset to plan view
+      }}
       onMouseMove={(e) => {
         const rect = e.currentTarget.getBoundingClientRect();
-        const x = ((e.clientX - rect.left) / rect.width - 0.5) * 40;
-        const y = ((e.clientY - rect.top) / rect.height - 0.5) * 40;
-        setRotation(prev => ({ ...prev, z: 45 + x, x: 60 + y }));
+        const x = ((e.clientX - rect.left) / rect.width - 0.5) * 60;
+        const y = ((e.clientY - rect.top) / rect.height - 0.5) * 60;
+        setRotation({ z: x, x: 20 + y, y: 0 });
       }}
     >
       <div className="topo-header">
-         <h4><Cpu size={16}/> AI Digital Twin: 3D Topographical Analysis</h4>
-         <p>Interactive Mesh: Mouse move to tilt/rotate</p>
+         <h4><Sparkles size={16}/> AI Digital Twin: Real-time 3D Insights</h4>
+         <p>Plan View (Initial) ↔ Spatial Topography (Hover & Move)</p>
       </div>
-      <div className="topo-canvas">
+      <div className="topo-canvas dark">
         <svg viewBox="-150 -100 300 250" className="topo-svg">
-          <g transform="translate(0, 50)">
-            {/* Base Plate */}
-            <rect x="-80" y="-20" width="160" height="120" fill="var(--bg-secondary)" opacity="0.1" transform="skewX(-20)" />
+          <defs>
+            <filter id="neon-glow" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur stdDeviation="1.5" result="blur" />
+              <feComposite in="SourceGraphic" in2="blur" operator="over" />
+            </filter>
+          </defs>
+          <g transform="translate(0, 40)" filter="url(#neon-glow)">
+            {/* Grid Floor */}
+            <rect x="-100" y="-20" width="200" height="150" fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.05)" strokeWidth="0.5" transform={`rotate(${rotation.z}, 0, 0) skewX(-10)`} />
             {meshPaths}
           </g>
         </svg>
@@ -714,13 +744,11 @@ const ProcessAnalysis = () => {
         .dist-chart-container { background: var(--bg-primary); border: 1px solid var(--border); border-radius: 24px; padding: 1rem; box-shadow: var(--shadow); }
         .dist-insight { margin-top: 1.5rem; padding: 1.5rem; background: rgba(0, 113, 227, 0.05); border-radius: 16px; font-size: 0.85rem; line-height: 1.6; border-left: 4px solid var(--accent); }
 
-        .wow-visualization-row { margin-top: 3rem; display: grid; grid-template-columns: 1.2fr 1fr; gap: 3rem; align-items: stretch; }
-        .topo-3d-card { background: var(--bg-primary); border: 1px solid var(--border); border-radius: 28px; padding: 2rem; display: flex; flex-direction: column; cursor: crosshair; transition: transform 0.3s ease; box-shadow: var(--shadow); overflow: hidden; position: relative; }
-        .topo-3d-card:hover { border-color: var(--accent); }
-        .topo-header h4 { color: var(--accent); margin-bottom: 4px; }
-        .topo-header p { font-size: 0.75rem; opacity: 0.6; }
-        .topo-canvas { flex: 1; display: flex; align-items: center; justify-content: center; min-height: 350px; }
-        .topo-svg { width: 100%; height: 100%; filter: drop-shadow(0 0 10px rgba(59, 130, 246, 0.2)); }
+        .wow-visualization-row { margin-top: 3rem; display: grid; grid-template-columns: 1.2fr 1fr; gap: 3rem; align-items: stretch; animation: fadeIn 1s ease-out; }
+        .topo-3d-card { background: var(--bg-primary); border: 2px solid var(--border); border-radius: 28px; padding: 2rem; display: flex; flex-direction: column; cursor: crosshair; transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: var(--shadow); overflow: hidden; position: relative; }
+        .topo-3d-card.active { border-color: var(--accent); box-shadow: 0 20px 50px rgba(0, 113, 227, 0.15); transform: translateY(-5px); }
+        .topo-canvas.dark { flex: 1; display: flex; align-items: center; justify-content: center; min-height: 400px; background: #0f172a; border-radius: 20px; margin: 1rem 0; box-shadow: inset 0 0 30px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); }
+        .topo-svg { width: 100%; height: 100%; }
         .topo-footer { padding-top: 1rem; border-top: 1px solid var(--border); font-size: 0.7rem; font-weight: 800; display: flex; align-items: center; gap: 10px; }
         .pulse-dot.red { width: 8px; height: 8px; background: #ef4444; border-radius: 50%; animation: pulse 1.5s infinite; }
         @keyframes pulse { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(1.5); } 100% { opacity: 1; transform: scale(1); } }
