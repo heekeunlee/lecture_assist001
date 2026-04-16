@@ -594,10 +594,10 @@ const ProcessAnalysis = () => {
               </div>
             </div>
             <div className="heatmap-legend-v4">
-              <div className="l-item-v4"><div className="c-box h-deepred"/> +0.8um (High Center)</div>
-              <div className="l-item-v4"><div className="c-box h-yellow"/> +0.3um (Mid Ring)</div>
-              <div className="l-item-v4"><div className="c-box h-blue"/> -0.2um (Outer Edge)</div>
-              <div className="l-item-v4"><div className="c-box h-darkpurple"/> Min Limit Zone</div>
+              <div className="l-item-v4"><div className="c-box h-map-red"/> Peak Anomaly (High CD)</div>
+              <div className="l-item-v4"><div className="c-box h-map-yellow"/> Transition Zone</div>
+              <div className="l-item-v4"><div className="c-box h-map-green"/> Nominal Spec Area</div>
+              <div className="l-item-v4"><div className="c-box h-map-blue"/> Lower Limit Boundary</div>
             </div>
           </div>
 
@@ -717,9 +717,9 @@ const ProcessAnalysis = () => {
         .heatmap-overlay.vivid { width: 100%; max-width: 400px; aspect-ratio: 0.9; border: 2px solid var(--border); background: #ffffff; position: relative; overflow: hidden; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
         .soccer-heatmap-layer { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; z-index: 2; overflow: hidden; }
         .glow-circle { position: absolute; border-radius: 40px; filter: blur(45px); opacity: 0.85; }
-        .glow-circle.vivid-core { width: 160px; height: 160px; background: radial-gradient(circle, #7f1d1d, #ef4444, #f59e0b); z-index: 5; }
-        .glow-circle.vivid-mid { width: 300px; height: 300px; background: radial-gradient(circle, #f59e0b, #eab308, #84cc16, #10b981); z-index: 4; }
-        .glow-circle.vivid-outer { width: 480px; height: 480px; background: radial-gradient(circle, #06b6d4, #1d4ed8, #4338ca, #312e81, transparent); z-index: 3; }
+        .glow-circle.vivid-core { width: 160px; height: 160px; background: radial-gradient(circle, #ff0000 0%, #ff4500 70%, transparent 100%); z-index: 5; opacity: 0.95; }
+        .glow-circle.vivid-mid { width: 320px; height: 320px; background: radial-gradient(circle, #ffff00 0%, #adff2f 40%, #32cd32 70%, transparent 100%); z-index: 4; opacity: 0.8; }
+        .glow-circle.vivid-outer { width: 500px; height: 500px; background: radial-gradient(circle, #00ced1 0%, #1e90ff 40%, #4b0082 80%, transparent 100%); z-index: 3; opacity: 0.6; }
         .contour-svg-overlay { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 6; pointer-events: none; }
         .c-path.r2 { stroke-opacity: 0.3; }
         .c-path.r3 { stroke-opacity: 0.4; }
@@ -734,10 +734,10 @@ const ProcessAnalysis = () => {
         
         .heatmap-legend-v4 { display: flex; flex-direction: column; gap: 0.8rem; background: var(--bg-secondary); padding: 1.5rem; border-radius: 20px; width: 100%; border: 1px solid var(--border); }
         .l-item-v4 { display: flex; align-items: center; gap: 12px; font-size: 0.78rem; font-weight: 800; color: var(--text-secondary); }
-        .c-box.h-deepred { width: 12px; height: 12px; background: #7f1d1d; border-radius: 3px; }
-        .c-box.h-yellow { width: 12px; height: 12px; background: #eab308; border-radius: 3px; }
-        .c-box.h-blue { width: 12px; height: 12px; background: #3b82f6; border-radius: 3px; }
-        .c-box.h-darkpurple { width: 12px; height: 12px; background: #312e81; border-radius: 3px; }
+        .c-box.h-map-red { width: 12px; height: 12px; background: #ff0000; border-radius: 3px; box-shadow: 0 0 8px #ff0000; }
+        .c-box.h-map-yellow { width: 12px; height: 12px; background: #ffff00; border-radius: 3px; }
+        .c-box.h-map-green { width: 12px; height: 12px; background: #32cd32; border-radius: 3px; }
+        .c-box.h-map-blue { width: 12px; height: 12px; background: #1e90ff; border-radius: 3px; }
 
         .dist-chart-container { background: var(--bg-primary); border: 1px solid var(--border); border-radius: 24px; padding: 1rem; box-shadow: var(--shadow); }
         .dist-insight { margin-top: 1.5rem; padding: 1.5rem; background: rgba(0, 113, 227, 0.05); border-radius: 16px; font-size: 0.85rem; line-height: 1.6; border-left: 4px solid var(--accent); }
