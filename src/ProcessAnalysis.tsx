@@ -426,36 +426,37 @@ const ProcessAnalysis = () => {
         <div className="advanced-stats-grid">
           {/* Left: Pastel Heatmap Overlay */}
           <div className="heatmap-column">
-            <div className="glass-rect heatmap-overlay pastel">
+            <div className="glass-rect heatmap-overlay pastel glowing">
               <div className="coordinate origin">(0, 0)</div>
               <div className="coordinate x-max">2,880mm</div>
               <div className="coordinate y-max">3,130mm</div>
               <div className="axis-label x">X Position</div>
               <div className="axis-label y">Y Position</div>
               
-              <div className="heatmap-v2-grid overlay grid-lines">
-                {cdData.map((d, i) => {
-                  // Contour Mapping logic
-                  let bgColor = "rgba(165, 180, 252, 0.1)"; // Default Indigo
-                  if (d.deviation > 0.8) bgColor = "rgba(251, 113, 133, 0.9)"; // Center Red
-                  else if (d.deviation > 0.4) bgColor = "rgba(251, 113, 133, 0.5)"; // Mid Light Red
-                  else if (d.deviation > 0.1) bgColor = "rgba(192, 132, 252, 0.45)"; // Outer Purple
-                  
-                  return (
-                    <div key={i} className="h-cell overlay-cell" style={{ background: bgColor }}>
-                      <div className="heatmap-dot" />
-                    </div>
-                  );
-                })}
+              {/* Soccer-style Glowing Heatmap Layer */}
+              <div className="soccer-heatmap-layer">
+                 <div className="glow-circle core" />
+                 <div className="glow-circle mid" />
+                 <div className="glow-circle outer" />
               </div>
+
+              {/* The Technical Site Dots (Layered on top) */}
+              <div className="heatmap-v2-grid dots-only">
+                {cdData.map((d, i) => (
+                  <div key={i} className="h-cell overlay-cell">
+                    <div className="heatmap-dot technical" />
+                  </div>
+                ))}
+              </div>
+
               <div className="plan-grid pro">
                 {[...Array(8)].map((_, i) => <div key={i} className="plan-line" />)}
               </div>
             </div>
             <div className="heatmap-legend-v4">
-              <div className="l-item-v4"><div className="c-box pastel-red"/> +0.5um (Anomaly)</div>
-              <div className="l-item-v4"><div className="c-box pastel-purple"/> +0.2um (Caution)</div>
-              <div className="l-item-v4"><div className="c-box pastel-indigo"/> Stable</div>
+              <div className="l-item-v4"><div className="c-box heat-red"/> Center Anomaly Focus</div>
+              <div className="l-item-v4"><div className="c-box heat-yellow"/> Thermal Variation Area</div>
+              <div className="l-item-v4"><div className="c-box heat-green"/> Stable Condition Zone</div>
             </div>
           </div>
 
@@ -556,16 +557,22 @@ const ProcessAnalysis = () => {
 
         .advanced-stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start; }
         .heatmap-column { display: flex; flex-direction: column; align-items: center; gap: 2rem; }
-        .heatmap-overlay.pastel { width: 100%; max-width: 400px; aspect-ratio: 0.9; border: 2px solid var(--border); background: var(--bg-primary); position: relative; }
-        .heatmap-v2-grid.grid-lines { gap: 1px; padding: 1px; background: rgba(0,0,0,0.02); }
-        .heatmap-dot { width: 3px; height: 3px; background: #64748b; border-radius: 50%; z-index: 10; }
-        .plan-grid.pro { opacity: 0.1; z-index: 1; pointer-events: none; }
+        .heatmap-overlay.pastel { width: 100%; max-width: 400px; aspect-ratio: 0.9; border: 2px solid var(--border); background: #f8fafc; position: relative; }
+        .soccer-heatmap-layer { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; z-index: 2; overflow: hidden; }
+        .glow-circle { position: absolute; border-radius: 50%; filter: blur(40px); opacity: 0.7; }
+        .glow-circle.core { width: 150px; height: 150px; background: radial-gradient(circle, #ef4444, #f59e0b); z-index: 5; }
+        .glow-circle.mid { width: 280px; height: 280px; background: radial-gradient(circle, #f59e0b, #fbbf24); z-index: 4; opacity: 0.5; }
+        .glow-circle.outer { width: 450px; height: 450px; background: radial-gradient(circle, #fbbf24, #10b981, transparent); z-index: 3; opacity: 0.3; }
+        
+        .heatmap-v2-grid.dots-only { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(${GRID_COLS}, 1fr); gap: 0; z-index: 10; pointer-events: none; }
+        .heatmap-dot.technical { width: 2px; height: 2px; background: #475569; opacity: 0.4; }
+        .plan-grid.pro { opacity: 0.15; z-index: 15; pointer-events: none; }
         
         .heatmap-legend-v4 { display: flex; flex-direction: column; gap: 0.8rem; background: var(--bg-secondary); padding: 1.5rem; border-radius: 20px; width: 100%; }
         .l-item-v4 { display: flex; align-items: center; gap: 12px; font-size: 0.75rem; font-weight: 700; color: var(--text-secondary); }
-        .c-box.pastel-red { background: rgba(251, 113, 133, 0.8); }
-        .c-box.pastel-purple { background: rgba(192, 132, 252, 0.6); }
-        .c-box.pastel-indigo { background: rgba(165, 180, 252, 0.3); }
+        .c-box.heat-red { background: #ef4444; border-radius: 50%; box-shadow: 0 0 10px #ef4444; }
+        .c-box.heat-yellow { background: #f59e0b; border-radius: 50%; }
+        .c-box.heat-green { background: #10b981; border-radius: 50%; opacity: 0.5; }
 
         .dist-chart-container { background: var(--bg-primary); border: 1px solid var(--border); border-radius: 24px; padding: 1rem; box-shadow: var(--shadow); }
         .dist-insight { margin-top: 1.5rem; padding: 1.5rem; background: rgba(0, 113, 227, 0.05); border-radius: 16px; font-size: 0.85rem; line-height: 1.6; border-left: 4px solid var(--accent); }
