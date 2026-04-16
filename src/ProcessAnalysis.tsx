@@ -211,11 +211,19 @@ const DistributionChart = ({ data, stats }: { data: CDData[], stats: any }) => {
           {/* Density Curve */}
           <path d={densityPath} fill="rgba(0, 113, 227, 0.1)" stroke="var(--accent)" strokeWidth="2.5" />
 
-          {/* Simple Boxplot Overlay */}
+          {/* Consistent Boxplot Overlay (Matching Step 3) */}
           <g transform={`translate(0, ${height/2})`}>
-            <line x1={mapX(stats.min)} y1="0" x2={mapX(stats.max)} y2="0" stroke="var(--text-primary)" strokeWidth="1" />
-            <rect x={mapX(stats.q1)} y="-20" width={mapX(stats.q3) - mapX(stats.q1)} height="40" fill="var(--bg-primary)" stroke="var(--text-primary)" strokeWidth="2" rx="4" />
-            <line x1={mapX(stats.median)} y1="-20" x2={mapX(stats.median)} y2="20" stroke="var(--accent)" strokeWidth="3" />
+            {/* Whiskers */}
+            <line x1={mapX(stats.min)} y1="0" x2={mapX(stats.max)} y2="0" stroke="var(--accent)" strokeWidth="1.5" opacity="0.6" />
+            
+            {/* Box (Transparent with Accent Border) */}
+            <rect 
+              x={mapX(stats.q1)} y="-25" 
+              width={mapX(stats.q3) - mapX(stats.q1)} height="50" 
+              fill="transparent" stroke="var(--accent)" strokeWidth="2.5" rx="4"
+            />
+            {/* Median Line */}
+            <line x1={mapX(stats.median)} y1="-25" x2={mapX(stats.median)} y2="25" stroke="var(--accent)" strokeWidth="4" />
           </g>
 
           <text x={width/2} y="30" fontSize="12" fontWeight="900" textAnchor="middle" fill="var(--text-primary)">CD Distribution & Density Analysis</text>
@@ -454,9 +462,9 @@ const ProcessAnalysis = () => {
               </div>
             </div>
             <div className="heatmap-legend-v4">
-              <div className="l-item-v4"><div className="c-box heat-red"/> Center Anomaly Focus</div>
-              <div className="l-item-v4"><div className="c-box heat-yellow"/> Thermal Variation Area</div>
-              <div className="l-item-v4"><div className="c-box heat-green"/> Stable Condition Zone</div>
+              <div className="l-item-v4"><div className="c-box h-red"/> Center Anomaly Focus (+0.5um)</div>
+              <div className="l-item-v4"><div className="c-box h-yellow"/> Thermal Variation Area (+0.2um)</div>
+              <div className="l-item-v4"><div className="c-box h-green"/> Stable Condition Zone</div>
             </div>
           </div>
 
@@ -557,22 +565,22 @@ const ProcessAnalysis = () => {
 
         .advanced-stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start; }
         .heatmap-column { display: flex; flex-direction: column; align-items: center; gap: 2rem; }
-        .heatmap-overlay.pastel { width: 100%; max-width: 400px; aspect-ratio: 0.9; border: 2px solid var(--border); background: #f8fafc; position: relative; }
+        .heatmap-overlay.pastel { width: 100%; max-width: 400px; aspect-ratio: 0.9; border: 2px solid var(--border); background: #f8fafc; position: relative; overflow: hidden; border-radius: 12px; }
         .soccer-heatmap-layer { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; z-index: 2; overflow: hidden; }
-        .glow-circle { position: absolute; border-radius: 50%; filter: blur(40px); opacity: 0.7; }
-        .glow-circle.core { width: 150px; height: 150px; background: radial-gradient(circle, #ef4444, #f59e0b); z-index: 5; }
-        .glow-circle.mid { width: 280px; height: 280px; background: radial-gradient(circle, #f59e0b, #fbbf24); z-index: 4; opacity: 0.5; }
-        .glow-circle.outer { width: 450px; height: 450px; background: radial-gradient(circle, #fbbf24, #10b981, transparent); z-index: 3; opacity: 0.3; }
+        .glow-circle { position: absolute; border-radius: 40px; filter: blur(40px); opacity: 0.7; } /** Changed to Rounded Rect style **/
+        .glow-circle.core { width: 160px; height: 160px; background: radial-gradient(circle, #ef4444, #f59e0b); z-index: 5; }
+        .glow-circle.mid { width: 300px; height: 300px; background: radial-gradient(circle, #f59e0b, #fbbf24); z-index: 4; opacity: 0.6; }
+        .glow-circle.outer { width: 480px; height: 480px; background: radial-gradient(circle, #fbbf24, #10b981, transparent); z-index: 3; opacity: 0.4; }
         
         .heatmap-v2-grid.dots-only { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(${GRID_COLS}, 1fr); gap: 0; z-index: 10; pointer-events: none; }
         .heatmap-dot.technical { width: 2px; height: 2px; background: #475569; opacity: 0.4; }
         .plan-grid.pro { opacity: 0.15; z-index: 15; pointer-events: none; }
         
-        .heatmap-legend-v4 { display: flex; flex-direction: column; gap: 0.8rem; background: var(--bg-secondary); padding: 1.5rem; border-radius: 20px; width: 100%; }
-        .l-item-v4 { display: flex; align-items: center; gap: 12px; font-size: 0.75rem; font-weight: 700; color: var(--text-secondary); }
-        .c-box.heat-red { background: #ef4444; border-radius: 50%; box-shadow: 0 0 10px #ef4444; }
-        .c-box.heat-yellow { background: #f59e0b; border-radius: 50%; }
-        .c-box.heat-green { background: #10b981; border-radius: 50%; opacity: 0.5; }
+        .heatmap-legend-v4 { display: flex; flex-direction: column; gap: 0.8rem; background: var(--bg-secondary); padding: 1.5rem; border-radius: 20px; width: 100%; border: 1px solid var(--border); }
+        .l-item-v4 { display: flex; align-items: center; gap: 12px; font-size: 0.78rem; font-weight: 800; color: var(--text-secondary); }
+        .c-box.h-red { width: 12px; height: 12px; background: #ef4444; border-radius: 3px; }
+        .c-box.h-yellow { width: 12px; height: 12px; background: #f59e0b; border-radius: 3px; }
+        .c-box.h-green { width: 12px; height: 12px; background: #10b981; border-radius: 3px; }
 
         .dist-chart-container { background: var(--bg-primary); border: 1px solid var(--border); border-radius: 24px; padding: 1rem; box-shadow: var(--shadow); }
         .dist-insight { margin-top: 1.5rem; padding: 1.5rem; background: rgba(0, 113, 227, 0.05); border-radius: 16px; font-size: 0.85rem; line-height: 1.6; border-left: 4px solid var(--accent); }
