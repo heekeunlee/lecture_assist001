@@ -169,16 +169,25 @@ const DistributionChart = ({ data, stats }: { data: CDData[], stats: any }) => {
   const mapX = (val: number) => padding + ((val - 2.0) / (6.0 - 2.0)) * (width - 2 * padding);
   const mapY = (val: number) => (height - padding) - (val * (height - 2 * padding));
 
-  // Simplified Density logic
-  const bins = 40;
+  // Improved Unimodal Density Curve logic
+  const bins = 50;
   const cdValues = data.map(d => d.cd);
   const histogram = new Array(bins).fill(0);
   cdValues.forEach(v => {
-    const binIdx = Math.min(bins - 1, Math.max(0, Math.floor(((v - 2.0) / 4.0) * bins)));
+    const binIdx = Math.min(bins - 1, Math.max(0, Math.floor(((v - 2.5) / 3.0) * bins)));
     histogram[binIdx]++;
   });
-  const maxBin = Math.max(...histogram);
-  const densityPath = histogram.map((count, i) => {
+  
+  // Apply smoothing to ensure unimodal appearance
+  const smoothed = histogram.map((_, i) => {
+    const start = Math.max(0, i - 2);
+    const end = Math.min(bins - 1, i + 2);
+    const sub = histogram.slice(start, end + 1);
+    return sub.reduce((a, b) => a + b, 0) / sub.length;
+  });
+
+  const maxBin = Math.max(...smoothed);
+  const densityPath = smoothed.map((count, i) => {
     const x = padding + (i / bins) * (width - 2 * padding);
     const y = mapY(count / maxBin);
     return `${i === 0 ? 'M' : 'L'}${x},${y}`;
@@ -235,12 +244,13 @@ const ProcessAnalysis = () => {
         const radialVar = centerDist * 0.04;
 
         let anomaly = 0;
-        if (Math.random() > 0.985) anomaly = (Math.random() - 0.5) * 1.8;
-        if (Math.abs(r - GRID_ROWS*0.25) < 4 && Math.abs(c - GRID_COLS*0.75) < 4) {
-          anomaly += 0.7 + Math.random() * 0.5;
+        if (Math.random() > 0.99) anomaly = (Math.random() - 0.5) * 1.5;
+        // Specific cluster for instruction
+        if (Math.abs(r - GRID_ROWS*0.3) < 3 && Math.abs(c - GRID_COLS*0.7) < 3) {
+          anomaly += 0.8;
         }
 
-        const cd = TARGET_CD + (Math.random() - 0.5) * 0.2 + radialVar + edgeEffect + anomaly;
+        const cd = TARGET_CD + (Math.random() - 0.5) * 0.4 + radialVar + edgeEffect + anomaly;
         data.push({
           row: r, col: c,
           x: (c * SUBSTRATE_WIDTH) / GRID_COLS,
@@ -432,20 +442,22 @@ const ProcessAnalysis = () => {
               <div className="axis-label x">X Position</div>
               <div className="axis-label y">Y Position</div>
               
-              <div className="heatmap-v2-grid overlay">
+              <div className="heatmap-v2-grid overlay grid-lines">
                 {cdData.map((d, i) => {
-                  let bgColor = "rgba(165, 180, 252, 0.05)"; // Stable (Pastel Indigo)
-                  if (d.deviation > 0.45) bgColor = "rgba(251, 113, 133, 0.45)"; // Anomaly (Pastel Pink/Coral)
-                  else if (d.deviation > 0.2) bgColor = "rgba(192, 132, 252, 0.35)"; // Caution (Pastel Purple)
+                  let bgColor = "rgba(165, 180, 252, 0.1)"; // Stable (Pastel Indigo)
+                  if (d.deviation > 0.5) bgColor = "rgba(251, 113, 133, 0.6)"; // Anomaly (Pastel Pink)
+                  else if (d.deviation > 0.25) bgColor = "rgba(192, 132, 252, 0.45)"; // Caution (Pastel Purple)
                   
                   return (
                     <div key={i} className="h-cell overlay-cell" style={{ background: bgColor }}>
-                      <div className="site-dot active" />
+                      <div className="heatmap-dot" />
                     </div>
                   );
                 })}
               </div>
-              <div className="plan-grid"><div className="plan-line" /></div>
+              <div className="plan-grid pro">
+                {[...Array(8)].map((_, i) => <div key={i} className="plan-line" />)}
+              </div>
             </div>
             <div className="heatmap-legend-v4">
               <div className="l-item-v4"><div className="c-box pastel-red"/> +0.5um (Anomaly)</div>
@@ -551,16 +563,18 @@ const ProcessAnalysis = () => {
 
         .advanced-stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start; }
         .heatmap-column { display: flex; flex-direction: column; align-items: center; gap: 2rem; }
-        .heatmap-overlay.pastel { width: 100%; max-width: 400px; aspect-ratio: 0.9; border: 2px solid var(--border); background: var(--bg-primary); }
-        .site-dot.active { width: 3px; height: 3px; background: #64748b; opacity: 1; }
+        .heatmap-overlay.pastel { width: 100%; max-width: 400px; aspect-ratio: 0.9; border: 2px solid var(--border); background: var(--bg-primary); position: relative; }
+        .heatmap-v2-grid.grid-lines { gap: 1px; padding: 1px; background: rgba(0,0,0,0.02); }
+        .heatmap-dot { width: 3px; height: 3px; background: #64748b; border-radius: 50%; z-index: 10; }
+        .plan-grid.pro { opacity: 0.1; z-index: 1; pointer-events: none; }
         
         .heatmap-legend-v4 { display: flex; flex-direction: column; gap: 0.8rem; background: var(--bg-secondary); padding: 1.5rem; border-radius: 20px; width: 100%; }
         .l-item-v4 { display: flex; align-items: center; gap: 12px; font-size: 0.75rem; font-weight: 700; color: var(--text-secondary); }
-        .c-box.pastel-red { background: rgba(251, 113, 133, 0.6); }
-        .c-box.pastel-purple { background: rgba(192, 132, 252, 0.4); }
-        .c-box.pastel-indigo { background: rgba(165, 180, 252, 0.2); }
+        .c-box.pastel-red { background: rgba(251, 113, 133, 0.8); }
+        .c-box.pastel-purple { background: rgba(192, 132, 252, 0.6); }
+        .c-box.pastel-indigo { background: rgba(165, 180, 252, 0.3); }
 
-        .dist-chart-container { background: var(--bg-primary); border: 1px solid var(--border); border-radius: 24px; padding: 1rem; }
+        .dist-chart-container { background: var(--bg-primary); border: 1px solid var(--border); border-radius: 24px; padding: 1rem; box-shadow: var(--shadow); }
         .dist-insight { margin-top: 1.5rem; padding: 1.5rem; background: rgba(0, 113, 227, 0.05); border-radius: 16px; font-size: 0.85rem; line-height: 1.6; border-left: 4px solid var(--accent); }
 
         .root-cause-section { margin-top: 1rem; }
