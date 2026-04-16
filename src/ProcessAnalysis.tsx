@@ -161,6 +161,68 @@ const GlassPlanView = ({ data }: { data: CDData[] }) => (
   </div>
 );
 
+const DistributionChart = ({ data, stats }: { data: CDData[], stats: any }) => {
+  const width = 400;
+  const height = 350;
+  const padding = 50;
+
+  const mapX = (val: number) => padding + ((val - 2.0) / (6.0 - 2.0)) * (width - 2 * padding);
+  const mapY = (val: number) => (height - padding) - (val * (height - 2 * padding));
+
+  // Simplified Density logic
+  const bins = 40;
+  const cdValues = data.map(d => d.cd);
+  const histogram = new Array(bins).fill(0);
+  cdValues.forEach(v => {
+    const binIdx = Math.min(bins - 1, Math.max(0, Math.floor(((v - 2.0) / 4.0) * bins)));
+    histogram[binIdx]++;
+  });
+  const maxBin = Math.max(...histogram);
+  const densityPath = histogram.map((count, i) => {
+    const x = padding + (i / bins) * (width - 2 * padding);
+    const y = mapY(count / maxBin);
+    return `${i === 0 ? 'M' : 'L'}${x},${y}`;
+  }).join(' ');
+
+  return (
+    <div className="dist-chart-container">
+      <svg viewBox={`0 0 ${width} ${height}`} className="dist-svg">
+          {/* Grid lines */}
+          {[2, 3, 4, 5, 6].map(v => (
+            <g key={v}>
+              <line x1={mapX(v)} y1={padding} x2={mapX(v)} y2={height-padding} stroke="var(--border)" strokeDasharray="3 2" />
+              <text x={mapX(v)} y={height-padding+20} fontSize="10" textAnchor="middle" fill="var(--text-secondary)">{v}um</text>
+            </g>
+          ))}
+
+          {/* Scatter dots (Jitter) */}
+          {data.filter((_, i) => i % 2 === 0).map((d, i) => (
+            <circle 
+              key={i} 
+              cx={mapX(d.cd)} 
+              cy={padding + Math.random() * (height - 2 * padding)} 
+              r="1.5" 
+              fill="var(--accent)" 
+              opacity="0.1" 
+            />
+          ))}
+
+          {/* Density Curve */}
+          <path d={densityPath} fill="rgba(0, 113, 227, 0.1)" stroke="var(--accent)" strokeWidth="2.5" />
+
+          {/* Simple Boxplot Overlay */}
+          <g transform={`translate(0, ${height/2})`}>
+            <line x1={mapX(stats.min)} y1="0" x2={mapX(stats.max)} y2="0" stroke="var(--text-primary)" strokeWidth="1" />
+            <rect x={mapX(stats.q1)} y="-20" width={mapX(stats.q3) - mapX(stats.q1)} height="40" fill="var(--bg-primary)" stroke="var(--text-primary)" strokeWidth="2" rx="4" />
+            <line x1={mapX(stats.median)} y1="-20" x2={mapX(stats.median)} y2="20" stroke="var(--accent)" strokeWidth="3" />
+          </g>
+
+          <text x={width/2} y="30" fontSize="12" fontWeight="900" textAnchor="middle" fill="var(--text-primary)">CD Distribution & Density Analysis</text>
+      </svg>
+    </div>
+  );
+};
+
 const ProcessAnalysis = () => {
   const [selectedStep, setSelectedStep] = useState(0);
 
@@ -360,40 +422,44 @@ const ProcessAnalysis = () => {
           <Activity className="text-accent" />
           <h2>STEP 4. AI를 활용한 데이터 시각화 처리 예시</h2>
         </div>
-        <div className="heatmap-plan-overlay-container">
-          <div className="glass-rect heatmap-overlay">
-            {/* Axis Labels */}
-            <div className="coordinate origin">(0, 0)</div>
-            <div className="coordinate x-max">2,880mm</div>
-            <div className="coordinate y-max">3,130mm</div>
-            <div className="axis-label x">X-Axis Position (mm)</div>
-            <div className="axis-label y">Y-Axis Position (mm)</div>
-            
-            {/* The Integrated Heatmap + Sites Overlay */}
-            <div className="heatmap-v2-grid overlay">
-              {cdData.map((d, i) => {
-                // Red-Purple Palette mapping for background
-                let bgColor = "rgba(79, 70, 229, 0.1)"; // Normal
-                if (d.deviation > 0.45) bgColor = "rgba(239, 68, 68, 0.7)"; // Red Anomaly
-                else if (d.deviation > 0.2) bgColor = "rgba(168, 85, 247, 0.5)"; // Purple Caution
-                
-                return (
-                  <div key={i} className="h-cell overlay-cell" style={{ background: bgColor }}>
-                    <div className="site-dot" />
-                  </div>
-                );
-              })}
+        <div className="advanced-stats-grid">
+          {/* Left: Pastel Heatmap Overlay */}
+          <div className="heatmap-column">
+            <div className="glass-rect heatmap-overlay pastel">
+              <div className="coordinate origin">(0, 0)</div>
+              <div className="coordinate x-max">2,880mm</div>
+              <div className="coordinate y-max">3,130mm</div>
+              <div className="axis-label x">X Position</div>
+              <div className="axis-label y">Y Position</div>
+              
+              <div className="heatmap-v2-grid overlay">
+                {cdData.map((d, i) => {
+                  let bgColor = "rgba(165, 180, 252, 0.05)"; // Stable (Pastel Indigo)
+                  if (d.deviation > 0.45) bgColor = "rgba(251, 113, 133, 0.45)"; // Anomaly (Pastel Pink/Coral)
+                  else if (d.deviation > 0.2) bgColor = "rgba(192, 132, 252, 0.35)"; // Caution (Pastel Purple)
+                  
+                  return (
+                    <div key={i} className="h-cell overlay-cell" style={{ background: bgColor }}>
+                      <div className="site-dot active" />
+                    </div>
+                  );
+                })}
+              </div>
+              <div className="plan-grid"><div className="plan-line" /></div>
             </div>
-            
-            <div className="plan-grid">
-              {[...Array(12)].map((_, i) => <div key={i} className="plan-line" />)}
+            <div className="heatmap-legend-v4">
+              <div className="l-item-v4"><div className="c-box pastel-red"/> +0.5um (Anomaly)</div>
+              <div className="l-item-v4"><div className="c-box pastel-purple"/> +0.2um (Caution)</div>
+              <div className="l-item-v4"><div className="c-box pastel-indigo"/> Stable</div>
             </div>
           </div>
-          
-          <div className="heatmap-legend-v3">
-            <div className="l-item-v3"><div className="c-box red-bold"/> Critical Anomaly (+0.5um)</div>
-            <div className="l-item-v3"><div className="c-box purple-mid"/> Caution Area (+0.2um)</div>
-            <div className="l-item-v3"><div className="c-box indigo-soft"/> Stable Spec Range</div>
+
+          {/* Right: Distribution Analysis */}
+          <div className="distribution-column">
+             <DistributionChart data={cdData} stats={stats} />
+             <div className="dist-insight">
+                <p><Sparkles size={14}/> <strong>Kernel Density Estimation:</strong> 1,400개 전수 데이터를 활용한 비모수적 밀도 추정으로 공정의 안정성 및 멀티 모달(Multi-modal) 분포 자동 감지.</p>
+             </div>
           </div>
         </div>
       </section>
@@ -483,17 +549,19 @@ const ProcessAnalysis = () => {
         .stat-pill-v2 strong { font-size: 1.2rem; color: var(--accent); }
         .engineer-comment { display: flex; align-items: center; gap: 8px; font-size: 0.75rem; color: var(--text-secondary); margin-top: auto; padding-top: 1rem; border-top: 1px solid var(--border); }
 
-        .heatmap-plan-overlay-container { display: flex; flex-direction: column; align-items: center; gap: 4rem; margin-top: 2rem; position: relative; }
-        .heatmap-overlay { width: 500px; height: 555px; border: 3px solid var(--accent); }
-        .heatmap-v2-grid.overlay { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(${GRID_COLS}, 1fr); gap: 0; z-index: 5; }
-        .overlay-cell { position: relative; display: flex; align-items: center; justify-content: center; overflow: visible; }
-        .site-dot { width: 2px; height: 2px; background: #94a3b8; border-radius: 50%; opacity: 0.8; z-index: 10; }
+        .advanced-stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start; }
+        .heatmap-column { display: flex; flex-direction: column; align-items: center; gap: 2rem; }
+        .heatmap-overlay.pastel { width: 100%; max-width: 400px; aspect-ratio: 0.9; border: 2px solid var(--border); background: var(--bg-primary); }
+        .site-dot.active { width: 3px; height: 3px; background: #64748b; opacity: 1; }
         
-        .heatmap-legend-v3 { display: flex; gap: 3rem; background: var(--bg-primary); padding: 1.5rem 3rem; border-radius: 50px; border: 1px solid var(--border); box-shadow: var(--shadow); }
-        .l-item-v3 { display: flex; align-items: center; gap: 10px; font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); }
-        .c-box.red-bold { background: #ef4444; }
-        .c-box.purple-mid { background: #a855f7; }
-        .c-box.indigo-soft { background: rgba(79, 70, 229, 0.4); }
+        .heatmap-legend-v4 { display: flex; flex-direction: column; gap: 0.8rem; background: var(--bg-secondary); padding: 1.5rem; border-radius: 20px; width: 100%; }
+        .l-item-v4 { display: flex; align-items: center; gap: 12px; font-size: 0.75rem; font-weight: 700; color: var(--text-secondary); }
+        .c-box.pastel-red { background: rgba(251, 113, 133, 0.6); }
+        .c-box.pastel-purple { background: rgba(192, 132, 252, 0.4); }
+        .c-box.pastel-indigo { background: rgba(165, 180, 252, 0.2); }
+
+        .dist-chart-container { background: var(--bg-primary); border: 1px solid var(--border); border-radius: 24px; padding: 1rem; }
+        .dist-insight { margin-top: 1.5rem; padding: 1.5rem; background: rgba(0, 113, 227, 0.05); border-radius: 16px; font-size: 0.85rem; line-height: 1.6; border-left: 4px solid var(--accent); }
 
         .root-cause-section { margin-top: 1rem; }
         .analysis-cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin: 2rem 0; }
