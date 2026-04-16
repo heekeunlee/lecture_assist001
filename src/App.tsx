@@ -129,7 +129,7 @@ export default function App() {
   const [selectedId, setSelectedId] = useState<number | string | null>(null);
   const [isPresenting, setIsPresenting] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [theme, setTheme] = useState('light');
+  const [theme, setTheme] = useState('dark');
   const [showOfficial, setShowOfficial] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [activeTermCat, setActiveTermCat] = useState('전체');
@@ -307,7 +307,7 @@ export default function App() {
             className={`tab-button ${activeTab === 'terminology' ? 'active' : ''}`} 
             onClick={() => { setActiveTab('terminology'); setSelectedId(null); setCurrentPage(1); }}
           >
-            <BookOpen size={18} /> 업계용어 2000
+            <BookOpen size={18} /> 업계용어 100
           </button>
           <button 
             className={`tab-button ${activeTab === 'analysis' ? 'active' : ''}`} 
@@ -344,7 +344,7 @@ export default function App() {
           <h1>
             {activeTab === 'curriculum' 
               ? (showOfficial ? 'Vibe Coding 교육과정' : '디스플레이 엔지니어 실무 로드맵')
-              : (activeTab === 'faq' ? '바이브코딩 쌩기초 Q&A 500개' : (activeTab === 'examples' ? '실무 해결 예제 10선' : (activeTab === 'analysis' ? '디스플레이 엔지니어링 실전 분석' : '업계용어 2000')))}
+              : (activeTab === 'faq' ? '바이브코딩 쌩기초 Q&A 500개' : (activeTab === 'examples' ? '실무 해결 예제 10선' : (activeTab === 'analysis' ? '디스플레이 엔지니어링 실전 분석' : '업계용어 100')))}
           </h1>
           <p className="header-subtitle">
             {activeTab === 'curriculum'
