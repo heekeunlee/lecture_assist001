@@ -29,8 +29,7 @@ const SplashScreen = () => {
         >
           <img src={(import.meta.env.BASE_URL || '') + 'logo.png'} alt="내일도 렛유인 Edu" style={{ height: '80px', width: 'auto', marginBottom: '1.5rem', objectFit: 'contain' }} />
           <div className="splash-text-group">
-            <h1 className="splash-title">VIBE CODING</h1>
-            <p className="splash-subtitle">for Display Engineering</p>
+            <h1 className="splash-title" style={{ fontSize: '3rem', lineHeight: '1.2' }}>Vibe Coding<br/>for Fine Tech Engineering</h1>
           </div>
         </motion.div>
         
@@ -371,7 +370,7 @@ export default function App() {
           </div>
           <h1>
             {activeTab === 'curriculum' 
-              ? (showOfficial ? 'Vibe Coding 교육과정' : '디스플레이 엔지니어 실무 로드맵')
+              ? (showOfficial ? '첨단산업 제조업 엔지니어를 위한 Vibe Coding' : '디스플레이 엔지니어 실무 로드맵')
               : (activeTab === 'faq' ? '바이브코딩 쌩기초 Q&A 500개' : (activeTab === 'examples' ? '실무 해결 예제 10선' : '디스플레이 엔지니어링 실전 분석'))}
           </h1>
           <p className="header-subtitle">
