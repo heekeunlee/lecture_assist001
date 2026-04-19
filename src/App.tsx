@@ -28,7 +28,7 @@ const SplashScreen = () => {
           transition={{ duration: 0.8, ease: "easeOut" }}
           className="splash-logo"
         >
-          <Layers size={160} className="splash-icon" />
+          <img src={(import.meta.env.BASE_URL || '') + 'logo.png'} alt="내일도 렛유인 Edu" style={{ height: '80px', width: 'auto', marginBottom: '1.5rem', objectFit: 'contain' }} />
           <div className="splash-text-group">
             <h1 className="splash-title">VIBE CODING</h1>
             <p className="splash-subtitle">for Display Engineering</p>
@@ -387,7 +387,7 @@ export default function App() {
           animate={{ opacity: 1, y: 0 }}
         >
           <div className="logo-container">
-            <Layers className="accent-color" size={32} />
+            <img src={(import.meta.env.BASE_URL || '') + 'logo.png'} alt="내일도 렛유인 Edu" style={{ height: '36px', width: 'auto', objectFit: 'contain', filter: 'brightness(1.5)' }} />
             <span className="logo-text">VIBE CODING 101</span>
           </div>
           <h1>
