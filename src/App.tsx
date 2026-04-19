@@ -131,7 +131,7 @@ export default function App() {
   const [selectedId, setSelectedId] = useState<number | string | null>(null);
   const [isPresenting, setIsPresenting] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [theme, setTheme] = useState('dark');
+  const [theme, setTheme] = useState('light');
   const [showOfficial, setShowOfficial] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [activeTermCat, setActiveTermCat] = useState('전체');
@@ -387,7 +387,7 @@ export default function App() {
           animate={{ opacity: 1, y: 0 }}
         >
           <div className="logo-container">
-            <img src={(import.meta.env.BASE_URL || '') + 'logo.png'} alt="내일도 렛유인 Edu" style={{ height: '36px', width: 'auto', objectFit: 'contain', filter: 'brightness(1.5)' }} />
+            <img src={(import.meta.env.BASE_URL || '') + 'logo.png'} alt="내일도 렛유인 Edu" style={{ height: '36px', width: 'auto', objectFit: 'contain', filter: theme === 'dark' ? 'brightness(1.5)' : 'none' }} />
             <span className="logo-text">VIBE CODING 101</span>
           </div>
           <h1>
