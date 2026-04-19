@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ChevronLeft, ChevronRight, Presentation, Grid, Sparkles, MessageCircle, HelpCircle, Layers, List, FileText, Target, TrendingUp, Clock, Award, Printer, Image, Zap, Lock } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight, Grid, Sparkles, MessageCircle, HelpCircle, Layers, List, FileText, Target, TrendingUp, Clock, Award, Printer, Image, Zap, Lock } from 'lucide-react';
 import questionsData from './data/questions.json';
 import curriculumData from './data/curriculum.json';
 import officialData from './data/official_plan.json';
@@ -129,7 +129,7 @@ export default function App() {
   const [selectedId, setSelectedId] = useState<number | string | null>(null);
   const [isPresenting, setIsPresenting] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [theme, setTheme] = useState('light');
+  const [theme] = useState('light');
   const [showOfficial, setShowOfficial] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
@@ -148,7 +148,6 @@ export default function App() {
     }
   }, [isAuthenticated]);
 
-  const toggleTheme = () => setTheme(prev => prev === 'light' ? 'dark' : 'light');
 
   const openModal = (id: number | string) => {
     setSelectedId(id);
@@ -342,19 +341,6 @@ export default function App() {
             onClick={() => { setActiveTab('analysis'); setSelectedId(null); setCurrentPage(1); }}
           >
             <Zap size={18} /> 실전 공정 분석
-          </button>
-        </div>
-        
-        <div className="nav-group">
-          <button onClick={toggleTheme} className="icon-button">
-            {theme === 'dark' ? '☀️' : '🌙'}
-          </button>
-          <button 
-            onClick={() => setIsPresenting(!isPresenting)} 
-            className="action-button"
-          >
-            {isPresenting ? <Grid size={18} /> : <Presentation size={18} />}
-            <span>발표 모드</span>
           </button>
         </div>
       </nav>
