@@ -388,7 +388,6 @@ export default function App() {
         >
           <div className="logo-container">
             <img src={(import.meta.env.BASE_URL || '') + 'logo.png'} alt="내일도 렛유인 Edu" style={{ height: '36px', width: 'auto', objectFit: 'contain', filter: theme === 'dark' ? 'brightness(1.5)' : 'none' }} />
-            <span className="logo-text">VIBE CODING 101</span>
           </div>
           <h1>
             {activeTab === 'curriculum' 
@@ -397,7 +396,7 @@ export default function App() {
           </h1>
           <p className="header-subtitle">
             {activeTab === 'curriculum'
-              ? (showOfficial ? 'AI와 함께 기술의 한계를 넘어서는 미래 Display 엔지니어로의 도약' : '조기 전력화를 위한 단계별 학습 과정')
+              ? (showOfficial ? 'AI와 함께 기술의 한계를 넘어서는 미래 엔지니어로의 도약' : '조기 전력화를 위한 단계별 학습 과정')
               : (activeTab === 'faq' ? '비전공자를 위한 시원한 코딩 문답' : (activeTab === 'examples' ? '강의를 통해 마스터할 디스플레이 현장 실습 시나리오' : (activeTab === 'analysis' ? '10세대 대형 기판의 포토 공정 및 선폭(CD) 데이터 시각화 분석' : '실무에서 바로 만나는 엔지니어 핵심 가이드')))}
           </p>
         </motion.div>
