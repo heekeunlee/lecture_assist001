@@ -29,7 +29,7 @@ const SplashScreen = () => {
         >
           <img src={(import.meta.env.BASE_URL || '') + 'logo.png'} alt="내일도 렛유인 Edu" style={{ height: '80px', width: 'auto', marginBottom: '1.5rem', objectFit: 'contain' }} />
           <div className="splash-text-group">
-            <h1 className="splash-title" style={{ fontSize: '3rem', lineHeight: '1.2' }}>Vibe Coding<br/>for Fine Tech Engineering</h1>
+            <p style={{ fontSize: '1rem', fontWeight: 300, color: '#888', lineHeight: '1.4', margin: 0, letterSpacing: '0.05em' }}>Vibe Coding<br/>for Fine Tech Engineering</p>
           </div>
         </motion.div>
         
