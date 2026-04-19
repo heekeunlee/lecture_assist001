@@ -672,6 +672,10 @@ export default function App() {
         )}
       </main>
 
+      <footer style={{ display: 'flex', justifyContent: 'center', marginTop: '6rem', paddingBottom: '2rem', borderTop: '1px solid var(--border)', paddingTop: '3rem' }}>
+        <img src={(import.meta.env.BASE_URL || '') + 'logo.png'} alt="내일도 렛유인 Edu" style={{ height: '40px', width: 'auto', objectFit: 'contain', filter: theme === 'dark' ? 'brightness(1.5)' : 'none', opacity: 0.8 }} />
+      </footer>
+
       <AnimatePresence>
         {(selectedId !== null && currentData !== null || isPresenting) && currentData && (
           <motion.div 
