@@ -141,13 +141,17 @@ export default function App() {
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
-    
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 3000);
-    
-    return () => clearTimeout(timer);
   }, [theme]);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      setIsLoading(true);
+      const timer = setTimeout(() => {
+        setIsLoading(false);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [isAuthenticated]);
 
   const toggleTheme = () => setTheme(prev => prev === 'light' ? 'dark' : 'light');
 
