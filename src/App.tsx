@@ -1,16 +1,15 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ChevronLeft, ChevronRight, Presentation, Grid, Sparkles, MessageCircle, HelpCircle, Layers, List, FileText, Target, TrendingUp, Clock, Award, Printer, BookOpen, Search, Image, Zap, Lock } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight, Presentation, Grid, Sparkles, MessageCircle, HelpCircle, Layers, List, FileText, Target, TrendingUp, Clock, Award, Printer, Image, Zap, Lock } from 'lucide-react';
 import questionsData from './data/questions.json';
 import curriculumData from './data/curriculum.json';
 import officialData from './data/official_plan.json';
-import terminologyData from './data/terminology.json';
 import examplesData from './data/examples.json';
 import ExcelJS from 'exceljs';
 import { saveAs } from 'file-saver';
 import ProcessAnalysis from './ProcessAnalysis';
 
-type TabType = 'faq' | 'curriculum' | 'terminology' | 'examples' | 'analysis';
+type TabType = 'faq' | 'curriculum' | 'examples' | 'analysis';
 
 const SplashScreen = () => {
   return (
@@ -133,11 +132,8 @@ export default function App() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [theme, setTheme] = useState('light');
   const [showOfficial, setShowOfficial] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [activeTermCat, setActiveTermCat] = useState('전체');
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
-  const itemsPerPage = 30;
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
@@ -158,7 +154,6 @@ export default function App() {
   const openModal = (id: number | string) => {
     setSelectedId(id);
     const data = activeTab === 'faq' ? questionsData : (showOfficial ? officialData : curriculumData);
-    if (activeTab === 'terminology') return;
     const index = data.findIndex((q: any) => q.id === id);
     setCurrentIndex(index);
   };
@@ -176,15 +171,6 @@ export default function App() {
   const currentData = activeTab === 'faq' 
     ? questionsData[currentIndex] 
     : (activeTab === 'curriculum' ? (showOfficial ? officialData[currentIndex] : curriculumData[currentIndex]) : null);
-
-  const filteredTerms = terminologyData.filter(t => 
-    (activeTermCat === '전체' || t.category === activeTermCat) &&
-    (t.term.toLowerCase().includes(searchTerm.toLowerCase()) || 
-     t.desc.toLowerCase().includes(searchTerm.toLowerCase()))
-  ).sort((a, b) => a.term.localeCompare(b.term));
-
-  const pageCount = Math.ceil(filteredTerms.length / itemsPerPage);
-  const currentTerms = filteredTerms.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   const exportToExcel = async () => {
     const workbook = new ExcelJS.Workbook();
@@ -353,12 +339,6 @@ export default function App() {
             <HelpCircle size={18} /> 바이브코딩 쌩기초 Q&A 500개
           </button>
           <button 
-            className={`tab-button ${activeTab === 'terminology' ? 'active' : ''}`} 
-            onClick={() => { setActiveTab('terminology'); setSelectedId(null); setCurrentPage(1); }}
-          >
-            <BookOpen size={18} /> 업계용어 100
-          </button>
-          <button 
             className={`tab-button ${activeTab === 'analysis' ? 'active' : ''}`} 
             onClick={() => { setActiveTab('analysis'); setSelectedId(null); setCurrentPage(1); }}
           >
@@ -392,12 +372,12 @@ export default function App() {
           <h1>
             {activeTab === 'curriculum' 
               ? (showOfficial ? 'Vibe Coding 교육과정' : '디스플레이 엔지니어 실무 로드맵')
-              : (activeTab === 'faq' ? '바이브코딩 쌩기초 Q&A 500개' : (activeTab === 'examples' ? '실무 해결 예제 10선' : (activeTab === 'analysis' ? '디스플레이 엔지니어링 실전 분석' : '업계용어 100')))}
+              : (activeTab === 'faq' ? '바이브코딩 쌩기초 Q&A 500개' : (activeTab === 'examples' ? '실무 해결 예제 10선' : '디스플레이 엔지니어링 실전 분석'))}
           </h1>
           <p className="header-subtitle">
             {activeTab === 'curriculum'
               ? (showOfficial ? 'AI와 함께 기술의 한계를 넘어서는 미래 엔지니어로의 도약' : '조기 전력화를 위한 단계별 학습 과정')
-              : (activeTab === 'faq' ? '비전공자를 위한 시원한 코딩 문답' : (activeTab === 'examples' ? '강의를 통해 마스터할 디스플레이 현장 실습 시나리오' : (activeTab === 'analysis' ? '10세대 대형 기판의 포토 공정 및 선폭(CD) 데이터 시각화 분석' : '실무에서 바로 만나는 엔지니어 핵심 가이드')))}
+              : (activeTab === 'faq' ? '비전공자를 위한 시원한 코딩 문답' : (activeTab === 'examples' ? '강의를 통해 마스터할 디스플레이 현장 실습 시나리오' : '10세대 대형 기판의 포토 공정 및 선폭(CD) 데이터 시각화 분석'))}
           </p>
         </motion.div>
       </header>
@@ -601,74 +581,7 @@ export default function App() {
           </div>
         ) : activeTab === 'analysis' ? (
           <ProcessAnalysis />
-        ) : (
-          <div className="terminology-container">
-            <div className="terminology-nav">
-              {['전체', '디스플레이', '공정', '데이터 처리', '코딩'].map(cat => (
-                <button 
-                  key={cat} 
-                  className={`term-cat-btn ${activeTermCat === cat ? 'active' : ''}`}
-                  onClick={() => { setActiveTermCat(cat); setCurrentPage(1); }}
-                >
-                  {cat}
-                </button>
-              ))}
-            </div>
-
-            <div className="search-wrapper">
-              <Search className="search-icon" size={20} />
-              <input 
-                type="text" 
-                placeholder={`${activeTermCat} 분야 용어 검색...`} 
-                className="terminology-search"
-                value={searchTerm}
-                onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }}
-              />
-            </div>
-
-            {pageCount > 1 && (
-              <div className="pagination">
-                <button 
-                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))} 
-                  disabled={currentPage === 1} 
-                  className="nav-btn"
-                >
-                  <ChevronLeft size={20} />
-                </button>
-                <span className="page-indicator">{currentPage} / {pageCount}</span>
-                <button 
-                  onClick={() => setCurrentPage(p => Math.min(pageCount, p + 1))} 
-                  disabled={currentPage === pageCount} 
-                  className="nav-btn"
-                >
-                  <ChevronRight size={20} />
-                </button>
-              </div>
-            )}
-
-            <div className="terminology-grid">
-              {currentTerms.map((t, idx) => (
-                <motion.div 
-                  key={t.term}
-                  className="term-card"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: Math.min(idx * 0.01, 0.5) }}
-                >
-                  <div className="term-header">
-                    <span className="term-cat-tag">{t.category}</span>
-                    <h2 className="term-word">{t.term}</h2>
-                  </div>
-                  <div className="term-full">{t.full}</div>
-                  <p className="term-desc">{t.desc}</p>
-                </motion.div>
-              ))}
-            </div>
-            {filteredTerms.length === 0 && (
-              <div className="no-results">찾으시는 검색 결과가 없습니다.</div>
-            )}
-          </div>
-        )}
+        ) : null}
       </main>
 
       <footer style={{ display: 'flex', justifyContent: 'center', marginTop: '6rem', paddingBottom: '2rem', borderTop: '1px solid var(--border)', paddingTop: '3rem' }}>
