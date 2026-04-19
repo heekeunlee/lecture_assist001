@@ -275,8 +275,8 @@ export default function App() {
           style={{ background: 'var(--bg-tertiary)', padding: '3rem', borderRadius: '16px', textAlign: 'center', border: '1px solid var(--border)', boxShadow: '0 8px 32px rgba(0,0,0,0.2)' }}
         >
           <Lock size={48} style={{ margin: '0 auto 1.5rem auto', color: 'var(--accent)' }} />
-          <h2 style={{ marginBottom: '0.5rem', fontSize: '1.5rem', fontWeight: 600 }}>Access Required</h2>
-          <p style={{ color: 'var(--text-secondary)', marginBottom: '2rem', fontSize: '0.9rem' }}>Please enter the 4-digit PIN to access</p>
+          <h2 style={{ marginBottom: '0.5rem', fontSize: '1.5rem', fontWeight: 600 }}>접근 권한 확인</h2>
+          <p style={{ color: 'var(--text-secondary)', marginBottom: '2rem', fontSize: '0.9rem' }}>비밀번호 4자리를 입력해주세요</p>
           <input 
             type="password" 
             maxLength={4}
