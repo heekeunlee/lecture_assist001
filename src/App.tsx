@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ChevronLeft, ChevronRight, Presentation, Grid, Sparkles, MessageCircle, HelpCircle, Layers, List, FileText, Target, TrendingUp, Clock, Award, Printer, BookOpen, Search, Image, Zap } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight, Presentation, Grid, Sparkles, MessageCircle, HelpCircle, Layers, List, FileText, Target, TrendingUp, Clock, Award, Printer, BookOpen, Search, Image, Zap, Lock } from 'lucide-react';
 import questionsData from './data/questions.json';
 import curriculumData from './data/curriculum.json';
 import officialData from './data/official_plan.json';
@@ -125,6 +125,8 @@ const CurriculumVisuals = () => {
 };
 
 export default function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(() => window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+  const [password, setPassword] = useState('');
   const [activeTab, setActiveTab] = useState<TabType>('curriculum');
   const [selectedId, setSelectedId] = useState<number | string | null>(null);
   const [isPresenting, setIsPresenting] = useState(false);
@@ -275,6 +277,49 @@ export default function App() {
     const buffer = await workbook.xlsx.writeBuffer();
     saveAs(new Blob([buffer]), `VibeCoding_Curriculum_${showOfficial ? 'Official' : 'Roadmap'}.xlsx`);
   };
+
+  if (!isAuthenticated) {
+    return (
+      <div className="app-container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          style={{ background: 'var(--bg-tertiary)', padding: '3rem', borderRadius: '16px', textAlign: 'center', border: '1px solid var(--border)', boxShadow: '0 8px 32px rgba(0,0,0,0.2)' }}
+        >
+          <Lock size={48} style={{ margin: '0 auto 1.5rem auto', color: 'var(--accent)' }} />
+          <h2 style={{ marginBottom: '0.5rem', fontSize: '1.5rem', fontWeight: 600 }}>Access Required</h2>
+          <p style={{ color: 'var(--text-secondary)', marginBottom: '2rem', fontSize: '0.9rem' }}>Please enter the 4-digit PIN to access</p>
+          <input 
+            type="password" 
+            maxLength={4}
+            placeholder="••••"
+            value={password}
+            onChange={(e) => {
+              const val = e.target.value;
+              setPassword(val);
+              if(val === '1234') {
+                setTimeout(() => setIsAuthenticated(true), 200);
+              }
+            }}
+            autoFocus
+            style={{
+              fontSize: '2rem',
+              letterSpacing: '0.8rem',
+              textAlign: 'center',
+              width: '160px',
+              padding: '0.75rem',
+              borderRadius: '12px',
+              border: '2px solid var(--border)',
+              background: 'var(--bg-primary)',
+              color: 'var(--text-primary)',
+              outline: 'none',
+              transition: 'border-color 0.2s'
+            }}
+          />
+        </motion.div>
+      </div>
+    );
+  }
 
   return (
     <>
