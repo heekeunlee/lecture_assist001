@@ -268,7 +268,7 @@ export default function App() {
 
   if (!isAuthenticated) {
     return (
-      <div className="app-container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+      <div className="login-screen-outer" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh', gap: '2rem' }}>
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -276,7 +276,7 @@ export default function App() {
         >
           <Lock size={48} style={{ margin: '0 auto 1.5rem auto', color: 'var(--accent)' }} />
           <h2 style={{ marginBottom: '0.5rem', fontSize: '1.5rem', fontWeight: 600 }}>접근 권한 확인</h2>
-          <p style={{ color: 'var(--text-secondary)', marginBottom: '2rem', fontSize: '0.9rem' }}>비밀번호 4자리를 입력해주세요</p>
+          <p style={{ color: 'var(--text-secondary)', marginBottom: '2rem', fontSize: '0.9rem' }}>패스워드를 입력해주세요</p>
           <input 
             type="password" 
             maxLength={4}
@@ -293,9 +293,9 @@ export default function App() {
             style={{
               fontSize: '2rem',
               letterSpacing: '0.8rem',
-              textAlign: 'center',
+              textAlign: 'left',
               width: '160px',
-              padding: '0.75rem',
+              padding: '0.75rem 1.5rem',
               borderRadius: '12px',
               border: '2px solid var(--border)',
               background: 'var(--bg-primary)',
@@ -303,6 +303,18 @@ export default function App() {
               outline: 'none',
               transition: 'border-color 0.2s'
             }}
+          />
+        </motion.div>
+        
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 0.6 }}
+          transition={{ delay: 0.5 }}
+        >
+          <img 
+            src={(import.meta.env.BASE_URL || '') + 'logo.png'} 
+            alt="내일도 렛유인 Edu" 
+            style={{ height: '32px', width: 'auto', objectFit: 'contain' }} 
           />
         </motion.div>
       </div>
