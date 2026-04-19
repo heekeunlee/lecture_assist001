@@ -407,15 +407,15 @@ use chrome, FireFox or Internet Explorer 11`)}var a=e(`safe-buffer`),o=e(`random
         /* Splash Screen */
         .splash-screen {
           position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-          background: #000; display: flex; align-items: center; justify-content: center;
-          z-index: 9999; color: white;
+          background: var(--bg-primary); display: flex; align-items: center; justify-content: center;
+          z-index: 9999; color: var(--text-primary);
         }
         .splash-content { display: flex; flex-direction: column; align-items: center; gap: 2rem; }
         .splash-logo { display: flex; flex-direction: column; align-items: center; gap: 1rem; text-align: center; }
-        .splash-icon { color: #0071e3; filter: drop-shadow(0 0 20px rgba(0,113,227,0.5)); }
-        .splash-title { font-size: 4rem; font-weight: 900; letter-spacing: 0.1em; background: linear-gradient(135deg, #fff, #888); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .splash-subtitle { font-size: 1.5rem; opacity: 0.6; font-weight: 300; }
-        .loading-bar-container { width: 300px; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden; }
+        .splash-icon { color: var(--accent); filter: drop-shadow(0 0 20px rgba(0,113,227,0.5)); }
+        .splash-title { font-size: 4rem; font-weight: 900; letter-spacing: 0.1em; background: linear-gradient(135deg, var(--text-primary), var(--text-secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .splash-subtitle { font-size: 1.5rem; color: var(--text-secondary); font-weight: 300; }
+        .loading-bar-container { width: 300px; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
         .loading-bar-fill { height: 100%; background: #0071e3; width: 0; animation: load 2.5s forwards ease-in-out; }
         @keyframes load { from { width: 0; } to { width: 100%; } }
 
