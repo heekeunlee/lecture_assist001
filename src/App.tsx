@@ -328,31 +328,27 @@ export default function App() {
       </AnimatePresence>
 
       <div className="app-container">
-      <nav className="main-nav">
-        <div className="nav-group tabs-group">
+      <nav className="header-top-bar">
+        <div className="top-bar-left">
+          <img src={(import.meta.env.BASE_URL || '') + 'logo.png'} alt="내일도 렛유인 Edu" style={{ height: '32px', width: 'auto', objectFit: 'contain' }} />
+        </div>
+        
+        <div className="top-bar-center" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.4rem' }}>
+          <span style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-secondary)', letterSpacing: '0.02em' }}>AI를 지휘하는 스마트한 엔지니어의 시작</span>
+        </div>
+
+        <div className="top-bar-right tabs-group">
           <button 
             className={`tab-button ${activeTab === 'curriculum' ? 'active' : ''}`} 
             onClick={() => { setActiveTab('curriculum'); setSelectedId(null); }}
           >
-            <List size={18} /> 실무 커리큘럼
-          </button>
-          <button 
-            className={`tab-button ${activeTab === 'examples' ? 'active' : ''}`} 
-            onClick={() => { setActiveTab('examples'); setSelectedId(null); }}
-          >
-            <Sparkles size={18} /> 실전 예제 10
+            <List size={16} /> 실무 커리큘럼
           </button>
           <button 
             className={`tab-button ${activeTab === 'faq' ? 'active' : ''}`} 
             onClick={() => { setActiveTab('faq'); setSelectedId(null); setShowOfficial(false); setCurrentPage(1); }}
           >
-            <HelpCircle size={18} /> 바이브코딩 쌩기초 Q&A 500개
-          </button>
-          <button 
-            className={`tab-button ${activeTab === 'analysis' ? 'active' : ''}`} 
-            onClick={() => { setActiveTab('analysis'); setSelectedId(null); setCurrentPage(1); }}
-          >
-            <Zap size={18} /> 실전 공정 분석
+            <HelpCircle size={16} /> Q&A 500개
           </button>
         </div>
       </nav>
@@ -363,18 +359,15 @@ export default function App() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
         >
-          <div className="logo-container">
-            <img src={(import.meta.env.BASE_URL || '') + 'logo.png'} alt="내일도 렛유인 Edu" style={{ height: '36px', width: 'auto', objectFit: 'contain', filter: theme === 'dark' ? 'brightness(1.5)' : 'none' }} />
-          </div>
           <h1>
             {activeTab === 'curriculum' 
-              ? (showOfficial ? '첨단산업 제조업 엔지니어를 위한 Vibe Coding' : '디스플레이 엔지니어 실무 로드맵')
-              : (activeTab === 'faq' ? '바이브코딩 쌩기초 Q&A 500개' : (activeTab === 'examples' ? '실무 해결 예제 10선' : '디스플레이 엔지니어링 실전 분석'))}
+              ? (showOfficial ? '첨단산업 제조업 엔지니어를 위한 Vibe Coding' : '하이테크 엔지니어 실무 로드맵')
+              : (activeTab === 'faq' ? '바이브코딩 쌩기초 Q&A 500개' : (activeTab === 'examples' ? '실무 해결 예제 10선' : '하이테크 엔지니어링 실전 공정 분석'))}
           </h1>
           <p className="header-subtitle">
             {activeTab === 'curriculum'
               ? (showOfficial ? 'AI와 함께 기술의 한계를 넘어서는 미래 엔지니어로의 도약' : '조기 전력화를 위한 단계별 학습 과정')
-              : (activeTab === 'faq' ? '비전공자를 위한 시원한 코딩 문답' : (activeTab === 'examples' ? '강의를 통해 마스터할 디스플레이 현장 실습 시나리오' : '10세대 대형 기판의 포토 공정 및 선폭(CD) 데이터 시각화 분석'))}
+              : (activeTab === 'faq' ? '비전공자를 위한 시원한 코딩 문답' : (activeTab === 'examples' ? '강의를 통해 마스터할 하이테크 현장 실습 시나리오' : '첨단 제조 공정 변수 및 품질 데이터 시각화 분석'))}
           </p>
         </motion.div>
       </header>
@@ -530,16 +523,15 @@ export default function App() {
                 <thead>
                   {showOfficial ? (
                     <tr>
-                      <th style={{ width: '100px' }}>차시</th>
-                      <th style={{ width: '300px' }}>주제</th>
+                      <th style={{ width: '80px' }}>차시</th>
+                      <th style={{ width: '320px' }}>주제</th>
                       <th>세부 강의 내용</th>
-                      <th style={{ width: '100px' }}>시간</th>
                     </tr>
                   ) : (
                     <tr>
-                      <th style={{ width: '100px' }}>단계</th>
-                      <th style={{ width: '180px' }}>분류</th>
-                      <th>주제</th>
+                      <th style={{ width: '80px' }}>단계</th>
+                      <th style={{ width: '150px' }}>분류</th>
+                      <th style={{ width: '350px' }}>주제</th>
                       <th>핵심 성과</th>
                     </tr>
                   )}
@@ -547,6 +539,7 @@ export default function App() {
                 <tbody>
                   {(showOfficial ? officialData : curriculumData).map((c: any) => {
                     const isProject = c.type === 'project' || (typeof c.id === 'string' && c.id.startsWith('P'));
+
                     return (
                       <tr key={c.id} onClick={() => openModal(c.id)} className={isProject ? 'row-project' : ''}>
                         <td className="id-cell" data-label={showOfficial ? "차시" : "단계"}>
@@ -557,16 +550,17 @@ export default function App() {
                             <td className="title-cell" data-label="주제">
                               {c.title}
                             </td>
-                            <td className="desc-cell" data-label="세부 강의 내용">{c.content}</td>
-                            <td data-label="시간"><span className="time-badge">{c.time}</span></td>
+                            <td className="desc-cell" data-label="세부 강의 내용">
+                              {c.content}
+                            </td>
                           </>
                         ) : (
                           <>
                             <td data-label="분류"><span className="cat-badge">{c.category}</span></td>
-                            <td className="title-cell" data-label="주제">
-                              {c.title}
+                            <td className="title-cell" data-label="주제">{c.title}</td>
+                            <td className="desc-cell" data-label="핵심 성과">
+                              {c.description}
                             </td>
-                            <td className="desc-cell" data-label="핵심 성과">{c.description}</td>
                           </>
                         )}
                       </tr>

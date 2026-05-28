@@ -299,7 +299,7 @@ const IndustrialHeatmap = ({ data }: { data: CDData[] }) => {
     <div className="industrial-monitor-wrapper">
       <div className="monitor-frame">
         <div className="monitor-inner-glow" />
-        
+
         {/* Header Metadata */}
         <div className="monitor-header">
           <div className="monitor-title">
@@ -316,8 +316,8 @@ const IndustrialHeatmap = ({ data }: { data: CDData[] }) => {
           {/* Heatmap Grid */}
           <div className="industrial-heatmap-grid">
             {data.map((d, i) => (
-              <div 
-                key={i} 
+              <div
+                key={i}
                 className="heatmap-pixel"
                 style={{ backgroundColor: getColor(d.cd) }}
               />
@@ -356,7 +356,7 @@ const IndustrialHeatmap = ({ data }: { data: CDData[] }) => {
           </div>
         </div>
       </div>
-      
+
       <div className="monitor-decoration">
         <div className="scan-line" />
       </div>
@@ -847,14 +847,14 @@ const ProcessAnalysis = () => {
           {/* Left: Industrial Monitor Heatmap */}
           <div className="heatmap-column">
             <IndustrialHeatmap data={cdData} />
-            
+
             <div className="industrial-spectrum-legend">
               <div className="spectrum-title">CD MEASUREMENT SPECTRUM (um)</div>
               <div className="spectrum-bar" />
               <div className="spectrum-labels">
-                <div className="s-label"><span>3.3</span><br/>Baseline</div>
-                <div className="s-label center"><span>3.5</span><br/>Nominal</div>
-                <div className="s-label text-red"><span>4.8+</span><br/>Critical</div>
+                <div className="s-label"><span>3.3</span><br />Baseline</div>
+                <div className="s-label center"><span>3.5</span><br />Nominal</div>
+                <div className="s-label text-red"><span>4.8+</span><br />Critical</div>
               </div>
             </div>
           </div>
