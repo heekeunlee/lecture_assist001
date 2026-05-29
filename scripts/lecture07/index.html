@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>7강 · 공정 간 상관관계 분석 및 산점도 시각화</title>
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --border: #e2e8f0;
+      --accent: #0ea5e9;
+      --accent-dark: #0284c7;
+      --text: #0f172a;
+      --muted: #64748b;
+      --danger: #ef4444;
+      --warn: #f59e0b;
+      --ok: #22c55e;
+      --purple: #8b5cf6;
+      --indigo: #6366f1;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      font-size: 16px;
+    }
+    .container { max-width: 860px; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+
+    .lecture-badge {
+      display: inline-block;
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      padding: 0.25rem 0.75rem;
+      border-radius: 999px;
+      margin-bottom: 1rem;
+    }
+    h1 {
+      font-size: clamp(1.6rem, 4vw, 2.2rem);
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      margin-bottom: 0.75rem;
+      word-break: keep-all;
+    }
+    .subtitle {
+      font-size: 1rem;
+      color: var(--muted);
+      margin-bottom: 1.5rem;
+      word-break: keep-all;
+    }
+    .meta-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 2.5rem;
+    }
+    .pill {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      padding: 0.3rem 0.85rem;
+      color: var(--muted);
+    }
+
+    .section-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+    h2 {
+      font-size: 1.35rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 1rem;
+      word-break: keep-all;
+    }
+    h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+      word-break: keep-all;
+    }
+    p { margin-bottom: 0.85rem; color: #334155; word-break: keep-all; }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .tbl-wrap { overflow-x: auto; margin-bottom: 1rem; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+    th {
+      background: #f1f5f9;
+      padding: 0.6rem 0.85rem;
+      text-align: left;
+      font-weight: 700;
+      font-size: 0.82rem;
+      border-bottom: 2px solid var(--border);
+      white-space: nowrap;
+    }
+    td {
+      padding: 0.55rem 0.85rem;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+    tr:last-child td { border-bottom: none; }
+
+    /* Row judge status */
+    tr.ok td:last-child { color: #166534; font-weight: 700; }
+    tr.watch td { background: #fffbeb; }
+    tr.watch td:last-child { color: #92400e; font-weight: 700; }
+    tr.check td { background: #fff5f5; }
+    tr.check td:last-child { color: #991b1b; font-weight: 700; }
+
+    /* Highlight cells */
+    .hi-viscosity { color: var(--danger); font-weight: 700; }
+    .hi-yield-low { color: var(--danger); font-weight: 700; }
+    .hi-ok { color: var(--ok); font-weight: 700; }
+
+    /* Key quote */
+    .key-quote {
+      background: #1e3a5f;
+      color: #fff;
+      border-radius: 14px;
+      padding: 1.4rem 1.6rem;
+      margin: 1.5rem 0;
+      font-size: 1.08rem;
+      font-weight: 700;
+      line-height: 1.55;
+      text-align: center;
+      word-break: keep-all;
+    }
+
+    /* Prompt box */
+    .prompt-box {
+      background: #0f172a;
+      color: #a5f3fc;
+      border-radius: 12px;
+      padding: 1.25rem 1.4rem;
+      font-size: 0.88rem;
+      line-height: 1.85;
+      margin-bottom: 1rem;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .prompt-box .comment { color: #475569; }
+
+    /* Process flow */
+    .process-flow {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+      margin-bottom: 1.25rem;
+    }
+    .process-node {
+      background: #f1f5f9;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.6rem 0.85rem;
+      text-align: center;
+      min-width: 100px;
+    }
+    .process-node .pn-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .process-node .pn-title { font-size: 0.9rem; font-weight: 800; margin: 0.15rem 0; }
+    .process-node .pn-data { font-size: 0.78rem; color: var(--muted); }
+    .flow-arrow { font-size: 1.1rem; color: var(--muted); }
+    @media (max-width: 560px) {
+      .flow-arrow { display: none; }
+      .process-flow { gap: 0.4rem; }
+      .process-node { min-width: 80px; padding: 0.5rem 0.6rem; }
+    }
+
+    /* Scatter chart SVG */
+    .chart-pair {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    @media (max-width: 560px) {
+      .chart-pair { grid-template-columns: 1fr; }
+    }
+    .chart-card {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 0.85rem;
+    }
+    .chart-card h4 { font-size: 0.85rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text); }
+    .chart-card svg { display: block; width: 100%; }
+    .chart-card .chart-caption { font-size: 0.78rem; color: var(--muted); margin-top: 0.4rem; }
+
+    /* Pattern cards */
+    .pattern-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.85rem;
+      margin-bottom: 1rem;
+    }
+    @media (max-width: 560px) {
+      .pattern-grid { grid-template-columns: 1fr; }
+    }
+    .pattern-card {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 0.9rem 1rem;
+    }
+    .pattern-card .pc-tag {
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 0.15rem 0.55rem;
+      border-radius: 999px;
+      display: inline-block;
+      margin-bottom: 0.45rem;
+    }
+    .pc-normal .pc-tag { background: #dcfce7; color: #166534; }
+    .pc-strong .pc-tag { background: #fef3c7; color: #92400e; }
+    .pc-cluster .pc-tag { background: #fee2e2; color: #991b1b; }
+    .pattern-card h4 { font-size: 0.88rem; font-weight: 700; margin-bottom: 0.35rem; }
+    .pattern-card p { font-size: 0.83rem; color: #475569; margin: 0; }
+
+    /* Step cards */
+    .step-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.85rem;
+      margin-bottom: 1rem;
+    }
+    @media (max-width: 560px) {
+      .step-grid { grid-template-columns: 1fr; }
+    }
+    .step-card {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 0.9rem 1rem;
+    }
+    .step-num {
+      display: inline-block;
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.75rem;
+      font-weight: 800;
+      padding: 0.15rem 0.55rem;
+      border-radius: 999px;
+      margin-bottom: 0.4rem;
+    }
+    .step-card h4 { font-size: 0.9rem; font-weight: 700; margin-bottom: 0.35rem; }
+    .step-card p { font-size: 0.83rem; color: #475569; margin: 0; }
+
+    /* Report sentences */
+    .report-panel {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 12px;
+      padding: 1.1rem 1.3rem;
+      margin-bottom: 1rem;
+    }
+    .report-panel h4 { font-size: 0.88rem; font-weight: 700; color: #166534; margin-bottom: 0.65rem; }
+    .report-sentence {
+      display: flex;
+      gap: 0.7rem;
+      align-items: flex-start;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid #dcfce7;
+      font-size: 0.9rem;
+    }
+    .report-sentence:last-child { border-bottom: none; }
+    .rs-num {
+      flex-shrink: 0;
+      width: 22px;
+      height: 22px;
+      background: #22c55e;
+      color: #fff;
+      border-radius: 50%;
+      font-size: 0.75rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 1px;
+    }
+
+    /* Checklist */
+    .checklist { list-style: none; margin-bottom: 1rem; }
+    .checklist li {
+      display: flex;
+      gap: 0.75rem;
+      padding: 0.6rem 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.92rem;
+      align-items: flex-start;
+    }
+    .checklist li:last-child { border-bottom: none; }
+    .checklist-num {
+      flex-shrink: 0;
+      width: 24px; height: 24px;
+      background: #e0f2fe;
+      color: var(--accent-dark);
+      border-radius: 50%;
+      font-size: 0.78rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Axis label helper */
+    .axis-label { font-size: 0.75rem; fill: #64748b; }
+
+    .divider { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="lecture-badge">7강</div>
+  <h1>공정 간 상관관계 분석<br>및 산점도 시각화</h1>
+  <p class="subtitle">공정 데이터를 산점도로 바꿔 "어떤 변수가 수율과 함께 움직이는지" 빠르게 읽는 방법을 익힙니다.</p>
+  <div class="meta-pills">
+    <span class="pill">⏱ 38~42분</span>
+    <span class="pill">반도체·디스플레이·배터리</span>
+    <span class="pill">Photo 공정 수율 하락 사례</span>
+    <span class="pill">산점도 해석 · AI 보고 초안</span>
+  </div>
+
+  <!-- 6강 연결 -->
+  <div class="card" style="background:#eff6ff; border-color:#bfdbfe;">
+    <div class="section-label">6강 → 7강 연결</div>
+    <h3>이상 감지에서 원인 탐색으로</h3>
+    <p>6강에서 관리도로 <strong>"언제"</strong> 이상이 생겼는지 잡았어요. OOC 시점, 전조 패턴까지요.</p>
+    <p>그 다음 질문이에요. <strong>"왜 그 이상이 발생했는가?"</strong></p>
+    <p style="margin:0">7강은 공정 변수 간 상관관계를 산점도로 분석해 <strong>"어떤 변수가 원인 후보인지"</strong> 방향을 잡는 방법을 배워요.</p>
+  </div>
+
+  <!-- 학습목표 -->
+  <div class="card">
+    <div class="section-label">학습목표</div>
+    <h2>오늘 배우는 것</h2>
+    <ul class="checklist">
+      <li>
+        <span class="checklist-num">1</span>
+        <div><strong>공정 데이터를 분석 질문으로 바꾸기</strong> — LOT, 공정명, 장비, recipe, 측정값, 수율 컬럼을 보고 어떤 변수 관계를 먼저 확인할지 정리해요.</div>
+      </li>
+      <li>
+        <span class="checklist-num">2</span>
+        <div><strong>산점도로 정상과 이상 구분하기</strong> — 점의 방향, 밀집도, 이상치, 군집 분리를 읽어 공정적으로 설명 가능한 상관관계인지 판단해요.</div>
+      </li>
+      <li>
+        <span class="checklist-num">3</span>
+        <div><strong>AI로 분석 화면과 보고 초안 만들기</strong> — 원본 표를 산점도, 판단표, 엔지니어 보고 문장으로 바꾸는 작업지시서를 작성해요.</div>
+      </li>
+    </ul>
+    <div class="key-quote">"어떤 공정 변수가 수율 또는 불량률과 함께 움직이는가?"</div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- SECTION 01: 시나리오 -->
+  <div class="section-label">SECTION 01</div>
+  <h2>오늘의 분석 시나리오</h2>
+
+  <div class="card">
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1rem;">
+      <div style="background:#fff5f5; border:1px solid #fecaca; border-radius:12px; padding:1rem;">
+        <h4 style="font-size:0.85rem; font-weight:700; color:#991b1b; margin-bottom:0.5rem;">상황</h4>
+        <p style="font-size:0.88rem; margin:0;">Photo 공정 이후 특정 LOT의 수율이 하락했어요. PR 점도, 노광 dose, 현상 시간, 검사 불량률 중 어떤 변수가 먼저 의심되는지 빠르게 확인해야 해요.</p>
+      </div>
+      <div style="background:#eff6ff; border:1px solid #bfdbfe; border-radius:12px; padding:1rem;">
+        <h4 style="font-size:0.85rem; font-weight:700; color:#1d4ed8; margin-bottom:0.5rem;">핵심 질문</h4>
+        <p style="font-size:0.88rem; margin:0;">"어떤 공정 변수가 수율 또는 불량률과 함께 움직이는가?"를 먼저 묻습니다. 산점도는 이 질문에 가장 빠르게 답하는 기본 시각화예요.</p>
+      </div>
+    </div>
+    <div style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:12px; padding:1rem;">
+      <h4 style="font-size:0.85rem; font-weight:700; color:#166534; margin-bottom:0.5rem;">최종 산출물</h4>
+      <p style="font-size:0.88rem; margin:0;">원본 데이터 표 → 산점도 2개 (PR 점도 vs 수율, 식각 압력 vs 불량률) → AI 보고 초안 3문장. 숫자 표가 판단 가능한 리포트로 바뀌어요.</p>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- SECTION 02: 공정 흐름 + 원본 데이터 -->
+  <div class="section-label">SECTION 02</div>
+  <h2>공정 흐름과 원본 데이터</h2>
+
+  <div class="card">
+    <h3>Photo 공정 흐름도</h3>
+    <div class="process-flow">
+      <div class="process-node">
+        <div class="pn-label">Coating</div>
+        <div class="pn-title">PR 도포</div>
+        <div class="pn-data">점도, 회전속도, 두께</div>
+      </div>
+      <span class="flow-arrow">→</span>
+      <div class="process-node">
+        <div class="pn-label">Exposure</div>
+        <div class="pn-title">노광</div>
+        <div class="pn-data">dose, focus, 장비 ID</div>
+      </div>
+      <span class="flow-arrow">→</span>
+      <div class="process-node">
+        <div class="pn-label">Develop</div>
+        <div class="pn-title">현상</div>
+        <div class="pn-data">시간, 온도, CD</div>
+      </div>
+      <span class="flow-arrow">→</span>
+      <div class="process-node">
+        <div class="pn-label">Etch</div>
+        <div class="pn-title">식각</div>
+        <div class="pn-data">압력, RF power, 결함률</div>
+      </div>
+      <span class="flow-arrow">→</span>
+      <div class="process-node" style="border-color:var(--accent); background:#eff6ff;">
+        <div class="pn-label" style="color:var(--accent-dark);">Inspection</div>
+        <div class="pn-title">검사</div>
+        <div class="pn-data">수율, 불량 유형, 판정</div>
+      </div>
+    </div>
+    <p style="font-size:0.88rem; color:var(--muted); margin:0;">5단계 데이터가 LOT 번호를 기준으로 한 테이블에 연결돼요. 어느 공정 파라미터가 검사 결과(수율)와 연결되는지 추적할 수 있어요.</p>
+  </div>
+
+  <div class="card">
+    <h3>원본 데이터 샘플</h3>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Lot</th>
+            <th>Process</th>
+            <th>Tool</th>
+            <th>PR viscosity (cp)</th>
+            <th>Dose (mJ/cm²)</th>
+            <th>Yield (%)</th>
+            <th>Judge</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="ok">
+            <td>L-041</td><td>Photo</td><td>Coater-1</td>
+            <td class="hi-ok">14.2</td><td>92</td><td class="hi-ok">94.8</td>
+            <td>OK</td>
+          </tr>
+          <tr class="watch">
+            <td>L-042</td><td>Photo</td><td>Coater-1</td>
+            <td>15.6</td><td>94</td><td>93.1</td>
+            <td>Watch</td>
+          </tr>
+          <tr class="check">
+            <td>L-043</td><td>Photo</td><td>Coater-2</td>
+            <td class="hi-viscosity">17.8</td><td>96</td><td class="hi-yield-low">87.8</td>
+            <td>Check</td>
+          </tr>
+          <tr class="check">
+            <td>L-044</td><td>Photo</td><td>Coater-2</td>
+            <td class="hi-viscosity">18.4</td><td>97</td><td class="hi-yield-low">86.9</td>
+            <td>Check</td>
+          </tr>
+          <tr class="watch">
+            <td>L-045</td><td>Etch</td><td>Etcher-C</td>
+            <td>16.1</td><td>104</td><td>91.2</td>
+            <td>Watch</td>
+          </tr>
+          <tr class="check">
+            <td>L-046</td><td>Etch</td><td>Etcher-C</td>
+            <td>15.2</td><td>107</td><td class="hi-yield-low">89.5</td>
+            <td>Check</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div style="background:#fafafa; border:1px solid var(--border); border-radius:10px; padding:0.85rem; font-size:0.88rem;">
+      <strong>산점도 x/y축 설정 가이드</strong>
+      <ul style="padding-left:1.1rem; margin-top:0.4rem;">
+        <li><strong>x축 후보</strong> → PR 점도(cp) 또는 노광 dose</li>
+        <li><strong>y축 후보</strong> → 수율(%)</li>
+        <li><strong>색상 구분</strong> → 장비 ID (Tool) — Coater-1 vs Coater-2 군집 차이 확인</li>
+      </ul>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- SECTION 03: 산점도 -->
+  <div class="section-label">SECTION 03</div>
+  <h2>산점도로 관계 읽기</h2>
+
+  <div class="card">
+    <h3>산점도 2종 — PR 점도 vs 수율 / 식각 압력 vs 불량률</h3>
+    <div class="chart-pair">
+      <!-- Chart 1: PR viscosity vs Yield -->
+      <div class="chart-card">
+        <h4>① PR 점도 (cp) vs 수율 (%)</h4>
+        <svg viewBox="0 0 220 180" xmlns="http://www.w3.org/2000/svg">
+          <!-- axes -->
+          <line x1="35" y1="10" x2="35" y2="145" stroke="#cbd5e1" stroke-width="1.5"/>
+          <line x1="35" y1="145" x2="215" y2="145" stroke="#cbd5e1" stroke-width="1.5"/>
+          <!-- threshold line 90% -->
+          <line x1="35" y1="90" x2="215" y2="90" stroke="#f59e0b" stroke-width="1" stroke-dasharray="4,3"/>
+          <text x="170" y="87" font-size="9" fill="#f59e0b">수율 90%</text>
+          <!-- Coater-1 dots (blue, low viscosity, high yield) -->
+          <circle cx="72" cy="40" r="6" fill="#3b82f6" opacity="0.85"/>
+          <circle cx="85" cy="52" r="6" fill="#3b82f6" opacity="0.85"/>
+          <circle cx="68" cy="37" r="6" fill="#3b82f6" opacity="0.85"/>
+          <circle cx="78" cy="44" r="6" fill="#3b82f6" opacity="0.85"/>
+          <!-- Coater-2 dots (red, high viscosity, low yield) -->
+          <circle cx="150" cy="108" r="6" fill="#ef4444" opacity="0.9"/>
+          <circle cx="163" cy="115" r="6" fill="#ef4444" opacity="0.9"/>
+          <circle cx="155" cy="120" r="6" fill="#ef4444" opacity="0.9"/>
+          <circle cx="170" cy="125" r="6" fill="#ef4444" opacity="0.9"/>
+          <!-- trend arrow -->
+          <line x1="75" y1="42" x2="155" y2="112" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arrow)"/>
+          <defs>
+            <marker id="arrow" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto">
+              <path d="M0,0 L6,3 L0,6 Z" fill="#94a3b8"/>
+            </marker>
+          </defs>
+          <!-- axis labels -->
+          <text x="118" y="160" font-size="9" fill="#64748b" text-anchor="middle">PR 점도 (cp) →</text>
+          <text x="12" y="80" font-size="9" fill="#64748b" transform="rotate(-90,12,80)" text-anchor="middle">수율 (%)</text>
+          <!-- axis ticks -->
+          <text x="55" y="158" font-size="8" fill="#94a3b8">14cp</text>
+          <text x="140" y="158" font-size="8" fill="#94a3b8">17cp+</text>
+          <!-- legend -->
+          <circle cx="40" cy="170" r="4" fill="#3b82f6"/>
+          <text x="48" y="174" font-size="8" fill="#334155">Coater-1</text>
+          <circle cx="105" cy="170" r="4" fill="#ef4444"/>
+          <text x="113" y="174" font-size="8" fill="#334155">Coater-2</text>
+        </svg>
+        <div class="chart-caption">음의 상관관계. PR 점도 17cp 이상 구간에서 수율 하락 LOT 집중. Coater-2(빨간점) 편향.</div>
+      </div>
+
+      <!-- Chart 2: Etch pressure vs defect -->
+      <div class="chart-card">
+        <h4>② 식각 압력 vs 불량률 (%)</h4>
+        <svg viewBox="0 0 220 180" xmlns="http://www.w3.org/2000/svg">
+          <!-- axes -->
+          <line x1="35" y1="10" x2="35" y2="145" stroke="#cbd5e1" stroke-width="1.5"/>
+          <line x1="35" y1="145" x2="215" y2="145" stroke="#cbd5e1" stroke-width="1.5"/>
+          <!-- Etcher-C dots (orange, increasing) -->
+          <circle cx="65" cy="115" r="6" fill="#f97316" opacity="0.85"/>
+          <circle cx="85" cy="103" r="6" fill="#f97316" opacity="0.85"/>
+          <circle cx="105" cy="88" r="6" fill="#f97316" opacity="0.85"/>
+          <circle cx="130" cy="72" r="6" fill="#f97316" opacity="0.85"/>
+          <circle cx="155" cy="55" r="6" fill="#f97316" opacity="0.85"/>
+          <circle cx="175" cy="43" r="6" fill="#f97316" opacity="0.85"/>
+          <!-- trend line -->
+          <line x1="65" y1="115" x2="175" y2="43" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="5,3"/>
+          <!-- axis labels -->
+          <text x="118" y="160" font-size="9" fill="#64748b" text-anchor="middle">식각 압력 →</text>
+          <text x="12" y="80" font-size="9" fill="#64748b" transform="rotate(-90,12,80)" text-anchor="middle">불량률 (%)</text>
+          <!-- legend -->
+          <circle cx="40" cy="170" r="4" fill="#f97316"/>
+          <text x="48" y="174" font-size="8" fill="#334155">Etcher-C</text>
+        </svg>
+        <div class="chart-caption">양의 상관관계. 식각 압력 상승 시 불량률 증가. Etch 공정 보조 확인 대상.</div>
+      </div>
+    </div>
+    <p style="margin:0; font-size:0.88rem; color:var(--muted);">두 산점도를 같이 보면 — Photo 공정의 PR 점도 문제가 더 직접적인 원인 후보이고, Etch는 보조 확인 대상이에요.</p>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- SECTION 04: 정상/이상 패턴 -->
+  <div class="section-label">SECTION 04</div>
+  <h2>정상/이상 패턴 구분</h2>
+
+  <div class="card">
+    <h3>산점도 패턴 3가지</h3>
+    <div class="pattern-grid">
+      <div class="pattern-card pc-normal">
+        <span class="pc-tag">정상 변동</span>
+        <h4>점들이 넓게 퍼지지만 방향이 약함</h4>
+        <p>수율이 작은 범위 안에서 흔들리고 특정 변수와 뚜렷한 방향성이 없다면 공정 노이즈나 자연 변동일 수 있어요.</p>
+      </div>
+      <div class="pattern-card pc-strong">
+        <span class="pc-tag">강한 상관</span>
+        <h4>점들이 한 방향으로 기울어짐</h4>
+        <p>PR 점도 ↑ → 수율 ↓ 처럼 방향성이 보이면 해당 변수를 우선 확인 후보로 둬요.</p>
+      </div>
+      <div class="pattern-card pc-cluster">
+        <span class="pc-tag">이상 군집</span>
+        <h4>특정 장비/LOT만 따로 모임</h4>
+        <p>전체 추세와 다르게 특정 장비, recipe, shift 데이터가 분리되면 단일 변수보다 <strong>조합 조건</strong>을 확인해야 해요.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>산점도 4가지 체크포인트</h3>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr><th>확인 항목</th><th>그래프에서 보는 것</th><th>엔지니어 판단</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>점의 방향</strong></td><td>우상향, 우하향, 방향 없음</td><td>변수가 결과와 함께 움직이는지 확인</td></tr>
+          <tr><td><strong>점의 밀집도</strong></td><td>넓게 퍼짐 또는 좁게 몰림</td><td>공정 변동이 안정적인지 확인</td></tr>
+          <tr><td><strong>이상치</strong></td><td>혼자 튄 점 또는 작은 묶음</td><td>특정 LOT, 장비, recipe 이력 확인</td></tr>
+          <tr><td><strong>군집 분리</strong></td><td>색상별로 다른 영역 형성</td><td>교대조, 장비, 자재 LOT 같은 숨은 조건 확인</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="margin:0; background:#fffbeb; border-radius:8px; padding:0.75rem; font-size:0.9rem;">
+      ⚠️ <strong>산점도 패턴은 원인을 확정하지 않아요.</strong> 원인 후보를 좁혀줘요. 최종 판단은 엔지니어가 현장 지식과 이력을 가지고 해요.
+    </p>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- SECTION 05: AI 실습 -->
+  <div class="section-label">SECTION 05</div>
+  <h2>AI 실습 — 산점도 + 보고 초안</h2>
+
+  <div class="card">
+    <h3>실습 3단계</h3>
+    <div class="step-grid">
+      <div class="step-card">
+        <span class="step-num">STEP 1</span>
+        <h4>원본 표를 설명한다</h4>
+        <p>컬럼 의미, 단위, 정상 기준, 확인하려는 결과값을 먼저 알려줘요. AI가 컬럼명을 추측하지 않게 해야 해요.</p>
+      </div>
+      <div class="step-card">
+        <span class="step-num">STEP 2</span>
+        <h4>산점도 요구사항을 지정한다</h4>
+        <p>x축, y축, 색상 기준, 이상치 강조 기준을 명확히 말해요. 실제 CSV 컬럼명을 그대로 써야 해요.</p>
+      </div>
+      <div class="step-card">
+        <span class="step-num">STEP 3</span>
+        <h4>해석과 보고 문장을 요구한다</h4>
+        <p>그래프만 아니라 관찰 패턴, 원인 후보, 추가 확인 데이터, 보고용 3문장을 함께 출력하도록 지시해요.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>4줄 AI 프롬프트</h3>
+    <div class="prompt-box">1. Photo 공정 데이터에서 PR 점도와 수율의 상관관계를
+   산점도로 시각화해줘.
+
+2. x축은 pr_viscosity_cp, y축은 yield_percent,
+   색상은 tool_id로 구분하고
+   수율 90% 미만 LOT은 빨간색으로 강조해줘.
+
+3. 점의 방향, 이상치, 장비별 군집 차이를 설명하고
+   원인 후보 3개와 추가 확인 항목 2개를 정리해줘.
+
+4. 결과는 표, 그래프 설명, 보고 초안 순서로 구성해줘.</div>
+    <p style="font-size:0.88rem; color:var(--muted); margin:0;">2번 줄이 중요해요 — <code style="background:#f1f5f9; padding:0.1rem 0.35rem; border-radius:4px; font-size:0.85rem;">pr_viscosity_cp</code>, <code style="background:#f1f5f9; padding:0.1rem 0.35rem; border-radius:4px; font-size:0.85rem;">yield_percent</code>, <code style="background:#f1f5f9; padding:0.1rem 0.35rem; border-radius:4px; font-size:0.85rem;">tool_id</code> — 실제 CSV 컬럼명을 그대로 써야 AI가 바로 실행해요.</p>
+  </div>
+
+  <div class="card">
+    <h3>AI 보고 초안 예시</h3>
+    <div class="report-panel">
+      <h4>AI가 생성한 보고 3문장</h4>
+      <div class="report-sentence">
+        <span class="rs-num">1</span>
+        <span>PR 점도 17cp 이상 구간에서 수율 하락 LOT가 집중되어 점도 조건이 우선 확인 변수로 보입니다.</span>
+      </div>
+      <div class="report-sentence">
+        <span class="rs-num">2</span>
+        <span>이상 LOT는 Coater-2 장비에서 주로 발생했으므로 점도 자체와 장비 조건을 분리해 비교해야 합니다.</span>
+      </div>
+      <div class="report-sentence">
+        <span class="rs-num">3</span>
+        <span>다음 분석은 같은 recipe의 최근 3주 LOT, 장비 PM 이력, 노광 dose 변동을 함께 연결해 확인하는 것이 적절합니다.</span>
+      </div>
+    </div>
+    <p style="font-size:0.88rem; margin:0; background:#f8fafc; border-radius:8px; padding:0.75rem;">AI가 결론을 단정한 게 아니에요. <strong>관찰 사실</strong>을 정리한 거예요. "17cp 이상 구간 집중", "Coater-2 편향" — 패턴이에요. "점도 자체와 장비 조건을 분리해 비교" — 다음 분석 방향 제안이에요. 최종 판단은 엔지니어가 해요.</p>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- 핵심 메시지 -->
+  <div class="section-label">핵심 메시지</div>
+  <div class="key-quote">
+    "AI는 관찰 사실을 정리하고,<br>판단은 엔지니어가 합니다."
+  </div>
+
+  <div class="card">
+    <h3>오늘 7강 요약</h3>
+    <ul class="checklist">
+      <li>
+        <span class="checklist-num">✓</span>
+        <div><strong>분석 질문을 먼저 정해야 해요</strong> — "어떤 변수가 수율과 함께 움직이는가?" 이 질문이 먼저 있어야 산점도가 의미 있어요.</div>
+      </li>
+      <li>
+        <span class="checklist-num">✓</span>
+        <div><strong>산점도는 방향·이상치·군집 세 가지를 봐요</strong> — 이 세 가지만 확인해도 원인 후보 방향이 5분 안에 나와요.</div>
+      </li>
+      <li>
+        <span class="checklist-num">✓</span>
+        <div><strong>AI에게 컬럼명·x축·y축·색상 기준을 명확히 지시해요</strong> — "산점도 그려줘"만으로는 부족해요. 실제 컬럼명을 써야 해요.</div>
+      </li>
+      <li>
+        <span class="checklist-num">✓</span>
+        <div><strong>AI 보고 초안은 관찰 사실이에요</strong> — 원인을 단정하지 않아요. 엔지니어가 현장 지식과 맞는지 검토해야 해요.</div>
+      </li>
+    </ul>
+  </div>
+
+  <!-- 7강→8강 브릿지 -->
+  <div class="card" style="background:#f0fdf4; border-color:#bbf7d0;">
+    <div class="section-label">7강 → 8강 연결</div>
+    <h3>다음 강의 미리보기</h3>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr><th>강의</th><th>분석 대상</th><th>핵심 도구</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>6강</strong></td>
+            <td>시간 (언제 이상이 생겼나?)</td>
+            <td>이동평균 / UCL/LCL / OOC</td>
+          </tr>
+          <tr>
+            <td><strong>7강</strong></td>
+            <td>관계 (어떤 변수가 연관됐나?)</td>
+            <td>산점도 / 상관관계 분석</td>
+          </tr>
+          <tr>
+            <td><strong>8강</strong></td>
+            <td>우선순위 (뭘 먼저 고쳐야 하나?)</td>
+            <td>파레토 분석 / 트렌드 자동 분석</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="margin:0; font-size:0.9rem; color:#166534;">7강에서 원인 후보 방향을 잡았다면 — 8강에서 여러 불량 중 어디부터 공략할지 우선순위를 정하는 방법을 배워요.</p>
+  </div>
+
+</div>
+</body>
+</html>
