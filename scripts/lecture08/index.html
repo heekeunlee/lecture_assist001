@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>8강 · 불량 원인(Pareto) &amp; 트렌드 자동 분석 실습</title>
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --border: #e2e8f0;
+      --accent: #0ea5e9;
+      --accent-dark: #0284c7;
+      --text: #0f172a;
+      --muted: #64748b;
+      --danger: #ef4444;
+      --warn: #f59e0b;
+      --ok: #22c55e;
+      --purple: #8b5cf6;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      font-size: 16px;
+    }
+    .container { max-width: 860px; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+
+    .lecture-badge {
+      display: inline-block;
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      padding: 0.25rem 0.75rem;
+      border-radius: 999px;
+      margin-bottom: 1rem;
+    }
+    h1 {
+      font-size: clamp(1.6rem, 4vw, 2.2rem);
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      margin-bottom: 0.75rem;
+      word-break: keep-all;
+    }
+    .subtitle { font-size: 1rem; color: var(--muted); margin-bottom: 1.5rem; word-break: keep-all; }
+    .meta-pills { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2.5rem; }
+    .pill {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      padding: 0.3rem 0.85rem;
+      color: var(--muted);
+    }
+
+    .section-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+    h2 { font-size: 1.35rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 1rem; word-break: keep-all; }
+    h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 0.75rem; word-break: keep-all; }
+    p { margin-bottom: 0.85rem; color: #334155; word-break: keep-all; }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .tbl-wrap { overflow-x: auto; margin-bottom: 1rem; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+    th {
+      background: #f1f5f9;
+      padding: 0.6rem 0.85rem;
+      text-align: left;
+      font-weight: 700;
+      font-size: 0.82rem;
+      border-bottom: 2px solid var(--border);
+      white-space: nowrap;
+    }
+    td { padding: 0.55rem 0.85rem; border-bottom: 1px solid var(--border); vertical-align: middle; }
+    tr:last-child td { border-bottom: none; }
+    .trend-up { color: var(--danger); font-weight: 700; }
+    .trend-down { color: var(--ok); font-weight: 700; }
+    .trend-hot { background: #fff5f5; }
+
+    .key-quote {
+      background: #1e3a5f;
+      color: #fff;
+      border-radius: 14px;
+      padding: 1.4rem 1.6rem;
+      margin: 1.5rem 0;
+      font-size: 1.08rem;
+      font-weight: 700;
+      line-height: 1.55;
+      text-align: center;
+      word-break: keep-all;
+    }
+
+    /* Decision frame grid */
+    .decision-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.85rem;
+      margin-bottom: 1rem;
+    }
+    @media (max-width: 500px) { .decision-grid { grid-template-columns: 1fr; } }
+    .decision-card {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 0.9rem 1rem;
+    }
+    .decision-card .dc-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      margin-bottom: 0.3rem;
+    }
+    .decision-card h4 { font-size: 0.88rem; font-weight: 700; margin-bottom: 0.3rem; }
+    .decision-card p { font-size: 0.82rem; color: #475569; margin: 0; }
+
+    /* Pareto concept cards */
+    .concept-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.85rem;
+      margin-bottom: 1rem;
+    }
+    @media (max-width: 560px) { .concept-grid { grid-template-columns: 1fr; } }
+    .concept-card {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 0.9rem 1rem;
+    }
+    .concept-card .cc-tag {
+      font-size: 0.72rem;
+      font-weight: 700;
+      background: #e0f2fe;
+      color: var(--accent-dark);
+      padding: 0.15rem 0.55rem;
+      border-radius: 999px;
+      display: inline-block;
+      margin-bottom: 0.4rem;
+    }
+    .concept-card h4 { font-size: 0.88rem; font-weight: 700; margin-bottom: 0.3rem; }
+    .concept-card p { font-size: 0.82rem; color: #475569; margin: 0; }
+
+    /* Formula box */
+    .algo-box {
+      background: #0f172a;
+      color: #38bdf8;
+      border-radius: 12px;
+      padding: 1.25rem 1.4rem;
+      font-family: 'Courier New', monospace;
+      font-size: 0.88rem;
+      line-height: 2;
+      margin-bottom: 1rem;
+      overflow-x: auto;
+    }
+    .algo-box .comment { color: #475569; }
+
+    /* Scenario cards */
+    .scenario-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.85rem;
+      margin-bottom: 1rem;
+    }
+    @media (max-width: 560px) { .scenario-grid { grid-template-columns: 1fr; } }
+    .scenario-card { border-radius: 12px; border: 1px solid var(--border); padding: 0.9rem 1rem; }
+    .scenario-card.s1 { background: #fff5f5; border-color: #fecaca; }
+    .scenario-card.s2 { background: #fffbeb; border-color: #fde68a; }
+    .scenario-card.s3 { background: #f5f3ff; border-color: #ddd6fe; }
+    .scenario-card .sc-tag {
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 0.15rem 0.55rem;
+      border-radius: 999px;
+      display: inline-block;
+      margin-bottom: 0.4rem;
+    }
+    .s1 .sc-tag { background: #fee2e2; color: #991b1b; }
+    .s2 .sc-tag { background: #fef3c7; color: #92400e; }
+    .s3 .sc-tag { background: #ede9fe; color: #6d28d9; }
+    .scenario-card h4 { font-size: 0.9rem; font-weight: 800; margin-bottom: 0.35rem; }
+    .scenario-card p { font-size: 0.82rem; color: #334155; margin: 0; }
+
+    /* Prompt box */
+    .prompt-box {
+      background: #0f172a;
+      color: #a5f3fc;
+      border-radius: 12px;
+      padding: 1.1rem 1.3rem;
+      font-size: 0.85rem;
+      line-height: 1.85;
+      margin-bottom: 0.85rem;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .prompt-group { margin-bottom: 1.25rem; }
+    .prompt-group h4 { font-size: 0.88rem; font-weight: 700; margin-bottom: 0.5rem; }
+
+    /* Bump Chart */
+    .bump-wrap {
+      background: #1e293b;
+      border-radius: 14px;
+      padding: 1.5rem 1rem;
+      margin-bottom: 1rem;
+      overflow-x: auto;
+    }
+    .bump-wrap svg { display: block; margin: 0 auto; }
+    .bump-caption { text-align: center; color: #94a3b8; font-size: 0.85rem; margin-top: 0.75rem; }
+
+    /* Rank pattern cards */
+    .rank-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.85rem;
+      margin-bottom: 1rem;
+    }
+    @media (max-width: 560px) { .rank-grid { grid-template-columns: 1fr; } }
+    .rank-card { border-radius: 12px; border: 1px solid var(--border); padding: 0.9rem 1rem; }
+    .rank-card .rk-tag {
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 0.15rem 0.55rem;
+      border-radius: 999px;
+      display: inline-block;
+      margin-bottom: 0.4rem;
+    }
+    .rk-hold .rk-tag { background: #dbeafe; color: #1d4ed8; }
+    .rk-up   .rk-tag { background: #fee2e2; color: #991b1b; }
+    .rk-down .rk-tag { background: #dcfce7; color: #166534; }
+    .rank-card h4 { font-size: 0.88rem; font-weight: 700; margin-bottom: 0.3rem; }
+    .rank-card p { font-size: 0.82rem; color: #475569; margin: 0; }
+
+    /* Prompt compare */
+    .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem; margin-bottom: 1rem; }
+    @media (max-width: 500px) { .compare-grid { grid-template-columns: 1fr; } }
+    .compare-card { border-radius: 12px; padding: 0.9rem 1rem; }
+    .compare-card.bad { background: #fff5f5; border: 1px solid #fecaca; }
+    .compare-card.good { background: #f0fdf4; border: 1px solid #bbf7d0; }
+    .compare-card .cmp-label { font-size: 0.72rem; font-weight: 700; margin-bottom: 0.35rem; }
+    .compare-card.bad .cmp-label { color: #991b1b; }
+    .compare-card.good .cmp-label { color: #166534; }
+    .compare-card p { font-size: 0.85rem; font-weight: 600; margin-bottom: 0.3rem; color: var(--text); }
+    .compare-card span { font-size: 0.8rem; color: var(--muted); }
+
+    /* AI 5-block */
+    .five-block {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.6rem;
+      margin-bottom: 1rem;
+    }
+    .fb-item {
+      display: flex;
+      gap: 0.85rem;
+      align-items: flex-start;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.75rem 1rem;
+    }
+    .fb-label {
+      flex-shrink: 0;
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.72rem;
+      font-weight: 800;
+      padding: 0.2rem 0.6rem;
+      border-radius: 999px;
+      white-space: nowrap;
+      margin-top: 2px;
+    }
+    .fb-item p { font-size: 0.87rem; color: #334155; margin: 0; }
+
+    /* I/O grid */
+    .io-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.85rem; margin-bottom: 1rem; }
+    @media (max-width: 500px) { .io-grid { grid-template-columns: 1fr; } }
+    .io-box { border: 1px solid var(--border); border-radius: 12px; padding: 0.9rem 1rem; text-align: center; }
+    .io-box .io-tag { font-size: 0.72rem; font-weight: 700; color: var(--accent); letter-spacing: 0.07em; margin-bottom: 0.3rem; text-transform: uppercase; }
+    .io-box strong { font-size: 0.9rem; display: block; margin-bottom: 0.25rem; }
+    .io-box p { font-size: 0.8rem; color: var(--muted); margin: 0; }
+
+    /* Checklist */
+    .checklist { list-style: none; margin-bottom: 1rem; }
+    .checklist li {
+      display: flex;
+      gap: 0.75rem;
+      padding: 0.6rem 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.92rem;
+      align-items: flex-start;
+    }
+    .checklist li:last-child { border-bottom: none; }
+    .checklist-num {
+      flex-shrink: 0;
+      width: 24px; height: 24px;
+      background: #e0f2fe;
+      color: var(--accent-dark);
+      border-radius: 50%;
+      font-size: 0.78rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .checklist-num.warn { background: #fef3c7; color: #92400e; }
+
+    .report-template {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--accent);
+      border-radius: 0 12px 12px 0;
+      padding: 1rem 1.25rem;
+      font-size: 0.9rem;
+      color: #334155;
+      margin-bottom: 1rem;
+      line-height: 1.75;
+    }
+
+    .divider { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="lecture-badge">8강</div>
+  <h1>불량 원인(Pareto) &amp; 트렌드 자동 분석 실습</h1>
+  <p class="subtitle">불량 로그를 파레토와 트렌드로 바꿔 "무엇부터 먼저 조치할지" 결정하는 방법을 익힙니다.</p>
+  <div class="meta-pills">
+    <span class="pill">⏱ 45~50분</span>
+    <span class="pill">디스플레이 패널 검사 로그</span>
+    <span class="pill">파레토 · 트렌드 · Bump Chart</span>
+    <span class="pill">AI 작업지시서</span>
+  </div>
+
+  <!-- 7강 연결 -->
+  <div class="card" style="background:#eff6ff; border-color:#bfdbfe;">
+    <div class="section-label">7강 → 8강 연결</div>
+    <h3>원인 방향에서 조치 우선순위로</h3>
+    <p>7강에서 산점도로 <strong>"어떤 변수가 원인 후보인지"</strong> 방향을 잡았어요.</p>
+    <p>그 다음 질문이에요. <strong>"여러 불량 중에서, 지금 무엇부터 먼저 조치해야 하는가?"</strong></p>
+    <p style="margin:0">8강은 파레토와 트렌드 분석으로 <strong>불량 조치 우선순위</strong>를 정하는 방법을 배워요.</p>
+  </div>
+
+  <!-- 학습목표 -->
+  <div class="card">
+    <div class="section-label">학습목표</div>
+    <h2>오늘 배우는 것</h2>
+    <ul class="checklist">
+      <li>
+        <span class="checklist-num">1</span>
+        <div><strong>파레토 분석의 실무 의미 이해</strong> — 불량 개수만 보는 것이 아니라 누적 기여율, 수율 영향도, 조치 난이도를 함께 보며 우선순위를 정해요.</div>
+      </li>
+      <li>
+        <span class="checklist-num">2</span>
+        <div><strong>시간 흐름으로 불량 변화 읽기</strong> — 주차별 트렌드를 비교해 "최근에 커지는 문제"와 "항상 많은 문제"를 구분해요.</div>
+      </li>
+      <li>
+        <span class="checklist-num">3</span>
+        <div><strong>AI 작업지시서로 분석 자동화</strong> — 결함 로그를 넣으면 파레토 차트, 트렌드 차트, 원인 후보, 다음 실험 계획까지 생성하는 지시서를 작성해요.</div>
+      </li>
+    </ul>
+    <div class="key-quote">"파레토 순위는 출발점이고,<br>실제 조치 순서는 네 가지 기준으로 정합니다."</div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- SECTION 01: 실무 판단 4기준 -->
+  <div class="section-label">SECTION 01</div>
+  <h2>실무 판단 4가지 기준</h2>
+
+  <div class="card">
+    <h3>건수 1위 ≠ 조치 1순위</h3>
+    <div class="decision-grid">
+      <div class="decision-card">
+        <div class="dc-label">빈도</div>
+        <h4>얼마나 많이 발생했는가?</h4>
+        <p>유형별 건수, 점유율, 누적 기여율로 전체 손실의 큰 덩어리를 찾아요.</p>
+      </div>
+      <div class="decision-card">
+        <div class="dc-label">영향도</div>
+        <h4>수율과 비용을 얼마나 깎는가?</h4>
+        <p>심각도, 패널 폐기 여부, 재작업 비용을 반영해 단순 건수와 손실 순위를 분리해요.</p>
+      </div>
+      <div class="decision-card">
+        <div class="dc-label">변화율</div>
+        <h4>최근에 얼마나 빠르게 커지는가?</h4>
+        <p>최근 4주와 기준 4주를 비교해 누적 상위와 급증 항목을 따로 봐요.</p>
+      </div>
+      <div class="decision-card">
+        <div class="dc-label">난이도</div>
+        <h4>지금 바로 확인할 수 있는가?</h4>
+        <p>설비 정지나 장기 실험이 필요한 항목과 즉시 점검 가능한 항목을 나눠요.</p>
+      </div>
+    </div>
+    <p style="margin:0; background:#f8fafc; border-radius:8px; padding:0.75rem; font-size:0.9rem;">
+      <strong>판단 질문</strong> — "이 불량이 1위입니다"에서 멈추지 말고, "왜 이 불량을 먼저 봐야 하는지"를 수치와 확인 데이터로 설명할 수 있어야 해요.
+    </p>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- SECTION 02: 파레토 개념 -->
+  <div class="section-label">SECTION 02</div>
+  <h2>파레토 개념 + 계산식</h2>
+
+  <div class="card">
+    <h3>3가지 분석 기준</h3>
+    <div class="concept-grid">
+      <div class="concept-card">
+        <span class="cc-tag">개수 기준</span>
+        <h4>가장 많이 발생한 불량</h4>
+        <p>검사 로그에서 유형별 빈도를 집계해요. 현장 회의의 출발점으로 좋아요.</p>
+      </div>
+      <div class="concept-card">
+        <span class="cc-tag">영향 기준</span>
+        <h4>수율을 가장 많이 깎는 불량</h4>
+        <p>건수에 심각도·폐기 여부·재작업 비용을 곱해 실제 손실 기여도를 봐요.</p>
+      </div>
+      <div class="concept-card">
+        <span class="cc-tag">변화 기준</span>
+        <h4>최근 급격히 커지는 불량</h4>
+        <p>누적 상위가 아니어도 최근 2~4주 상승률이 크면 선제 조치 대상이 돼요.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>계산식</h3>
+    <div class="algo-box">불량 점유율  = 유형별 불량 수 / 전체 불량 수 × 100<br>누적 기여율  = 상위 유형부터 점유율을 순서대로 더한 값<br>트렌드 변화율 = 최근 기간 평균 / 기준 기간 평균 − 1<br><br><span class="comment">// 누적 기여율 80%를 만드는 상위 불량 유형 → 핵심 관리 대상</span><br><span class="comment">// 트렌드 변화율 +20% 이상 → 급증 불량 선제 조치 대상</span></div>
+    <p style="margin:0; background:#fff5f5; border-radius:8px; padding:0.75rem; font-size:0.88rem;">
+      ⚠️ <strong>흔한 오해</strong> — "상위 80%만 보면 나머지는 무시해도 된다"는 뜻이 아니에요. 하위 항목 안에도 폐기율이 높은 불량이 있을 수 있어요. 영향도와 변화율을 반드시 함께 봐야 해요.
+    </p>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- SECTION 03: 실무 데이터 -->
+  <div class="section-label">SECTION 03</div>
+  <h2>실무 데이터 + 3가지 시나리오</h2>
+
+  <div class="card">
+    <h3>디스플레이 패널 검사 로그 요약</h3>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>불량 유형</th>
+            <th>건수</th>
+            <th>점유율</th>
+            <th>최근 변화</th>
+            <th>1차 조치 방향</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="trend-hot">
+            <td><strong>Particle</strong></td><td>342</td><td>35.7%</td>
+            <td class="trend-up">+44%</td>
+            <td>세정/이송 구간 이물원 추적</td>
+          </tr>
+          <tr>
+            <td>Scratch</td><td>238</td><td>24.8%</td>
+            <td class="trend-up">+8%</td>
+            <td>이송 롤러, 카세트 접촉부 점검</td>
+          </tr>
+          <tr class="trend-hot">
+            <td><strong>CD Drift</strong></td><td>168</td><td>17.5%</td>
+            <td class="trend-up">+31%</td>
+            <td>노광/현상 조건과 계측 위치 재확인</td>
+          </tr>
+          <tr>
+            <td>Mura</td><td>96</td><td>10.0%</td>
+            <td class="trend-down">-5%</td>
+            <td>증착 균일도 로그와 비교</td>
+          </tr>
+          <tr>
+            <td>Open</td><td>71</td><td>7.4%</td>
+            <td>+2%</td>
+            <td>패턴 끊김 위치를 공정맵과 매칭</td>
+          </tr>
+          <tr>
+            <td>Etch Residue</td><td>43</td><td>4.5%</td>
+            <td class="trend-down">-12%</td>
+            <td>식각 후 세정 recipe 유지 관찰</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:0.82rem; color:var(--muted); margin:0;">빨간색 행: 건수 1위이거나 최근 변화율이 높은 우선 확인 대상</p>
+  </div>
+
+  <div class="card">
+    <h3>3가지 판단 시나리오</h3>
+    <div class="scenario-grid">
+      <div class="scenario-card s1">
+        <span class="sc-tag">누적 1위 + 급증</span>
+        <h4>Particle</h4>
+        <p>건수 342건, 35.7%, 최근 +44%. 누적 최다이면서 증가율도 높아요. Line·process·좌표 분포를 분리해 세정/이송 구간 원인 범위를 좁혀야 해요.</p>
+      </div>
+      <div class="scenario-card s2">
+        <span class="sc-tag">누적 3위 + 급증</span>
+        <h4>CD Drift</h4>
+        <p>건수 3위지만 최근 +31%. 계측 calibration, 노광 dose/focus, 현상 조건, recipe 변경 이력을 긴급 확인해요. 건수 순위만 보면 놓치는 항목.</p>
+      </div>
+      <div class="scenario-card s3">
+        <span class="sc-tag">저빈도 + 고영향 가능</span>
+        <h4>Open</h4>
+        <p>건수 71건으로 5위. 하지만 패턴 끊김은 폐기율이 높을 수 있어요. severity를 반영한 가중 파레토로 재확인해야 해요.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI Prompts -->
+  <div class="card">
+    <h3>AI 프롬프트 3종</h3>
+    <div class="prompt-group">
+      <h4>① 파레토 차트 생성</h4>
+      <div class="prompt-box">내가 제공한 defect_log.csv 데이터를 기반으로 파레토 차트를 그려줘.
+1. X축은 '불량 유형', Y축 좌측은 '발생 건수' 막대그래프,
+   Y축 우측은 '누적 점유율(%)' 꺾은선으로 이중 축 설정.
+2. 누적 점유율이 80%가 되는 지점에 붉은색 수평 점선을 그어 줘.
+3. 80% 이내에 속하는 불량 유형들은 '핵심 관리 대상'으로
+   막대 색상을 진하게 표시해 줘.</div>
+    </div>
+    <div class="prompt-group">
+      <h4>② 트렌드 차트 생성</h4>
+      <div class="prompt-box">주차별 주요 불량의 발생 건수 추이를 꺾은선 차트로 그려줘.
+1. 전체 불량이 아닌 누적 상위 5개 불량 유형만 필터링해서 보여줄 것.
+2. 각 선의 끝(가장 최근 주차)에 불량 유형 라벨과 건수를 직접 표기.
+   범례 최소화.
+3. 4주 전 대비 증가율이 20% 이상인 불량은
+   꺾은선을 붉은색 굵은 선으로 강조해 줘.</div>
+    </div>
+    <div class="prompt-group">
+      <h4>③ 액션 매트릭스 생성</h4>
+      <div class="prompt-box" style="margin:0;">불량 유형들을 4분면 액션 매트릭스에 배치해 줘.
+1. X축은 '조치 난이도 및 예상 소요 시간',
+   Y축은 '수율 영향도 및 손실 비용'.
+2. 점의 크기는 '발생 건수'에 비례하게 설정 (버블 차트).
+3. 좌측 상단 2사분면 (영향도 높고 난이도 낮음)의 배경을
+   옅은 녹색으로 칠하고 'Quick Wins 우선 조치' 라벨을 달아 줘.</div>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- SECTION 04: Bump Chart -->
+  <div class="section-label">SECTION 04</div>
+  <h2>Bump Chart — 순위 역전 포착</h2>
+
+  <div class="card">
+    <h3>4주간 불량 순위 변동</h3>
+    <div class="bump-wrap">
+      <svg width="660" height="260" viewBox="0 0 660 260" xmlns="http://www.w3.org/2000/svg" style="min-width:460px;">
+        <!-- Grid -->
+        <line x1="80" y1="60"  x2="600" y2="60"  stroke="#334155" stroke-dasharray="4,4" stroke-width="1"/>
+        <line x1="80" y1="110" x2="600" y2="110" stroke="#334155" stroke-dasharray="4,4" stroke-width="1"/>
+        <line x1="80" y1="160" x2="600" y2="160" stroke="#334155" stroke-dasharray="4,4" stroke-width="1"/>
+        <line x1="80" y1="210" x2="600" y2="210" stroke="#334155" stroke-dasharray="4,4" stroke-width="1"/>
+        <!-- X labels -->
+        <text x="150" y="245" fill="#94a3b8" font-size="13" text-anchor="middle">Week 1</text>
+        <text x="283" y="245" fill="#94a3b8" font-size="13" text-anchor="middle">Week 2</text>
+        <text x="416" y="245" fill="#94a3b8" font-size="13" text-anchor="middle">Week 3</text>
+        <text x="549" y="245" fill="#94a3b8" font-size="13" text-anchor="middle">Week 4</text>
+        <!-- Y labels -->
+        <text x="65" y="64"  fill="#94a3b8" font-size="13" text-anchor="end">1위</text>
+        <text x="65" y="114" fill="#94a3b8" font-size="13" text-anchor="end">2위</text>
+        <text x="65" y="164" fill="#94a3b8" font-size="13" text-anchor="end">3위</text>
+        <text x="65" y="214" fill="#94a3b8" font-size="13" text-anchor="end">4위</text>
+
+        <!-- Particle: 1,1,1,2 (blue) -->
+        <polyline points="150,60 283,60 416,60 549,110" fill="none" stroke="#3b82f6" stroke-width="4" stroke-linejoin="round"/>
+        <circle cx="150" cy="60"  r="15" fill="#1e293b" stroke="#3b82f6" stroke-width="3"/>
+        <circle cx="283" cy="60"  r="15" fill="#1e293b" stroke="#3b82f6" stroke-width="3"/>
+        <circle cx="416" cy="60"  r="15" fill="#1e293b" stroke="#3b82f6" stroke-width="3"/>
+        <circle cx="549" cy="110" r="15" fill="#1e293b" stroke="#3b82f6" stroke-width="3"/>
+        <text x="150" cy="64"  y="64"  fill="#f8fafc" font-size="12" text-anchor="middle" font-weight="bold">1</text>
+        <text x="283" cy="64"  y="64"  fill="#f8fafc" font-size="12" text-anchor="middle" font-weight="bold">1</text>
+        <text x="416" cy="64"  y="64"  fill="#f8fafc" font-size="12" text-anchor="middle" font-weight="bold">1</text>
+        <text x="549" cy="114" y="114" fill="#f8fafc" font-size="12" text-anchor="middle" font-weight="bold">2</text>
+        <text x="115" y="64" fill="#3b82f6" font-size="12" text-anchor="end" font-weight="bold">Particle</text>
+        <text x="590" y="114" fill="#3b82f6" font-size="12" font-weight="bold">Particle</text>
+
+        <!-- CD Drift: 4,3,2,1 (amber) -->
+        <polyline points="150,210 283,160 416,110 549,60" fill="none" stroke="#f59e0b" stroke-width="5" stroke-linejoin="round"/>
+        <circle cx="150" cy="210" r="15" fill="#1e293b" stroke="#f59e0b" stroke-width="3"/>
+        <circle cx="283" cy="160" r="15" fill="#1e293b" stroke="#f59e0b" stroke-width="3"/>
+        <circle cx="416" cy="110" r="15" fill="#1e293b" stroke="#f59e0b" stroke-width="3"/>
+        <circle cx="549" cy="60"  r="15" fill="#1e293b" stroke="#f59e0b" stroke-width="3"/>
+        <text x="150" y="214" fill="#f8fafc" font-size="12" text-anchor="middle" font-weight="bold">4</text>
+        <text x="283" y="164" fill="#f8fafc" font-size="12" text-anchor="middle" font-weight="bold">3</text>
+        <text x="416" y="114" fill="#f8fafc" font-size="12" text-anchor="middle" font-weight="bold">2</text>
+        <text x="549" y="64"  fill="#f8fafc" font-size="12" text-anchor="middle" font-weight="bold">1</text>
+        <text x="115" y="214" fill="#f59e0b" font-size="12" text-anchor="end" font-weight="bold">CD Drift</text>
+        <text x="590" y="64"  fill="#f59e0b" font-size="12" font-weight="bold">CD Drift ↑</text>
+
+        <!-- Scratch: 2,2,4,4 (green) -->
+        <polyline points="150,110 283,110 416,210 549,210" fill="none" stroke="#10b981" stroke-width="4" stroke-linejoin="round"/>
+        <circle cx="150" cy="110" r="15" fill="#1e293b" stroke="#10b981" stroke-width="3"/>
+        <circle cx="283" cy="110" r="15" fill="#1e293b" stroke="#10b981" stroke-width="3"/>
+        <circle cx="416" cy="210" r="15" fill="#1e293b" stroke="#10b981" stroke-width="3"/>
+        <circle cx="549" cy="210" r="15" fill="#1e293b" stroke="#10b981" stroke-width="3"/>
+        <text x="150" y="114" fill="#f8fafc" font-size="12" text-anchor="middle" font-weight="bold">2</text>
+        <text x="283" y="114" fill="#f8fafc" font-size="12" text-anchor="middle" font-weight="bold">2</text>
+        <text x="416" y="214" fill="#f8fafc" font-size="12" text-anchor="middle" font-weight="bold">4</text>
+        <text x="549" y="214" fill="#f8fafc" font-size="12" text-anchor="middle" font-weight="bold">4</text>
+        <text x="115" y="114" fill="#10b981" font-size="12" text-anchor="end" font-weight="bold">Scratch</text>
+        <text x="590" y="214" fill="#10b981" font-size="12" font-weight="bold">Scratch</text>
+
+        <!-- Mura: 3,4,3,3 (purple) -->
+        <polyline points="150,160 283,210 416,160 549,160" fill="none" stroke="#8b5cf6" stroke-width="4" stroke-linejoin="round"/>
+        <circle cx="150" cy="160" r="15" fill="#1e293b" stroke="#8b5cf6" stroke-width="3"/>
+        <circle cx="283" cy="210" r="15" fill="#1e293b" stroke="#8b5cf6" stroke-width="3"/>
+        <circle cx="416" cy="160" r="15" fill="#1e293b" stroke="#8b5cf6" stroke-width="3"/>
+        <circle cx="549" cy="160" r="15" fill="#1e293b" stroke="#8b5cf6" stroke-width="3"/>
+        <text x="150" y="164" fill="#f8fafc" font-size="12" text-anchor="middle" font-weight="bold">3</text>
+        <text x="283" y="214" fill="#f8fafc" font-size="12" text-anchor="middle" font-weight="bold">4</text>
+        <text x="416" y="164" fill="#f8fafc" font-size="12" text-anchor="middle" font-weight="bold">3</text>
+        <text x="549" y="164" fill="#f8fafc" font-size="12" text-anchor="middle" font-weight="bold">3</text>
+        <text x="115" y="164" fill="#8b5cf6" font-size="12" text-anchor="end" font-weight="bold">Mura</text>
+        <text x="590" y="164" fill="#8b5cf6" font-size="12" font-weight="bold">Mura</text>
+      </svg>
+      <p class="bump-caption">CD Drift가 4주 만에 4위 → 1위로 급상승 — 최우선 조치 대상으로 부상. 파레토 차트만 보면 놓치는 정보.</p>
+    </div>
+
+    <div class="rank-grid">
+      <div class="rank-card rk-hold">
+        <span class="rk-tag">순위 유지</span>
+        <h4>고질적 불량 요인</h4>
+        <p>항상 상위권을 유지하는 불량. 근본적인 공정 개선이나 설비 개조가 필요한 장기 과제예요.</p>
+      </div>
+      <div class="rank-card rk-up">
+        <span class="rk-tag">순위 상승</span>
+        <h4>신규 돌발성 요인</h4>
+        <p>갑자기 급상승하는 불량. 최근 변경된 작업자, 자재, 파츠 수명 등을 즉각 확인해야 해요.</p>
+      </div>
+      <div class="rank-card rk-down">
+        <span class="rk-tag">순위 하락</span>
+        <h4>개선 효과 검증</h4>
+        <p>최근 진행한 개선 대책이 실제로 효과가 있었는지 검증하는 지표예요.</p>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- SECTION 05: AI 파이프라인 -->
+  <div class="section-label">SECTION 05</div>
+  <h2>AI 파이프라인 + 작업지시서</h2>
+
+  <div class="card">
+    <h3>나쁜 지시문 vs 좋은 지시문</h3>
+    <div class="compare-grid">
+      <div class="compare-card bad">
+        <div class="cmp-label">나쁜 지시문</div>
+        <p>defect_log.csv 분석해서 파레토 차트 그려줘.</p>
+        <span>컬럼, 기간, 결측 처리, 중복 기준, 산출물 형식이 없어서 AI가 임의로 가정해요.</span>
+      </div>
+      <div class="compare-card good">
+        <div class="cmp-label">좋은 지시문</div>
+        <p>최근 4주와 이전 4주 평균을 비교하고, 결측/중복을 경고하며, 상위 80%와 급증 Top 3를 분리해 보고서 문장으로 작성해라.</p>
+        <span>분석 기준, 검증 기준, 결과 형식이 명확해서 회의 자료로 바로 쓸 수 있어요.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>AI 5블록 지시서</h3>
+    <div class="five-block">
+      <div class="fb-item">
+        <span class="fb-label">역할</span>
+        <p>너는 디스플레이 제조 데이터 분석을 돕는 공정 엔지니어링 분석가다.</p>
+      </div>
+      <div class="fb-item">
+        <span class="fb-label">입력 데이터</span>
+        <p>컬럼: date, line, process, panel_id, defect_type, x, y, severity, lot_id. 결측치와 이상값은 따로 표시해라.</p>
+      </div>
+      <div class="fb-item">
+        <span class="fb-label">분석 작업</span>
+        <p>불량 유형별 파레토, 주차별 트렌드, 라인별 편차, 최근 4주 급증 유형을 계산하고 표와 차트로 요약해라.</p>
+      </div>
+      <div class="fb-item">
+        <span class="fb-label">검증 기준</span>
+        <p>총 불량 수 합계가 원본 행 수와 맞는지 확인하고, 상위 80%를 만드는 유형을 별도로 표시해라.</p>
+      </div>
+      <div class="fb-item">
+        <span class="fb-label">산출물</span>
+        <p>우선 조치 3개, 원인 가설, 필요한 추가 데이터, 다음 실험 계획을 엔지니어 보고서 문장으로 작성해라.</p>
+      </div>
+    </div>
+    <p style="font-size:0.88rem; color:var(--muted); margin:0;">5블록이 다 있어야 AI가 임의 가정 없이 작업해요. 역할 → 입력 데이터 → 분석 작업 → 검증 기준 → 산출물.</p>
+  </div>
+
+  <div class="card">
+    <h3>실습 작업지시서</h3>
+    <div class="prompt-box">내가 가진 defect_log.csv를 분석하는 웹 도구를 만들어줘.
+
+필수 기능:
+1. CSV 업로드 후 defect_type, date, line, process 기준으로 집계
+2. 불량 유형별 파레토 차트와 누적 80% 기준선 표시
+3. 주차별 Top 3 불량 트렌드 라인 차트 표시
+4. 최근 4주 증가율이 큰 불량을 별도 카드로 표시
+5. severity를 반영한 손실 점수 파레토를 옵션으로 표시
+6. 우선 조치 후보 3개를
+   '불량명 / 근거 / 확인할 데이터 / 다음 실험' 형식으로 출력
+
+검증:
+- 전체 행 수와 집계 합계가 맞는지 표시
+- 결측 defect_type, 잘못된 date, 중복 panel_id를 경고
+- 원본 행 수, 제외 행 수, 분석 사용 행 수를 각각 표시
+- 차트 아래에 엔지니어가 해석할 수 있는 3문장 요약 제공</div>
+    <div class="io-grid">
+      <div class="io-box">
+        <div class="io-tag">입력</div>
+        <strong>defect_log.csv</strong>
+        <p>검사일, 라인, 공정, 패널 ID, 불량 유형, 좌표, 심각도</p>
+      </div>
+      <div class="io-box">
+        <div class="io-tag">처리</div>
+        <strong>집계 + 정렬 + 변화율</strong>
+        <p>유형별 빈도, 누적 기여율, 주차별 Top 3 추세</p>
+      </div>
+      <div class="io-box">
+        <div class="io-tag">출력</div>
+        <strong>우선 조치 리포트</strong>
+        <p>상위 불량, 급증 불량, 확인 로그, 다음 실험 계획</p>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- SECTION 06: 검증 체크리스트 -->
+  <div class="section-label">SECTION 06</div>
+  <h2>검증 체크리스트 + 마무리</h2>
+
+  <div class="card">
+    <h3>AI 결과 사용 전 검증 7가지</h3>
+    <ul class="checklist">
+      <li>
+        <span class="checklist-num">1</span>
+        <div>불량명 표기가 Particle, particle, PRT처럼 섞여 있지 않은가?</div>
+      </li>
+      <li>
+        <span class="checklist-num">2</span>
+        <div>동일 패널의 중복 카운트 기준이 명확한가?</div>
+      </li>
+      <li>
+        <span class="checklist-num warn">3</span>
+        <div><strong>검사일, 공정 투입일, lot 종료일 중 어떤 날짜 기준으로 트렌드를 집계했는가?</strong> (자주 헷갈리는 항목)</div>
+      </li>
+      <li>
+        <span class="checklist-num">4</span>
+        <div>개수 기준과 수율 영향도 기준을 혼동하지 않았는가?</div>
+      </li>
+      <li>
+        <span class="checklist-num">5</span>
+        <div>최근 급증한 불량과 누적 상위 불량을 따로 해석했는가?</div>
+      </li>
+      <li>
+        <span class="checklist-num">6</span>
+        <div>AI가 만든 원인 가설을 설비 로그, recipe 변경 이력, LOT 이력으로 검증했는가?</div>
+      </li>
+      <li>
+        <span class="checklist-num warn">7</span>
+        <div><strong>차트의 단위와 보고서 문장의 단위가 defect count인지 panel count인지 일치하는가?</strong> (자주 헷갈리는 항목)</div>
+      </li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>보고서 문장 템플릿</h3>
+    <div class="report-template">
+      "최근 4주 기준 <strong>[불량명]</strong>은 <strong>[건수/점유율/변화율]</strong>로 우선 확인 대상입니다. <strong>[비교 불량]</strong>과 달리 <strong>[판단 근거]</strong>가 있으므로 <strong>[확인할 데이터]</strong>를 먼저 보고 <strong>[다음 액션]</strong>을 진행합니다."
+    </div>
+  </div>
+
+  <!-- 핵심 메시지 -->
+  <div class="key-quote">
+    "AI는 데이터를 정렬합니다.<br>무엇을 먼저 고칠지는 엔지니어가 결정합니다."
+  </div>
+
+  <div class="card">
+    <h3>오늘 8강 요약</h3>
+    <ul class="checklist">
+      <li><span class="checklist-num">✓</span><div><strong>파레토 순위는 출발점</strong> — 빈도·영향도·변화율·난이도 네 가지 기준을 종합해야 실행 가능한 조치 순서가 나와요.</div></li>
+      <li><span class="checklist-num">✓</span><div><strong>Bump Chart로 순위 역전을 잡아요</strong> — CD Drift가 4주 만에 4위→1위. 파레토 차트만 봤으면 놓쳤어요.</div></li>
+      <li><span class="checklist-num">✓</span><div><strong>AI 5블록 지시서</strong> — 역할·입력·분석·검증·산출물. 이 다섯 블록이 다 있어야 임의 가정 없이 보고서가 나와요.</div></li>
+      <li><span class="checklist-num">✓</span><div><strong>날짜 기준과 단위 일치 확인</strong> — 검증 체크리스트 3번·7번이 가장 자주 틀리는 항목이에요.</div></li>
+    </ul>
+  </div>
+
+  <!-- 8강→9강 브릿지 -->
+  <div class="card" style="background:#f0fdf4; border-color:#bbf7d0;">
+    <div class="section-label">8강 → 9강 연결</div>
+    <h3>다음 강의 미리보기</h3>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr><th>강의</th><th>분석 대상</th><th>핵심 도구</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>7강</strong></td><td>어떤 변수가 원인 후보인가?</td><td>산점도 / 상관관계 분석</td></tr>
+          <tr><td><strong>8강</strong></td><td>무엇부터 먼저 고쳐야 하나?</td><td>파레토 / 트렌드 / Bump Chart</td></tr>
+          <tr><td><strong>9강</strong></td><td>설비 매뉴얼에서 답을 빠르게 찾기</td><td>기술 문서 요약 비서 (RAG)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="margin:0; font-size:0.9rem; color:#166534;">9강에서는 설비 매뉴얼, 에러 코드, 공정 가이드 같은 긴 문서에서 — AI가 필요한 내용을 빠르게 찾아주는 기술 문서 요약 비서를 만들어요.</p>
+  </div>
+
+</div>
+</body>
+</html>
