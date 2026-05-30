@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>9강 · 엔지니어용 기술 문서 요약 비서 구축</title>
+<style>
+  :root {
+    --blue: #2563eb;
+    --blue-light: #eff6ff;
+    --green: #16a34a;
+    --green-light: #f0fdf4;
+    --amber: #d97706;
+    --amber-light: #fffbeb;
+    --red: #dc2626;
+    --red-light: #fef2f2;
+    --purple: #7c3aed;
+    --purple-light: #f5f3ff;
+    --gray: #64748b;
+    --gray-light: #f8fafc;
+    --border: #e2e8f0;
+    --text: #1e293b;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 15px; color: var(--text); background: #f1f5f9; line-height: 1.6; }
+
+  /* Header */
+  .hero { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); color: #fff; padding: 36px 24px 32px; }
+  .hero-tag { display: inline-block; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.25); border-radius: 20px; font-size: 11px; padding: 3px 12px; margin-bottom: 16px; letter-spacing: 0.05em; }
+  .hero h1 { font-size: clamp(18px, 4vw, 26px); font-weight: 700; line-height: 1.35; margin-bottom: 10px; }
+  .hero p { font-size: 13px; color: #94a3b8; line-height: 1.6; max-width: 540px; margin-bottom: 16px; }
+  .meta-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { background: rgba(255,255,255,0.1); border-radius: 20px; font-size: 12px; padding: 4px 12px; color: #e2e8f0; }
+
+  /* Layout */
+  .container { max-width: 860px; margin: 0 auto; padding: 0 16px 60px; }
+  .section { background: #fff; border-radius: 12px; padding: 28px 24px; margin-top: 24px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+  .section-label { display: inline-block; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; color: var(--blue); background: var(--blue-light); border-radius: 4px; padding: 3px 8px; margin-bottom: 12px; text-transform: uppercase; }
+  .section h2 { font-size: clamp(15px, 3vw, 18px); font-weight: 700; line-height: 1.4; margin-bottom: 10px; }
+  .section-intro { color: var(--gray); font-size: 14px; line-height: 1.7; margin-bottom: 20px; }
+
+  /* Key quote */
+  .key-quote { background: var(--blue-light); border-left: 4px solid var(--blue); border-radius: 8px; padding: 16px 20px; margin: 20px 0; font-size: 15px; font-weight: 600; color: var(--blue); line-height: 1.5; }
+
+  /* Goal cards */
+  .goal-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-bottom: 20px; }
+  .goal-card { border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
+  .goal-card .step-label { font-size: 11px; font-weight: 600; color: var(--blue); margin-bottom: 6px; }
+  .goal-card h3 { font-size: 14px; font-weight: 700; margin-bottom: 8px; line-height: 1.4; }
+  .goal-card p { font-size: 13px; color: var(--gray); line-height: 1.6; }
+
+  /* Timeline */
+  .timeline { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+  .tl-step { background: var(--gray-light); border: 1px solid var(--border); border-radius: 8px; padding: 8px 14px; display: flex; flex-direction: column; align-items: center; min-width: 80px; }
+  .tl-step strong { font-size: 16px; font-weight: 700; color: var(--blue); }
+  .tl-step span { font-size: 11px; color: var(--gray); margin-top: 2px; text-align: center; }
+
+  /* Flow ladder */
+  .flow-ladder { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; }
+  .flow-card { background: var(--gray-light); border: 1px solid var(--border); border-radius: 10px; padding: 14px; }
+  .flow-card > span { font-size: 11px; font-weight: 600; color: var(--purple); }
+  .flow-card h3 { font-size: 13px; font-weight: 700; margin: 4px 0; }
+  .flow-card p { font-size: 12px; color: var(--gray); line-height: 1.5; }
+
+  /* Pipeline */
+  .pipeline { display: flex; flex-direction: column; gap: 10px; }
+  .pipe-step { display: flex; align-items: flex-start; gap: 14px; padding: 12px 16px; background: var(--gray-light); border-radius: 8px; border: 1px solid var(--border); }
+  .pipe-num { font-size: 20px; font-weight: 800; color: var(--blue); opacity: 0.4; min-width: 28px; }
+  .pipe-step h3 { font-size: 14px; font-weight: 700; margin-bottom: 2px; }
+  .pipe-step p { font-size: 13px; color: var(--gray); }
+
+  /* Case cards */
+  .case-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-bottom: 20px; }
+  .data-box { border: 1px solid var(--border); border-radius: 10px; padding: 14px; }
+  .data-box > span { font-size: 11px; color: var(--gray); display: block; margin-bottom: 4px; }
+  .data-box strong { font-size: 14px; font-weight: 700; line-height: 1.4; }
+
+  /* Alert banner */
+  .alert-box { background: #fff7ed; border: 1px solid #fed7aa; border-left: 4px solid var(--amber); border-radius: 8px; padding: 14px 18px; margin: 16px 0; font-size: 14px; color: #92400e; line-height: 1.6; }
+  .alert-box strong { display: block; margin-bottom: 4px; }
+
+  /* Breakdown cards */
+  .breakdown-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin: 20px 0; }
+  .breakdown-card { border-left: 3px solid var(--blue); background: var(--blue-light); border-radius: 8px; padding: 14px; }
+  .breakdown-card > span { font-size: 11px; font-weight: 600; color: var(--blue); display: block; margin-bottom: 4px; }
+  .breakdown-card h3 { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+  .breakdown-card p { font-size: 13px; color: #374151; line-height: 1.6; }
+
+  /* Tables */
+  .data-table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 14px 0; border-radius: 8px; overflow: hidden; border: 1px solid var(--border); }
+  .data-table th { background: #f1f5f9; padding: 10px 12px; text-align: left; font-weight: 600; color: var(--gray); font-size: 12px; border-bottom: 1px solid var(--border); }
+  .data-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  .data-table tr:last-child td { border-bottom: none; }
+  .data-table tr.highlight td { background: #fef9c3; }
+  .badge { display: inline-block; font-size: 11px; font-weight: 600; border-radius: 4px; padding: 2px 7px; }
+  .badge-red { background: #fee2e2; color: #dc2626; }
+  .badge-amber { background: #fef3c7; color: #d97706; }
+  .badge-blue { background: var(--blue-light); color: var(--blue); }
+  .badge-green { background: var(--green-light); color: var(--green); }
+
+  /* SVG chart */
+  .chart-wrap { background: #fff; border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin: 16px 0; overflow-x: auto; }
+  .chart-title { font-size: 13px; font-weight: 600; margin-bottom: 8px; color: var(--gray); }
+
+  /* Comparison table */
+  .compare-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 14px; }
+  .compare-table th { padding: 9px 12px; text-align: left; font-size: 12px; font-weight: 600; color: var(--gray); border-bottom: 2px solid var(--border); }
+  .compare-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  .compare-table td.weak { color: #ef4444; background: #fff5f5; }
+  .compare-table td.strong { color: #16a34a; background: #f0fdf4; }
+
+  /* Practice cards */
+  .practice-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom: 20px; }
+  .practice-card { border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
+  .practice-card h3 { font-size: 13px; font-weight: 700; color: var(--blue); margin-bottom: 8px; }
+  .practice-card p { font-size: 13px; color: var(--gray); line-height: 1.6; }
+
+  /* Prompt box */
+  .prompt-box { background: #0f172a; border-radius: 10px; padding: 20px; margin-top: 16px; }
+  .prompt-box .prompt-label { font-size: 11px; color: #64748b; margin-bottom: 10px; letter-spacing: 0.05em; }
+  .prompt-box pre { font-family: 'Consolas', 'Monaco', monospace; font-size: 12.5px; color: #e2e8f0; white-space: pre-wrap; line-height: 1.65; }
+
+  /* Metric grid */
+  .metric-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 20px 0; }
+  .metric-card { text-align: center; background: var(--gray-light); border: 1px solid var(--border); border-radius: 10px; padding: 18px 12px; }
+  .metric-card strong { display: block; font-size: 28px; font-weight: 800; color: var(--blue); }
+  .metric-card span { font-size: 12px; color: var(--gray); line-height: 1.4; display: block; margin-top: 4px; }
+
+  /* Check panel */
+  .check-panel { background: var(--green-light); border: 1px solid #bbf7d0; border-radius: 10px; padding: 18px 20px; margin-top: 20px; }
+  .check-panel strong { display: block; font-size: 14px; font-weight: 700; color: var(--green); margin-bottom: 12px; }
+  .check-panel ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  .check-panel li { font-size: 13px; color: #166534; padding-left: 20px; position: relative; line-height: 1.5; }
+  .check-panel li::before { content: '✓'; position: absolute; left: 0; font-weight: 700; color: var(--green); }
+
+  /* Manual evidence highlight */
+  .manual-src { font-family: monospace; font-size: 12px; color: var(--purple); font-weight: 600; }
+
+  /* Section connector */
+  .connector { background: #f8fafc; border: 1px solid var(--border); border-radius: 10px; padding: 14px 18px; font-size: 13px; color: var(--gray); margin: 20px 0; line-height: 1.6; }
+  .connector strong { color: var(--text); }
+
+  @media (max-width: 480px) {
+    .hero { padding: 24px 16px; }
+    .section { padding: 20px 16px; }
+    .metric-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .metric-card strong { font-size: 22px; }
+    .data-table { font-size: 12px; }
+    .data-table th, .data-table td { padding: 8px 8px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Hero -->
+<div class="hero">
+  <div class="hero-tag">AI를 지휘하는 스마트한 엔지니어의 시작</div>
+  <h1>Ch.9 엔지니어용 기술 문서 요약 비서 구축</h1>
+  <p>PDF 매뉴얼에서 에러 코드의 원인, 확인 데이터, 조치 순서를 근거와 함께 뽑아내는 40분 실습 교안</p>
+  <div class="meta-chips">
+    <span class="chip">40분</span>
+    <span class="chip">문서 요약</span>
+    <span class="chip">설비 매뉴얼</span>
+    <span class="chip">에러 코드</span>
+    <span class="chip">검증 실습</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- Section 01: Opening -->
+  <div class="section">
+    <span class="section-label">01. 오프닝 및 학습목표</span>
+    <h2>지금까지 만든 분석 결과를 "현장 조치"로 바꾸려면 기술 문서를 읽는 AI 비서가 필요합니다</h2>
+    <p class="section-intro">
+      01~08강에서는 AI에게 지시하고, 데이터를 정리하고, 불량 원인을 그래프로 좁히는 흐름을 만들었습니다.
+      09강은 그 다음 단계입니다. 원인 후보가 나왔을 때 엔지니어가 가장 먼저 찾는 매뉴얼, SOP, 알람 코드표를 AI가
+      근거 중심으로 읽게 만들어 실제 대응 속도를 높입니다.
+    </p>
+
+    <div class="goal-grid">
+      <div class="goal-card">
+        <div class="step-label">학습목표 1</div>
+        <h3>기술 문서를 AI가 읽을 수 있는 입력 구조로 바꾼다</h3>
+        <p>PDF 매뉴얼을 그대로 던지는 대신 문서 범위, 질문, 출력 형식, 금지 조건을 나누어 지시합니다.</p>
+      </div>
+      <div class="goal-card">
+        <div class="step-label">학습목표 2</div>
+        <h3>에러 코드에서 조치안까지의 추론 경로를 검증한다</h3>
+        <p>AI 답변이 문서 근거와 맞는지 페이지, 항목명, 조건, 예외 사항을 확인하는 현장형 검증 절차를 익힙니다.</p>
+      </div>
+      <div class="goal-card">
+        <div class="step-label">학습목표 3</div>
+        <h3>반복 문서 업무를 요약 비서 워크플로우로 만든다</h3>
+        <p>설비 트러블슈팅, 안전 체크, 보고서 초안 작성에 바로 재사용할 수 있는 프롬프트와 결과 양식을 완성합니다.</p>
+      </div>
+    </div>
+
+    <div class="timeline">
+      <div class="tl-step"><strong>3분</strong><span>01-08강<br>연결</span></div>
+      <div class="tl-step"><strong>6분</strong><span>문서 요약<br>원리</span></div>
+      <div class="tl-step"><strong>18분</strong><span>에러 코드<br>사례</span></div>
+      <div class="tl-step"><strong>8분</strong><span>AI 작업지시서<br>실습</span></div>
+      <div class="tl-step"><strong>5분</strong><span>검증<br>체크</span></div>
+    </div>
+  </div>
+
+  <!-- Section 02: Connection -->
+  <div class="section">
+    <span class="section-label">02. 01강부터 08강까지의 연결</span>
+    <h2>분석 도구에서 끝나지 않고, 조치 근거를 찾는 단계로 이어집니다</h2>
+    <p class="section-intro">
+      파레토 차트가 "무엇이 가장 큰 문제인지"를 보여준다면, 기술 문서 요약 비서는 "그래서 어떤 순서로 확인하고
+      무엇을 보고해야 하는지"를 정리합니다.
+    </p>
+
+    <div class="flow-ladder">
+      <div class="flow-card">
+        <span>01-02강</span>
+        <h3>AI 마인드셋과 지시법</h3>
+        <p>현장 용어를 AI에게 정확히 설명</p>
+      </div>
+      <div class="flow-card">
+        <span>03-04강</span>
+        <h3>MES 데이터 병합과 정제</h3>
+        <p>분산 로그를 분석 가능한 표로 정리</p>
+      </div>
+      <div class="flow-card">
+        <span>05-08강</span>
+        <h3>히트맵, 관리도, 상관, 파레토</h3>
+        <p>원인 후보를 그래프와 지표로 압축</p>
+      </div>
+      <div class="flow-card" style="border-left: 3px solid var(--blue); background: var(--blue-light);">
+        <span style="color: var(--blue);">09강 ← 지금</span>
+        <h3>기술 문서 요약 비서</h3>
+        <p>원인 후보를 매뉴얼 조치와 연결</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 03: Core Concept -->
+  <div class="section">
+    <span class="section-label">03. 핵심 개념</span>
+    <h2>좋은 문서 요약은 "짧게 줄이기"가 아니라 "질문에 맞는 근거를 찾아 구조화하기"입니다</h2>
+    <p class="section-intro">
+      기술 문서에는 안전 조건, 설비 모델별 예외, 측정 단위, 선행 작업 조건이 섞여 있습니다. 따라서 AI에게는 문서
+      전체 요약보다 검색 범위와 답변 형식을 먼저 줘야 합니다.
+    </p>
+
+    <div class="pipeline">
+      <div class="pipe-step">
+        <span class="pipe-num">01</span>
+        <div>
+          <h3>문서 수집</h3>
+          <p>PDF 매뉴얼, SOP, 알람 코드표</p>
+        </div>
+      </div>
+      <div class="pipe-step">
+        <span class="pipe-num">02</span>
+        <div>
+          <h3>질문 분해</h3>
+          <p>증상, 설비, 코드, 제약 조건</p>
+        </div>
+      </div>
+      <div class="pipe-step">
+        <span class="pipe-num">03</span>
+        <div>
+          <h3>근거 추출</h3>
+          <p>페이지, 표, 조치 항목, 예외</p>
+        </div>
+      </div>
+      <div class="pipe-step">
+        <span class="pipe-num">04</span>
+        <div>
+          <h3>현장 답변</h3>
+          <p>우선 조치, 확인 데이터, 보고 문장</p>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="font-size:14px; font-weight:700; margin: 20px 0 8px;">약한 지시 vs. 좋은 지시</h3>
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>구분</th>
+          <th style="color:#ef4444;">약한 지시</th>
+          <th style="color:#16a34a;">좋은 지시</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>입력</strong></td>
+          <td class="weak">이 PDF 요약해줘</td>
+          <td class="strong">E-472 알람과 진공 회복 지연 관련 항목만 찾아줘</td>
+        </tr>
+        <tr>
+          <td><strong>출력</strong></td>
+          <td class="weak">긴 일반 요약문</td>
+          <td class="strong">가능 원인, 확인 데이터, 조치 순서, 근거 위치</td>
+        </tr>
+        <tr>
+          <td><strong>검증</strong></td>
+          <td class="weak">AI 답변을 그대로 복사</td>
+          <td class="strong">문서 페이지와 실제 센서 로그가 맞는지 확인</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Section 04: Case Study -->
+  <div class="section">
+    <span class="section-label">04. 실무 사례 — E-472 알람</span>
+    <h2>가상 알람 E-472를 단계적으로 분해해 "문서 근거가 있는 1차 조치안"을 만들어봅니다</h2>
+    <p class="section-intro">
+      이 사례는 09강에서 가장 많은 시간을 쓰는 핵심 실습입니다. 알람 화면을 보고 바로 AI에게 질문하지 않고,
+      현장 데이터와 매뉴얼 근거를 차례대로 붙여 답변 품질을 끌어올리는 과정을 따라갑니다.
+    </p>
+
+    <div class="case-grid">
+      <div class="data-box">
+        <span>설비</span>
+        <strong>OLED 증착 챔버 V-203</strong>
+      </div>
+      <div class="data-box" style="border-color: #fca5a5;">
+        <span>알람</span>
+        <strong style="color:var(--red);">E-472: Vacuum recovery delay</strong>
+      </div>
+      <div class="data-box">
+        <span>관측값</span>
+        <strong>Base pressure 8.4e-5 Torr<br>Pump current +18%</strong>
+      </div>
+      <div class="data-box" style="border-color: #6ee7b7;">
+        <span>목표</span>
+        <strong>매뉴얼 근거가 있는 1차 조치안만 5분 안에 정리</strong>
+      </div>
+    </div>
+
+    <div class="alert-box">
+      <strong>사례에서 일부러 남겨둔 애매함</strong>
+      "진공이 늦게 잡힌다"는 말만으로는 펌프 문제, 밸브 문제, 누설, 레시피 조건 문제를 구분할 수 없습니다.
+      AI에게 맡길 일은 결론을 단정하는 것이 아니라, <strong>확인해야 할 근거를 빠짐없이 구조화하는 것</strong>입니다.
+    </div>
+
+    <div class="breakdown-grid">
+      <div class="breakdown-card">
+        <span>1단계</span>
+        <h3>증상 고정</h3>
+        <p>알람명, 설비명, 발생 시각, 현재 운전 상태를 먼저 고정합니다. 이 단계가 흐리면 AI는 일반적인 진공 문제 설명으로 빠지기 쉽습니다.</p>
+      </div>
+      <div class="breakdown-card">
+        <span>2단계</span>
+        <h3>센서 로그 대조</h3>
+        <p>진공도, 펌프 전류, 밸브 명령, 인터락 상태를 같은 시간축에 놓고 "회복 지연"이 실제로 발생했는지 확인합니다.</p>
+      </div>
+      <div class="breakdown-card">
+        <span>3단계</span>
+        <h3>매뉴얼 범위 지정</h3>
+        <p>알람 코드표, 진공 계통 트러블슈팅, 안전 정지 조건처럼 AI가 찾아야 할 문서 위치를 좁힙니다.</p>
+      </div>
+      <div class="breakdown-card">
+        <span>4단계</span>
+        <h3>조치안 검증</h3>
+        <p>AI 답변을 바로 실행하지 않고 근거 페이지, 확인 데이터, 작업 중단 조건이 모두 붙어 있는지 점검합니다.</p>
+      </div>
+    </div>
+
+    <!-- Sensor log -->
+    <h3 style="font-size:14px; font-weight:700; margin: 20px 0 8px;">센서 로그를 먼저 붙이면 질문이 구체화됩니다</h3>
+    <p style="font-size:13px; color:var(--gray); margin-bottom:10px;">
+      같은 알람 코드라도 압력만 높은 경우와 펌프 전류가 함께 상승하는 경우는 조치 방향이 달라집니다.
+      아래 표는 AI에게 함께 넣을 최소 로그 예시입니다.
+    </p>
+
+    <!-- SVG sensor trend -->
+    <div class="chart-wrap">
+      <div class="chart-title">E-472 센서 로그 — 압력 회복 지연 & 펌프 전류 추이</div>
+      <svg viewBox="0 0 560 220" xmlns="http://www.w3.org/2000/svg" style="width:100%; max-width:560px; display:block; margin:0 auto;">
+        <!-- Background -->
+        <rect width="560" height="220" fill="#f8fafc" rx="6"/>
+        <!-- Grid lines -->
+        <line x1="70" y1="30" x2="70" y2="175" stroke="#e2e8f0" stroke-width="1"/>
+        <line x1="190" y1="30" x2="190" y2="175" stroke="#e2e8f0" stroke-width="1"/>
+        <line x1="310" y1="30" x2="310" y2="175" stroke="#e2e8f0" stroke-width="1"/>
+        <line x1="430" y1="30" x2="430" y2="175" stroke="#e2e8f0" stroke-width="1"/>
+        <line x1="70" y1="175" x2="530" y2="175" stroke="#cbd5e1" stroke-width="1.5"/>
+        <line x1="70" y1="130" x2="530" y2="130" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="4,3"/>
+        <line x1="70" y1="90" x2="530" y2="90" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="4,3"/>
+        <line x1="70" y1="50" x2="530" y2="50" stroke="#fee2e2" stroke-width="1.5" stroke-dasharray="6,3"/>
+
+        <!-- Pressure line (blue) — values: 2.1→4.9→8.4→7.8 (mapped to y range 175=low, 50=high) -->
+        <!-- y mapping: 2.1e-5→168, 4.9e-5→140, 8.4e-5→55, 7.8e-5→62 -->
+        <polyline points="70,168 190,140 310,55 430,62"
+          fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linejoin="round"/>
+        <!-- Pump current line (amber) — 4.8→5.4→5.7→5.8 (mapped: 4.8→165, 5.4→135, 5.7→108, 5.8→100) -->
+        <polyline points="70,165 190,135 310,108 430,100"
+          fill="none" stroke="#d97706" stroke-width="2" stroke-dasharray="5,3" stroke-linejoin="round"/>
+
+        <!-- OOC marker at 09:24 -->
+        <circle cx="310" cy="55" r="6" fill="none" stroke="#dc2626" stroke-width="2"/>
+        <text x="310" y="44" text-anchor="middle" font-size="10" fill="#dc2626" font-weight="600">E-472 발생</text>
+
+        <!-- X-axis labels -->
+        <text x="70" y="192" text-anchor="middle" font-size="11" fill="#64748b">09:10</text>
+        <text x="190" y="192" text-anchor="middle" font-size="11" fill="#64748b">09:18</text>
+        <text x="310" y="192" text-anchor="middle" font-size="11" fill="#64748b">09:24</text>
+        <text x="430" y="192" text-anchor="middle" font-size="11" fill="#64748b">09:30</text>
+
+        <!-- Y labels -->
+        <text x="62" y="54" text-anchor="end" font-size="10" fill="#dc2626">8.4e-5 Torr</text>
+        <text x="62" y="94" text-anchor="end" font-size="10" fill="#94a3b8">~5e-5</text>
+        <text x="62" y="134" text-anchor="end" font-size="10" fill="#94a3b8">~3e-5</text>
+        <text x="62" y="172" text-anchor="end" font-size="10" fill="#94a3b8">2e-5</text>
+
+        <!-- Legend -->
+        <line x1="340" y1="210" x2="360" y2="210" stroke="#2563eb" stroke-width="2.5"/>
+        <text x="364" y="214" font-size="11" fill="#2563eb">챔버 압력</text>
+        <line x1="430" y1="210" x2="450" y2="210" stroke="#d97706" stroke-width="2" stroke-dasharray="5,3"/>
+        <text x="454" y="214" font-size="11" fill="#d97706">펌프 전류</text>
+      </svg>
+    </div>
+
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>시간</th>
+          <th>압력</th>
+          <th>펌프 전류</th>
+          <th>밸브</th>
+          <th>해석 메모</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>09:10</td>
+          <td>2.1e-5 Torr</td>
+          <td>4.8 A</td>
+          <td><span class="badge badge-green">Open</span></td>
+          <td>정상 베이스라인</td>
+        </tr>
+        <tr>
+          <td>09:18</td>
+          <td>4.9e-5 Torr</td>
+          <td>5.4 A</td>
+          <td><span class="badge badge-green">Open</span></td>
+          <td style="color:var(--amber);">압력 회복 속도 둔화</td>
+        </tr>
+        <tr class="highlight">
+          <td><strong>09:24</strong></td>
+          <td><strong style="color:var(--red);">8.4e-5 Torr</strong></td>
+          <td><strong style="color:var(--red);">5.7 A</strong></td>
+          <td><span class="badge badge-blue">Open</span></td>
+          <td><strong style="color:var(--red);">E-472 발생</strong></td>
+        </tr>
+        <tr>
+          <td>09:30</td>
+          <td>7.8e-5 Torr</td>
+          <td>5.8 A</td>
+          <td><span class="badge badge-amber">Hold</span></td>
+          <td style="color:var(--red);">자동 재시도 실패</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Manual evidence -->
+    <h3 style="font-size:14px; font-weight:700; margin: 24px 0 8px;">매뉴얼은 전체 요약이 아니라 "근거 조각"으로 읽힙니다</h3>
+    <p style="font-size:13px; color:var(--gray); margin-bottom:10px;">
+      AI 답변에 페이지와 항목명이 붙어야 현장에서 재확인이 가능합니다. 문서별 역할을 나누면 답변이
+      긴 설명문이 아니라 조치 가능한 체크리스트로 바뀝니다.
+    </p>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>문서 위치</th>
+          <th>찾아야 할 근거</th>
+          <th>답변에서의 역할</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="manual-src">Alarm Code Table p.4</span></td>
+          <td>E-472는 180초 이내 base pressure 미도달 시 발생</td>
+          <td><span class="badge badge-blue">알람 정의 확인</span></td>
+        </tr>
+        <tr>
+          <td><span class="manual-src">Vacuum Troubleshooting p.9</span></td>
+          <td>펌프 전류 상승 동반 시 배기 저항 또는 필터 막힘 확인</td>
+          <td><span class="badge badge-amber">원인 후보 1순위</span></td>
+        </tr>
+        <tr>
+          <td><span class="manual-src">Maintenance SOP p.11</span></td>
+          <td>챔버 개방 전 N2 purge와 정비 승인 필요</td>
+          <td><span class="badge badge-red">중단 조건 표시</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Action matrix -->
+    <h3 style="font-size:14px; font-weight:700; margin: 24px 0 8px;">AI 답변은 조치 우선순위 표로 받아야 실행하기 쉽습니다</h3>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th style="width:60px;">우선순위</th>
+          <th>확인/조치</th>
+          <th style="width:90px;">담당</th>
+          <th>판단 기준</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="text-align:center;"><span class="badge badge-red">1</span></td>
+          <td>펌프 전류 추이와 최근 PM 이력 확인</td>
+          <td>공정/설비</td>
+          <td>전류 상승 지속 시 배기 라인 점검</td>
+        </tr>
+        <tr>
+          <td style="text-align:center;"><span class="badge badge-amber">2</span></td>
+          <td>밸브 Open 명령과 실제 포지션 로그 비교</td>
+          <td>설비</td>
+          <td>명령-상태 불일치면 밸브 인터락 확인</td>
+        </tr>
+        <tr>
+          <td style="text-align:center;"><span class="badge badge-blue">3</span></td>
+          <td>동일 챔버 직전 Lot의 base pressure 비교</td>
+          <td>공정</td>
+          <td>Lot 무관 반복이면 설비 원인 가능성 상승</td>
+        </tr>
+        <tr>
+          <td style="text-align:center;"><span class="badge badge-green">4</span></td>
+          <td>SOP 안전 조건 확인 후 정비 요청 문장 작성</td>
+          <td>설비/안전</td>
+          <td>챔버 개방 전 승인 필요</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Section 05: Practice -->
+  <div class="section">
+    <span class="section-label">05. AI 작업지시서 실습</span>
+    <h2>매뉴얼 요약 요청을 현장 대응용 프롬프트로 재작성합니다</h2>
+    <p class="section-intro">
+      실습의 핵심은 멋진 문장이 아니라 통제 가능한 입력입니다. AI가 모르는 내용을 지어내지 않도록 문서 범위,
+      출력 항목, 검증 규칙을 한 번에 묶습니다.
+    </p>
+
+    <div class="practice-grid">
+      <div class="practice-card">
+        <h3>Step 1. 문서 범위 고정</h3>
+        <p>매뉴얼 전체가 아니라 "알람 코드표 4장, 진공 계통 트러블슈팅 9장"처럼 검색 범위를 먼저 제한합니다.</p>
+      </div>
+      <div class="practice-card">
+        <h3>Step 2. 질문을 현장 언어로 변환</h3>
+        <p>"왜 고장났어?" 대신 설비명, 알람명, 계측값, 작업자가 이미 확인한 항목을 함께 제공합니다.</p>
+      </div>
+      <div class="practice-card">
+        <h3>Step 3. 답변 형식을 표준화</h3>
+        <p>원인 후보, 확인할 데이터, 즉시 조치, 중단 조건, 보고 문장을 같은 양식으로 요구합니다.</p>
+      </div>
+      <div class="practice-card">
+        <h3>Step 4. 환각 방지 규칙 추가</h3>
+        <p>문서에 없는 내용은 "근거 없음"으로 표시하게 하고, 안전/정비 승인 필요 항목은 별도 표시하게 합니다.</p>
+      </div>
+    </div>
+
+    <div class="prompt-box">
+      <div class="prompt-label">수업용 프롬프트 템플릿</div>
+      <pre>역할: 너는 디스플레이/반도체 설비 엔지니어의 기술 문서 요약 비서다.
+입력 문서: [문서명 / 페이지 범위 / 표 또는 장 제목]
+상황: [설비명, 알람 코드, 관측값, 작업자가 이미 확인한 내용]
+요청: 문서 근거가 있는 조치만 추출한다.
+출력 형식:
+1. 가능 원인 TOP 3
+2. 즉시 확인할 센서/로그
+3. 작업 순서와 중단 조건
+4. 보고서에 붙일 3문장 요약
+검증 규칙: 문서에 없는 추정은 쓰지 말고 "근거 없음"으로 표시한다.</pre>
+    </div>
+
+    <div class="connector" style="margin-top:16px;">
+      <strong>재사용 포인트</strong> — 다음에 E-473이나 F-218 알람이 발생해도 <strong>상황 부분만 바꿔서</strong> 같은 구조로 5분 안에 1차 조치안을 만들 수 있습니다.
+    </div>
+  </div>
+
+  <!-- Section 06: Verification -->
+  <div class="section">
+    <span class="section-label">06. 검증 및 마무리</span>
+    <h2>AI 답변은 "문서 근거, 현장 데이터, 안전 조건" 세 가지가 맞을 때만 사용할 수 있습니다</h2>
+    <p class="section-intro">
+      09강의 산출물은 단순 요약문이 아니라 검증 가능한 조치 초안입니다. 다음 10강의 보고서 자동 생성에서는 이
+      조치 초안을 주간/월간 보고서 형식으로 연결합니다.
+    </p>
+
+    <div class="metric-grid">
+      <div class="metric-card">
+        <strong>12쪽</strong>
+        <span>실습에 사용할 가상 매뉴얼 범위</span>
+      </div>
+      <div class="metric-card">
+        <strong>4개</strong>
+        <span>AI가 반드시 구분해야 할 출력 블록</span>
+      </div>
+      <div class="metric-card">
+        <strong>5분</strong>
+        <span>현장 1차 대응 요약 목표 시간</span>
+      </div>
+    </div>
+
+    <div class="key-quote">
+      기술 문서는 전체 요약이 아니라 '근거 조각'으로 읽힙니다.<br>
+      센서 로그를 붙이면 질문이 구체화됩니다.<br>
+      환각 방지 규칙 한 줄이 현장 실수를 막습니다.
+    </div>
+
+    <div class="check-panel">
+      <strong>수업 종료 전 확인 질문</strong>
+      <ul>
+        <li>AI가 답한 조치 항목마다 문서 페이지 또는 장 제목이 붙어 있는가?</li>
+        <li>센서값, 알람 코드, 설비 모델명이 실제 상황과 일치하는가?</li>
+        <li>안전 승인, 장비 정지, 정비팀 호출이 필요한 조건을 별도로 표시했는가?</li>
+      </ul>
+    </div>
+
+    <div class="connector" style="margin-top:20px; border-left: 3px solid var(--blue); padding-left:16px;">
+      <strong>다음 10강 미리보기 —</strong> 지금까지 만든 분석 결과와 조치 초안을 주간/월간 보고서로 자동 생성합니다. 실제 회의에서 바로 쓸 수 있는 보고서 형식을 완성합니다.
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
