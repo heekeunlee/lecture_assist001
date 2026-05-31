@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>6강 · OLED 증착 설비 이상 징후 감지 및 실시간 모니터링</title>
+  <title>6강 스크립트 · OLED 증착 설비 이상 징후 감지 및 실시간 모니터링</title>
   <style>
     :root {
       --bg: #f8fafc;
@@ -28,7 +28,6 @@
     }
     .container { max-width: 860px; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
 
-    /* Header */
     .lecture-badge {
       display: inline-block;
       background: var(--accent);
@@ -70,7 +69,6 @@
       color: var(--muted);
     }
 
-    /* Section headers */
     .section-label {
       font-size: 0.72rem;
       font-weight: 700;
@@ -94,7 +92,6 @@
     }
     p { margin-bottom: 0.85rem; color: #334155; word-break: keep-all; }
 
-    /* Cards */
     .card {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -103,7 +100,6 @@
       margin-bottom: 1.5rem;
     }
 
-    /* Tables */
     .tbl-wrap { overflow-x: auto; margin-bottom: 1rem; }
     table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
     th {
@@ -122,7 +118,6 @@
     }
     tr:last-child td { border-bottom: none; }
 
-    /* Status cells */
     .st-normal { background: #dcfce7; color: #166534; font-weight: 700; border-radius: 6px; padding: 0.2rem 0.55rem; display: inline-block; font-size: 0.82rem; }
     .st-watch  { background: #fef3c7; color: #92400e; font-weight: 700; border-radius: 6px; padding: 0.2rem 0.55rem; display: inline-block; font-size: 0.82rem; }
     .st-ooc    { background: #fee2e2; color: #991b1b; font-weight: 700; border-radius: 6px; padding: 0.2rem 0.55rem; display: inline-block; font-size: 0.82rem; }
@@ -130,7 +125,6 @@
     .alert { color: var(--danger); font-weight: 700; }
     .fall  { color: var(--purple); font-weight: 700; }
 
-    /* Formula box */
     .algo-box {
       background: #0f172a;
       color: #38bdf8;
@@ -144,7 +138,6 @@
     }
     .algo-box .comment { color: #64748b; }
 
-    /* Prompt box */
     .prompt-box {
       background: #0f172a;
       color: #a5f3fc;
@@ -158,7 +151,6 @@
       word-break: break-word;
     }
 
-    /* Key quote */
     .key-quote {
       background: #1e3a5f;
       color: #fff;
@@ -172,7 +164,6 @@
       word-break: keep-all;
     }
 
-    /* Equipment status tiles */
     .eqp-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -198,7 +189,6 @@
     .eqp-tile.ooc    .eqp-status { color: #991b1b; }
     .eqp-note { font-size: 0.75rem; color: var(--muted); margin-top: 0.2rem; }
 
-    /* Alert cards */
     .alert-card {
       border-left: 4px solid;
       border-radius: 0 10px 10px 0;
@@ -213,7 +203,6 @@
     .alert-card .ac-title { font-weight: 700; font-size: 0.95rem; margin-bottom: 0.35rem; }
     .alert-card p { font-size: 0.88rem; margin: 0; color: #334155; }
 
-    /* SPC chart mockup */
     .chart-mock {
       background: #f8fafc;
       border: 1px solid var(--border);
@@ -224,39 +213,6 @@
     }
     .chart-mock svg { display: block; width: 100%; min-width: 280px; }
 
-    /* 5요소 grid */
-    .five-elem {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 0.75rem;
-      margin-bottom: 1rem;
-    }
-    @media (min-width: 560px) {
-      .five-elem { grid-template-columns: repeat(2, 1fr); }
-    }
-    .fe-item {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 0.9rem 1rem;
-    }
-    .fe-num {
-      display: inline-block;
-      background: var(--accent);
-      color: #fff;
-      font-size: 0.75rem;
-      font-weight: 800;
-      width: 22px;
-      height: 22px;
-      border-radius: 50%;
-      text-align: center;
-      line-height: 22px;
-      margin-bottom: 0.4rem;
-    }
-    .fe-title { font-weight: 700; font-size: 0.95rem; margin-bottom: 0.35rem; }
-    .fe-desc { font-size: 0.85rem; color: #475569; }
-
-    /* Checklist */
     .checklist { list-style: none; margin-bottom: 1rem; }
     .checklist li {
       display: flex;
@@ -281,7 +237,6 @@
       justify-content: center;
     }
 
-    /* Pattern precursor list */
     .pattern-box {
       background: #fafafa;
       border: 1px solid var(--border);
@@ -298,16 +253,10 @@
       font-size: 0.92rem;
     }
     .pattern-row:last-child { border-bottom: none; }
-    .pattern-icon {
-      flex-shrink: 0;
-      font-size: 1.1rem;
-      margin-top: 1px;
-    }
+    .pattern-icon { flex-shrink: 0; font-size: 1.1rem; margin-top: 1px; }
 
-    /* Divider */
     .divider { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
 
-    /* Role split */
     .role-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -325,18 +274,71 @@
     .role-box ul { padding-left: 1rem; }
     .role-box li { margin-bottom: 0.25rem; }
 
-    /* Tag */
-    .tag {
+    /* 강조 박스 */
+    .narration-box {
+      background: #f0f7ff;
+      border-left: 4px solid var(--accent);
+      border-radius: 0 12px 12px 0;
+      padding: 1rem 1.25rem;
+      margin-bottom: 1rem;
+      font-size: 0.93rem;
+      color: #1e3a5f;
+      line-height: 1.7;
+    }
+    .narration-box strong { color: var(--accent-dark); }
+
+    /* 단계 흐름 카드 */
+    .step-card {
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+      background: var(--surface);
+    }
+    .step-badge {
       display: inline-block;
       font-size: 0.72rem;
-      font-weight: 700;
-      padding: 0.15rem 0.55rem;
+      font-weight: 800;
+      padding: 0.2rem 0.6rem;
+      background: var(--accent);
+      color: #fff;
       border-radius: 999px;
-      margin-right: 0.3rem;
+      margin-bottom: 0.6rem;
+      letter-spacing: 0.03em;
     }
-    .tag-semi    { background: #dbeafe; color: #1d4ed8; }
-    .tag-display { background: #fae8ff; color: #7e22ce; }
-    .tag-battery { background: #dcfce7; color: #15803d; }
+    .step-badge.warn { background: #f59e0b; }
+    .step-badge.danger { background: #ef4444; }
+    .step-badge.ok { background: #22c55e; }
+    .step-badge.gray { background: #64748b; }
+
+    /* 시각화 미니 그리드 */
+    .viz-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+    @media (max-width: 560px) { .viz-grid { grid-template-columns: 1fr; } }
+    .viz-item {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.9rem;
+      background: var(--surface);
+    }
+    .viz-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.75rem;
+      font-weight: 800;
+      margin-bottom: 0.4rem;
+    }
+    .viz-title { font-weight: 700; font-size: 0.9rem; margin-bottom: 0.3rem; }
+    .viz-desc { font-size: 0.82rem; color: #475569; }
 
     @media (max-width: 500px) {
       .role-grid { grid-template-columns: 1fr; }
@@ -347,213 +349,203 @@
 <body>
 <div class="container">
 
-  <!-- Header -->
-  <div class="lecture-badge">6강</div>
+  <!-- ───── 헤더 ───── -->
+  <div class="lecture-badge">6강 스크립트</div>
   <h1>OLED 증착 설비 이상 징후 감지<br>및 실시간 모니터링</h1>
-  <p class="subtitle">설비 센서 로그에 이동평균과 UCL/LCL을 적용해 OOC 징후를 자동 감지하고 대시보드를 만듭니다.</p>
+  <p class="subtitle">강의 교안(lecture06)의 섹션 순서를 그대로 따라가며, 각 슬라이드의 내용을 조목조목 부연설명합니다.</p>
   <div class="meta-pills">
-    <span class="pill">⏱ 38~42분</span>
-    <span class="pill">반도체·디스플레이·배터리</span>
+    <span class="pill">⏱ 40분</span>
     <span class="pill">VTE-03 OLED 증착 설비</span>
     <span class="pill">이동평균 · UCL/LCL · OOC</span>
-  </div>
-
-  <!-- 5강 연결 -->
-  <div class="card" style="background:#eff6ff; border-color:#bfdbfe;">
-    <div class="section-label">5강 → 6강 연결</div>
-    <h3>공간에서 시간으로</h3>
-    <p>5강에서 히트맵으로 <strong>공간(위치)</strong>을 분석했어요. "중심 93%, 가장자리 52%, 우하단 불량 집중" — 어느 구역이 문제인지 찾아냈죠.</p>
-    <p>그 다음 질문이에요. <strong>"그 이상 징후가 언제부터 시작됐나요?"</strong></p>
-    <p style="margin:0">위치를 알면 다음은 <strong>시간</strong>이에요. 6강은 설비 센서 로그의 시간 흐름을 분석해 OOC 징후를 사전에 감지하는 방법을 다뤄요.</p>
-  </div>
-
-  <!-- 로드맵 -->
-  <div class="card">
-    <div class="section-label">강의 로드맵</div>
-    <h2>오늘 배우는 것</h2>
-    <div class="tbl-wrap">
-      <table>
-        <thead>
-          <tr><th>섹션</th><th>내용</th><th>시간</th></tr>
-        </thead>
-        <tbody>
-          <tr><td>INTRO</td><td>오프닝 + 학습목표</td><td>4분</td></tr>
-          <tr><td>01</td><td>Before — 왜 놓치는가</td><td>6분</td></tr>
-          <tr><td>02</td><td>이동평균 개념</td><td>6분</td></tr>
-          <tr><td>03</td><td>UCL/LCL/OOC</td><td>7분</td></tr>
-          <tr><td>04</td><td>5요소 프롬프트 설계</td><td>6분</td></tr>
-          <tr><td>05</td><td>AI 산출물 — 대시보드</td><td>6분</td></tr>
-          <tr><td>06</td><td>전조 패턴 + 엔지니어 검증</td><td>6분</td></tr>
-          <tr><td>07</td><td>실습 프롬프트 + 마무리</td><td>5분</td></tr>
-        </tbody>
-      </table>
-    </div>
-    <div class="key-quote">"설비는 고장 나기 전에 이미 신호를 보낸다."</div>
+    <span class="pill">섹션 01–09</span>
   </div>
 
   <hr class="divider" />
 
-  <!-- SECTION 01: Before -->
-  <div class="section-label">SECTION 01</div>
-  <h2>Before — 왜 이상 징후를 놓치는가</h2>
+  <!-- ───── 섹션 01: 오프닝 및 학습목표 ───── -->
+  <div class="section-label">섹션 01</div>
+  <h2>오프닝 및 학습목표</h2>
 
-  <div class="card">
-    <h3>현장의 현실</h3>
-    <p>설비 센서 로그가 있어요. 온도, 압력, QCM 증착률 데이터가 각각 CSV 파일로 저장돼요. 하루에 1분 단위, 1,440행씩 쌓여요. 설비가 3~4대면 파일이 금방 수십 개가 돼요.</p>
-    <p>그 파일을 열어보면 — 숫자들이 미세하게 흔들려요. 185.0, 185.2, 185.1, 185.4, 185.3... 엔지니어 입장에서는 <strong>"이 정도 흔들림은 그냥 센서 노이즈지"</strong> 하고 넘어가기 쉬워요.</p>
+  <div class="narration-box">
+    오늘 강의의 핵심 질문은 하나입니다. <strong>"설비가 고장 나기 전에, AI가 먼저 신호를 잡을 수 있을까?"</strong><br>
+    OLED 증착 설비는 1분마다 온도·압력·증착률 데이터를 기록합니다. 하지만 엔지니어가 그 수천 줄 데이터를 매일 눈으로 확인하기는 불가능합니다. 오늘은 AI에게 이 일을 맡기는 방법을 배웁니다.
   </div>
 
   <div class="card">
-    <h3>이상 징후를 놓치는 4가지 이유</h3>
+    <h3>학습목표 1 — VTE 챔버 센서 모니터링 이해</h3>
+    <p>VTE-03 챔버는 <strong>소스 온도, 챔버 압력, QCM 증착률, 냉각수 유량</strong>, 이 4가지 센서로 공정 상태를 감시합니다. 각 센서가 왜 필요한지부터 이해해야 합니다.</p>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>센서</th><th>측정 대상</th><th>왜 중요한가</th></tr></thead>
+        <tbody>
+          <tr><td><strong>소스 온도</strong></td><td>유기 재료 도가니 가열 온도 (°C)</td><td>온도가 흔들리면 증착률도 흔들린다</td></tr>
+          <tr><td><strong>챔버 압력</strong></td><td>챔버 내부 진공도 (×10⁻⁶ Torr)</td><td>진공이 새면 막이 오염된다</td></tr>
+          <tr><td><strong>QCM 증착률</strong></td><td>유기막 두께 성장 속도 (Å/s)</td><td>OLED 발광층 두께의 직접 지표</td></tr>
+          <tr><td><strong>냉각수 유량</strong></td><td>도가니 주변 냉각수 흐름 (LPM)</td><td>열 변형 방지, 설비 수명과 직결</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="margin:0; font-size:0.9rem; color:var(--muted);">이 4개 센서가 <strong>1분 간격</strong>으로 기록됩니다. 하루 1,440행, 설비 4대면 5,760행씩 쌓입니다. 엔지니어가 손으로 보기엔 너무 많습니다.</p>
+  </div>
+
+  <div class="card">
+    <h3>학습목표 2 — 이상 징후 해석</h3>
+    <p>숫자가 조금 흔들렸을 때 그게 <strong>노이즈(일시적 튐)</strong>인지 <strong>드리프트(지속적 이동)</strong>인지 구분하는 것이 핵심입니다.</p>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>구분</th><th>특징</th><th>예시</th><th>대응</th></tr></thead>
+        <tbody>
+          <tr><td><strong>노이즈</strong></td><td>한 번 튀고 바로 복귀</td><td>185.0 → 185.9 → 185.1</td><td>무시 가능</td></tr>
+          <tr><td><strong>드리프트</strong></td><td>같은 방향으로 계속 이동</td><td>185.0 → 185.5 → 186.0 → 186.8</td><td>전조 신호, 주의 필요</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="margin:0; font-size:0.9rem; color:var(--muted);">이 두 가지를 구분하는 핵심 도구가 <strong>이동평균(Moving Average)</strong>입니다. 이동평균은 노이즈를 희석시키고, 드리프트는 그대로 드러나게 합니다.</p>
+  </div>
+
+  <div class="card">
+    <h3>학습목표 3 — AI 감지 규칙 작업지시서 작성</h3>
+    <p>오늘 강의의 최종 산출물은 <strong>HTML/CSS 기반 실시간 모니터링 대시보드</strong>입니다. AI에게 어떻게 지시하면 이런 결과물이 나오는지, 그 작업지시서(프롬프트) 구조를 배웁니다.</p>
+    <div class="narration-box">
+      "AI야, OLED 설비 센서 데이터 분석해줘"는 너무 모호합니다. <strong>데이터·계산방식·판정기준·산출물·검증조건</strong>, 이 5가지를 명확히 써야 AI가 제대로 동작합니다. 그 구체적인 방법을 섹션 05에서 다룹니다.
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ───── 섹션 02: 공정과 설비 설정 ───── -->
+  <div class="section-label">섹션 02</div>
+  <h2>공정과 설비 설정</h2>
+
+  <div class="narration-box">
+    이 섹션은 <strong>강의 전체 흐름을 Step 1~7로 압축해서 보여주는 조감도</strong>입니다. "무엇을 어떤 순서로 배우는가"를 먼저 파악하면, 이후 섹션들이 훨씬 잘 연결됩니다.
+  </div>
+
+  <!-- Step 1 -->
+  <div class="step-card">
+    <div class="step-badge">Step 1 · 공정 선택</div>
+    <h3>VTE-03 — 오늘의 분석 대상 설비</h3>
+    <p>VTE는 <strong>Vacuum Thermal Evaporation(진공 열 증착)</strong>의 약자입니다. OLED 발광층을 만들 때, 유기 재료를 진공 챔버 안에서 가열해 기화시키고 기판 위에 얇게 증착하는 핵심 공정입니다.</p>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>원리</th><th>의미</th><th>왜 필요한가</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Vacuum (진공)</strong></td><td>공기 중 불순물 제거</td><td>산소·수분이 닿으면 유기막이 산화됨</td></tr>
+          <tr><td><strong>Thermal (열)</strong></td><td>도가니를 300°C 이상 가열</td><td>유기 재료를 기화시켜야 증착 가능</td></tr>
+          <tr><td><strong>Evaporation (증착)</strong></td><td>기화된 분자가 기판에 달라붙음</td><td>R·G·B 발광 서브픽셀을 형성</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="margin:0; font-size:0.9rem; color:var(--muted);">오늘 실습 대상은 이 VTE 설비 중 <strong>3호기(VTE-03)</strong>입니다. 4대(VTE-01~04) 중 VTE-03에서 이상 징후가 발생하는 시나리오를 따라갑니다.</p>
+  </div>
+
+  <!-- Step 2 -->
+  <div class="step-card">
+    <div class="step-badge ok">Step 2 · 정상 모니터링</div>
+    <h3>MES/SCADA — 데이터가 어떻게 수집되는가</h3>
+    <p>현장 센서들은 PLC를 거쳐 <strong>SCADA(감시 제어 및 데이터 취득)</strong>와 <strong>MES(제조 실행 시스템)</strong>로 데이터를 보냅니다. 이 시스템이 1분 간격으로 모든 센서값을 시계열 DB에 저장합니다.</p>
+    <div class="narration-box">
+      정상 상태에서는 소스 온도 183~187°C, 챔버 압력 1.0e-6 Torr 부근, QCM 증착률 1.20 Å/s로 안정적으로 움직입니다. 숫자들이 미세하게 흔들리지만 이건 <strong>센서 노이즈</strong>입니다. 문제는 이 정상 노이즈 안에 숨어 있는 <strong>드리프트 전조 신호</strong>를 놓치는 것입니다.
+    </div>
+    <h3 style="margin-top:1rem;">1분 주기 데이터를 시각화하는 3가지 방법</h3>
+    <p>슬라이드에 나오는 3대 시각화 기법을 각각 설명합니다.</p>
+    <div class="viz-grid">
+      <div class="viz-item">
+        <div class="viz-num">1</div>
+        <div class="viz-title">다중 런 차트</div>
+        <div class="viz-desc">4개 센서를 같은 시간축에 겹쳐 그립니다. 어느 센서가 어느 시점에 흔들리기 시작했는지 한눈에 보입니다.</div>
+      </div>
+      <div class="viz-item">
+        <div class="viz-num">2</div>
+        <div class="viz-title">SPC 관리도</div>
+        <div class="viz-desc">UCL·CL·LCL 선을 그어 놓고, 이동평균이 그 선을 넘는 순간을 OOC로 자동 판정합니다.</div>
+      </div>
+      <div class="viz-item">
+        <div class="viz-num">3</div>
+        <div class="viz-title">상관관계 히트맵</div>
+        <div class="viz-desc">센서 간 상관계수(-1~+1)를 색으로 표현합니다. 온도↑와 증착률↑이 함께 움직이는지 확인합니다.</div>
+      </div>
+    </div>
+    <div class="card" style="background:#eff6ff; border-color:#bfdbfe; margin-bottom:0;">
+      <h3 style="font-size:0.95rem;">실습 데이터셋 안내</h3>
+      <p style="margin:0; font-size:0.88rem;">슬라이드에 소개되는 <code>oled_deposition_sensor_dataset.csv</code>는 5,000분(약 3.5일)치 1분 주기 데이터입니다. <strong>4,200분 시점부터 챔버 압력 누설이 시작</strong>되고 이를 보정하려는 도가니 히터 과작동이 나타납니다. AI가 이 패턴을 미리 잡아내는 것이 오늘 실습 목표입니다.</p>
+    </div>
+  </div>
+
+  <!-- Step 3~7 예고 -->
+  <div class="card" style="background:#fafafa;">
+    <h3>Step 3~7 — 이어지는 섹션들의 구성</h3>
+    <p>Step 3(이상 징후 발생)부터 Step 7(리포트 공유)까지는 각각 아래 섹션에서 자세히 다룹니다.</p>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Step</th><th>내용</th><th>이 스크립트 섹션</th></tr></thead>
+        <tbody>
+          <tr><td>Step 3</td><td>이상 징후 발생 (13:00~13:22 시나리오)</td><td>→ 섹션 03, 04</td></tr>
+          <tr><td>Step 4</td><td>AI 자동 감지 (이동평균·UCL/LCL·판정 규칙)</td><td>→ 섹션 05</td></tr>
+          <tr><td>Step 5</td><td>대시보드 리포트 (설비 타일·관리도·알림)</td><td>→ 섹션 06</td></tr>
+          <tr><td>Step 6</td><td>현장 검증 (PM 이력·재료 교체·QCM 보정)</td><td>→ 섹션 07</td></tr>
+          <tr><td>Step 7</td><td>리포트 공유 (실시간 알림·30분 내 대응)</td><td>→ 섹션 07</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ───── 섹션 03: 현재 모니터링 방식 ───── -->
+  <div class="section-label">섹션 03</div>
+  <h2>현재 모니터링 방식</h2>
+
+  <div class="narration-box">
+    이 섹션에서 슬라이드는 <strong>"정상 상태에서 챔버 센서가 조용한 범위 안에서 움직인다"</strong>는 것을 보여줍니다. 그리고 바로 그 '조용한 범위' 안에 문제가 숨어 있다는 역설을 설명합니다.
+  </div>
+
+  <div class="card">
+    <h3>지금 현장에서 벌어지는 일</h3>
+    <p>운영자는 화면에서 <strong>현재값과 알람 상태</strong>만 확인합니다. VTE-03_SOURCE_TEMP.csv, VTE-03_CHAMBER_PRESS.csv, VTE-03_QCM_RATE.csv — 이 파일들은 각각 따로 저장되고, 하루에도 수천 행씩 쌓입니다.</p>
+    <p>슬라이드의 파일 카드들을 보면 각 센서가 미니 바 차트로 표시됩니다. 숫자들은 조금씩 흔들립니다. <strong>185.0, 185.2, 185.1, 185.4...</strong> 이 정도 흔들림은 "그냥 센서 노이즈겠지" 하고 넘어가기 쉽습니다.</p>
+    <div class="narration-box">
+      <strong>핵심 포인트:</strong> 운영 화면은 현재값을 잘 보여주지만, "최근 30분 동안 같이 흔들린 센서 조합"을 자동으로 추적해 주지는 않습니다. 바로 이 빈틈을 AI가 채웁니다.
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>이상 징후를 놓치는 4가지 구조적 이유</h3>
     <ul class="checklist">
       <li>
         <span class="checklist-num">1</span>
-        <div><strong>파일이 너무 많아요</strong> — 온도·압력·유량이 각각 따로 저장돼요. 하루에도 수십 개 파일이 쌓여요.</div>
+        <div><strong>파일이 너무 많아요</strong> — 온도·압력·유량이 각각 따로 저장됩니다. 설비 3~4대면 파일이 금방 수십 개가 됩니다.</div>
       </li>
       <li>
         <span class="checklist-num">2</span>
-        <div><strong>판정 기준이 데이터 안에 없어요</strong> — UCL/LCL을 별도 문서에서 꺼내야 해요.</div>
+        <div><strong>판정 기준이 데이터 안에 없어요</strong> — UCL/LCL을 별도 문서에서 꺼내야 하고, 이를 실시간으로 대조하는 자동화 도구가 없습니다.</div>
       </li>
       <li>
         <span class="checklist-num">3</span>
-        <div><strong>센서들을 같은 시간축으로 안 봐요</strong> — 각 파일을 따로 열어서 비교하기 어려워요.</div>
+        <div><strong>센서들을 같은 시간축으로 안 봐요</strong> — 각 파일을 따로 열어서 비교하기 어렵습니다. 온도 파일과 압력 파일이 동시에 흔들렸는지 확인하기 힘듭니다.</div>
       </li>
       <li>
         <span class="checklist-num">4</span>
-        <div><strong>전조 신호가 아주 작게 시작돼요</strong> — 한 번 튄 값이 아니라 서서히 올라가는 흐름이라 눈에 안 띄어요.</div>
+        <div><strong>전조 신호가 아주 작게 시작돼요</strong> — 한 번 튄 값이 아니라 서서히 올라가는 드리프트라 눈에 안 띕니다. 알람이 울릴 때는 이미 늦습니다.</div>
       </li>
     </ul>
-  </div>
-
-  <div class="card" style="background:#fafafa;">
-    <h3>오늘의 역할 분담</h3>
-    <div class="role-grid">
-      <div class="role-box ai">
-        <h4>🤖 AI에게 맡길 것</h4>
-        <ul>
-          <li>5,000행 데이터 정렬</li>
-          <li>이동평균 계산</li>
-          <li>UCL/LCL 기준 적용</li>
-          <li>대시보드 화면 초안</li>
-        </ul>
-      </div>
-      <div class="role-box eng">
-        <h4>👷 엔지니어가 할 것</h4>
-        <ul>
-          <li>판정 기준 설계</li>
-          <li>현장 이력 교차 검증</li>
-          <li>최종 조치 결정</li>
-          <li>원인 확정</li>
-        </ul>
-      </div>
+    <div class="narration-box" style="margin-top:1rem;">
+      이 4가지 이유가 이번 강의가 존재하는 이유입니다. AI에게 이 4가지 문제를 한꺼번에 해결하는 도구를 만들게 하는 것이 목표입니다.
     </div>
   </div>
 
   <hr class="divider" />
 
-  <!-- SECTION 02: 이동평균 -->
-  <div class="section-label">SECTION 02</div>
-  <h2>이동평균 — 노이즈와 흐름을 구분하는 첫 번째 도구</h2>
+  <!-- ───── 섹션 04: 이상 징후가 나타나는 방식 ───── -->
+  <div class="section-label">섹션 04</div>
+  <h2>이상 징후가 나타나는 방식</h2>
 
-  <div class="card">
-    <h3>5-point 이동평균 공식</h3>
-    <div class="algo-box">MA(t) = [x(t) + x(t-1) + x(t-2) + x(t-3) + x(t-4)] / 5<br><br><span class="comment">// 창 크기 = 5 (1분 단위 데이터 → 최근 5분 평균)</span><br><span class="comment">// 한 번 튄 값: 5분의 1로 희석됨</span><br><span class="comment">// 지속 상승 흐름: 이동평균에 그대로 반영됨</span></div>
-    <p><strong>AI에게 지시할 때는 반드시 창 크기를 명시하세요.</strong><br>"이동평균 적용해줘"만으로는 부족해요. 창 크기가 달라지면 OOC 판정 시점도 달라져요.</p>
+  <div class="narration-box">
+    슬라이드는 <strong>"이상은 갑자기 발생하기보다 다차원 센서 조합의 미세한 연계 변화로 시작된다"</strong>고 말합니다. 이 문장이 이번 섹션 전체를 관통하는 핵심입니다.
   </div>
 
   <div class="card">
-    <div class="tbl-wrap">
-      <table>
-        <thead>
-          <tr><th>구분</th><th>특징</th><th>이동평균에서의 모습</th></tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><strong>노이즈</strong></td>
-            <td>한 번 튀고 바로 정상으로 복귀</td>
-            <td>이동평균에 거의 영향 없음</td>
-          </tr>
-          <tr>
-            <td><strong>드리프트</strong></td>
-            <td>서서히 한 방향으로 계속 이동</td>
-            <td>이동평균이 꾸준히 올라감</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <p style="margin:0; font-size:0.9rem; color:var(--muted);">이동평균은 노이즈와 드리프트를 구분하는 첫 번째 필터예요. 연속 상승 흐름이 보이면 설비 상태가 실제로 변하고 있을 가능성이 커요.</p>
-  </div>
-
-  <hr class="divider" />
-
-  <!-- SECTION 03: UCL/LCL/OOC -->
-  <div class="section-label">SECTION 03</div>
-  <h2>UCL / LCL / OOC — 정상과 이상의 경계</h2>
-
-  <div class="card">
-    <h3>스펙 ≠ 관리 한계</h3>
-    <div class="tbl-wrap">
-      <table>
-        <thead>
-          <tr><th>개념</th><th>정의</th><th>설정 주체</th></tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><strong>제품 스펙</strong></td>
-            <td>제품 합불 기준 범위 (예: 온도 75~90°C)</td>
-            <td>고객 / 품질 기준</td>
-          </tr>
-          <tr>
-            <td><strong>관리 한계 (UCL/LCL)</strong></td>
-            <td>정상 운전 시 통계 범위 ±3σ</td>
-            <td>엔지니어 (정상 이력 기반)</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <p style="margin:0; background:#fef2f2; border-radius:8px; padding:0.75rem; font-size:0.9rem;">
-      ⚠️ <strong>스펙을 넘지 않아도 UCL을 넘으면 이상 신호예요.</strong> 우리가 원하는 건 사후 대응이 아니라 <strong>사전 감지</strong>예요.
-    </p>
-  </div>
-
-  <div class="card">
-    <h3>관리 한계 계산 공식</h3>
-    <div class="algo-box">Center (CL) = μ  <span class="comment">// 정상 Lot 20개 기준 평균</span><br>UCL = μ + 3σ   <span class="comment">// 상한 관리 한계</span><br>LCL = μ - 3σ   <span class="comment">// 하한 관리 한계</span><br><br><span class="comment">// Watch: UCL의 85% 라인에 3회 연속 접근</span><br><span class="comment">// OOC:   UCL 또는 LCL 이탈</span></div>
-  </div>
-
-  <div class="card">
-    <h3>Normal / Watch / OOC 3단계</h3>
-    <div class="tbl-wrap">
-      <table>
-        <thead>
-          <tr><th>상태</th><th>정의</th><th>대응</th></tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><span class="st-normal">Normal</span></td>
-            <td>이동평균이 UCL/LCL 안에서 안정</td>
-            <td>계속 모니터링</td>
-          </tr>
-          <tr>
-            <td><span class="st-watch">Watch</span></td>
-            <td>UCL 85% 라인에 3회 연속 접근</td>
-            <td>전조 파악, 사전 조치 검토</td>
-          </tr>
-          <tr>
-            <td><span class="st-ooc">OOC</span></td>
-            <td>UCL 또는 LCL을 이탈</td>
-            <td>현장 즉시 점검, SOP 실행</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <p style="margin:0; font-size:0.9rem; color:var(--muted);">Watch 단계가 핵심이에요. OOC만 표시하면 이미 늦어요. Watch에서 대응하면 제품 불량 발생 전에 조치할 수 있어요.</p>
-  </div>
-
-  <!-- 이상 발생 시나리오 -->
-  <div class="card">
-    <div class="section-label">VTE-03 이상 발생 시나리오</div>
-    <h3>22분 안에 벌어진 일</h3>
+    <h3>VTE-03 이상 발생 시나리오 — 22분 안에 벌어진 일</h3>
     <p style="font-size:0.9rem; color:var(--muted); margin-bottom:1rem;">데이터: oled_deposition_sensor_dataset.csv (5,000분 / 1분 단위 / 2026-05-17~20)</p>
     <div class="tbl-wrap">
       <table>
@@ -562,24 +554,17 @@
         </thead>
         <tbody>
           <tr>
-            <td>13:00</td>
-            <td>185.0°C</td>
-            <td>1.02</td>
-            <td>1.20</td>
+            <td>13:00</td><td>185.0°C</td><td>1.02</td><td>1.20</td>
             <td><span class="st-normal">Normal</span></td>
           </tr>
           <tr>
             <td>13:08</td>
-            <td class="drift">186.9°C ↗</td>
-            <td>1.10</td>
-            <td>1.21</td>
+            <td class="drift">186.9°C ↗</td><td>1.10</td><td>1.21</td>
             <td><span class="st-watch">Watch (온도 드리프트)</span></td>
           </tr>
           <tr>
             <td>13:18</td>
-            <td>188.1°C</td>
-            <td class="drift">1.65 ↗</td>
-            <td>1.18</td>
+            <td>188.1°C</td><td class="drift">1.65 ↗</td><td>1.18</td>
             <td><span class="st-watch">Watch (복합)</span></td>
           </tr>
           <tr>
@@ -592,52 +577,118 @@
         </tbody>
       </table>
     </div>
-    <p style="font-size:0.9rem; margin:0;">소스 온도 드리프트(13:08) → 챔버 압력 상승(13:18) → QCM 증착률 이탈(13:22). 이 순서가 핵심이에요. AI가 이동평균 + UCL/LCL을 적용하면 <strong>13:08 Watch 시점</strong>에 이미 경고를 낼 수 있어요.</p>
   </div>
 
-  <hr class="divider" />
-
-  <!-- SECTION 04: 5요소 프롬프트 -->
-  <div class="section-label">SECTION 04</div>
-  <h2>5요소 프롬프트 설계</h2>
-
-  <div class="five-elem">
-    <div class="fe-item">
-      <div class="fe-num">1</div>
-      <div class="fe-title">데이터</div>
-      <div class="fe-desc">파일명, 컬럼명, 시간 단위를 명시해요. AI가 컬럼명을 추측하지 않게 해야 해요.</div>
-    </div>
-    <div class="fe-item">
-      <div class="fe-num">2</div>
-      <div class="fe-title">계산 방식</div>
-      <div class="fe-desc">이동평균 창 크기 (5-point), UCL/LCL 계산 방법 (정상 Lot 20개 기준 ±3σ).</div>
-    </div>
-    <div class="fe-item">
-      <div class="fe-num">3</div>
-      <div class="fe-title">판정 기준</div>
-      <div class="fe-desc">Normal / Watch / OOC를 어떻게 구분할지 명확히 알려줘요. AI가 마음대로 기준을 정하게 두면 안 돼요.</div>
-    </div>
-    <div class="fe-item">
-      <div class="fe-num">4</div>
-      <div class="fe-title">산출물</div>
-      <div class="fe-desc">결과를 어떤 형태로 줄지. 설비 상태 타일 + QCM 관리도 + OOC 알림 + 조치 메모가 있는 HTML 대시보드.</div>
-    </div>
-    <div class="fe-item" style="grid-column: 1 / -1;">
-      <div class="fe-num">5</div>
-      <div class="fe-title">검증 조건</div>
-      <div class="fe-desc">AI 결과를 믿기 전에 엔지니어가 확인할 체크리스트. 센서 결측·PM 이력·레시피 변경·센서 보정·품질 결과 연결.</div>
-    </div>
-  </div>
-
-  <hr class="divider" />
-
-  <!-- SECTION 05: AI 산출물 대시보드 -->
-  <div class="section-label">SECTION 05</div>
-  <h2>AI 산출물 — 판단 가능한 대시보드</h2>
-
-  <!-- 설비 상태 타일 -->
   <div class="card">
-    <h3>설비 상태 타일</h3>
+    <h3>3단계 이상 발생 구조 — 왜 이 순서인가</h3>
+
+    <div class="step-card" style="border-left: 4px solid #f59e0b; background:#fffbeb;">
+      <div class="step-badge warn">1단계 · 소스 온도 드리프트 (13:00~13:08)</div>
+      <p style="margin:0;">도가니 히터 제어에 미세한 문제가 생기면 소스 온도가 조금씩 올라갑니다. 개별 측정값은 여전히 스펙 범위 안이라 알람이 안 뜹니다. 하지만 <strong>5-point 이동평균선이 20분 이상 한 방향으로 계속 오르면</strong> 이건 노이즈가 아닙니다.</p>
+    </div>
+
+    <div class="step-card" style="border-left: 4px solid #f59e0b; background:#fffbeb; margin-top:0.75rem;">
+      <div class="step-badge warn">2단계 · 챔버 압력 Watch (13:18)</div>
+      <p style="margin:0;">소스 온도가 오르면서 챔버 내부 온도 분포가 변합니다. 그 영향으로 챔버 진공도가 흔들리기 시작합니다. UCL의 85% 라인에 3회 연속 접근 — 이것이 <strong>Watch 경보의 기준</strong>입니다. OOC가 나기 전에 대응할 수 있는 마지막 기회입니다.</p>
+    </div>
+
+    <div class="step-card" style="border-left: 4px solid #ef4444; background:#fff5f5; margin-top:0.75rem;">
+      <div class="step-badge danger">3단계 · QCM 증착률 OOC (13:22)</div>
+      <p style="margin:0;">진공도 저하와 소스 온도 불안정이 결합되면 QCM이 측정하는 증착률이 흔들립니다. LCL 아래로 이탈하면 <strong>OOC 판정</strong>이고, 이 시점에는 이미 기판에 막 두께 불량이 생기고 있을 가능성이 있습니다.</p>
+    </div>
+
+    <div class="narration-box" style="margin-top:1rem; margin-bottom:0;">
+      <strong>핵심:</strong> 이 순서가 중요합니다. 소스 온도 드리프트 → 챔버 압력 상승 → QCM 증착률 이탈. AI가 이동평균 + UCL/LCL을 적용하면 <strong>13:08 Watch 시점</strong>에 이미 경고를 낼 수 있습니다. 13:22 OOC보다 14분 일찍입니다.
+    </div>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ───── 섹션 05: AI 자동감지 설계 ───── -->
+  <div class="section-label">섹션 05</div>
+  <h2>AI 자동감지 설계</h2>
+
+  <div class="narration-box">
+    슬라이드의 제목이 말하는 것처럼, AI에게는 <strong>"이상 찾아줘"가 아니라 공정 맥락·센서 정보·구체적 판정 규칙</strong>을 제공해야 합니다. 이 섹션에서는 슬라이드에 나오는 이동평균과 UCL/LCL 개념을 정확히 설명합니다.
+  </div>
+
+  <div class="card">
+    <h3>이동평균(Moving Average) — 노이즈와 드리프트를 구분하는 도구</h3>
+    <div class="algo-box">MA(t) = [x(t) + x(t-1) + x(t-2) + x(t-3) + x(t-4)] / 5<br><br><span class="comment">// 창 크기 = 5 (1분 단위 데이터 → 최근 5분 평균)</span><br><span class="comment">// 한 번 튄 값: 5분의 1로 희석됨 → 노이즈 제거</span><br><span class="comment">// 지속 상승 흐름: 이동평균에 그대로 반영됨 → 드리프트 감지</span></div>
+    <p><strong>창 크기(5-point)는 반드시 명시해야 합니다.</strong> AI에게 "이동평균 적용해줘"만 쓰면 AI가 창 크기를 마음대로 정합니다. 창 크기가 달라지면 OOC 판정 시점도 달라집니다.</p>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>구분</th><th>이동평균에서의 모습</th><th>판단</th></tr></thead>
+        <tbody>
+          <tr><td><strong>노이즈</strong></td><td>이동평균이 거의 안 변함</td><td>무시 가능</td></tr>
+          <tr><td><strong>드리프트</strong></td><td>이동평균이 꾸준히 한 방향으로 이동</td><td>Watch 또는 OOC 판정</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>UCL / LCL / OOC — 제품 스펙과 관리 한계는 다릅니다</h3>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>개념</th><th>정의</th><th>설정 주체</th></tr></thead>
+        <tbody>
+          <tr><td><strong>제품 스펙</strong></td><td>제품 합·불 판정 기준 (예: 온도 75~90°C)</td><td>고객 / 품질 기준</td></tr>
+          <tr><td><strong>관리 한계 (UCL/LCL)</strong></td><td>정상 운전 시 통계 범위 ±3σ</td><td>엔지니어 (정상 이력 기반)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="background:#fef2f2; border-radius:8px; padding:0.75rem; font-size:0.9rem; margin:0;">
+      ⚠️ <strong>스펙을 넘지 않아도 UCL을 넘으면 이상 신호입니다.</strong> 관리 한계는 스펙보다 더 조여있는 통계적 경계입니다. Watch 단계에서 대응하면 제품 불량 전에 조치할 수 있습니다.
+    </p>
+  </div>
+
+  <div class="card">
+    <h3>관리 한계 계산 공식</h3>
+    <div class="algo-box">Center (CL) = μ  <span class="comment">// 정상 Lot 20개 기준 평균</span><br>UCL = μ + 3σ   <span class="comment">// 상한 관리 한계</span><br>LCL = μ - 3σ   <span class="comment">// 하한 관리 한계</span><br><br><span class="comment">// Watch: UCL의 85% 라인에 이동평균이 3회 연속 접근</span><br><span class="comment">// OOC:   이동평균이 UCL 또는 LCL을 이탈</span></div>
+    <p style="margin:0; font-size:0.9rem; color:var(--muted);">슬라이드의 프롬프트 박스에서 이 계산 방식을 정확히 명시하는 것을 볼 수 있습니다. "정상 Lot 20개"라는 기준 설정이 매우 중요합니다. AI가 기준을 마음대로 정하게 두면 안 됩니다.</p>
+  </div>
+
+  <div class="card">
+    <h3>Normal / Watch / OOC 3단계 판정 기준</h3>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>상태</th><th>판정 조건</th><th>대응 방법</th></tr></thead>
+        <tbody>
+          <tr><td><span class="st-normal">Normal</span></td><td>이동평균이 UCL/LCL 안에서 안정</td><td>모니터링 계속</td></tr>
+          <tr><td><span class="st-watch">Watch</span></td><td>UCL 85% 라인에 이동평균이 3회 연속 접근</td><td>전조 파악, 사전 조치 검토</td></tr>
+          <tr><td><span class="st-ooc">OOC</span></td><td>이동평균이 UCL 또는 LCL을 이탈</td><td>현장 즉시 점검, SOP 실행</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="narration-box" style="margin-bottom:0;">
+      <strong>Watch 단계가 핵심입니다.</strong> OOC만 표시하면 이미 늦습니다. Watch에서 대응하면 제품 불량 발생 전에 조치할 수 있습니다. 슬라이드의 프롬프트 박스에서 이 3단계 판정 기준이 명확히 적시되어 있는 것을 확인하세요.
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>다중 센서 복합 진단 — 왜 하나의 센서만 보면 안 되는가</h3>
+    <p>슬라이드의 프롬프트 박스 마지막 줄을 보면 이런 지시가 있습니다: <em>"소스 온도 점진 상승 → 챔버 압력 상승 → QCM 증착률 요동 순의 다차원 전조 흐름이 검출되면 주요 골자를 리포팅해줘."</em></p>
+    <p style="margin:0;">소스 온도 하나만 봐서는 안 됩니다. <strong>세 가지 센서가 이 순서로 함께 움직일 때</strong> 비로소 "설비 상태가 실제로 나빠지고 있다"는 확신이 생깁니다. 단일 센서 이상은 센서 자체 문제일 수 있지만, 복합 이상은 설비 물리 상태 변화입니다.</p>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ───── 섹션 06: 대시보드 리포트 ───── -->
+  <div class="section-label">섹션 06</div>
+  <h2>대시보드 리포트</h2>
+
+  <div class="narration-box">
+    슬라이드 제목이 말합니다. <strong>"AI가 생성한 산출물은 OLED 증착 엔지니어가 즉각 조치할 수 있는 판단 화면이어야 한다."</strong> 이 섹션은 AI가 실제로 만들어내는 결과물을 보여줍니다.
+  </div>
+
+  <div class="card">
+    <h3>대시보드가 필요한 이유</h3>
+    <p>교대 근무가 바뀔 때, 야간 담당자가 주간 담당자에게 설비 상태를 전달해야 합니다. 이때 "VTE-03은 13:22에 QCM OOC가 발생했고, 13:08부터 소스 온도 드리프트 전조가 있었습니다"를 말로 전달하는 것보다 <strong>한 화면에 모든 정보가 시각화된 대시보드</strong>를 보는 것이 훨씬 빠릅니다.</p>
+  </div>
+
+  <div class="card">
+    <h3>대시보드 구성 요소 ①: 설비 상태 타일</h3>
     <div class="eqp-grid">
       <div class="eqp-tile normal">
         <div class="eqp-name">VTE-01</div>
@@ -660,54 +711,42 @@
         <div class="eqp-note">운전 안정</div>
       </div>
     </div>
-    <p style="margin:0; font-size:0.88rem; color:var(--muted);">4대 설비 중 어느 게 정상이고 어느 게 위험한지 5초 안에 파악돼요. 교대 인수인계 때 이 화면 하나로 즉시 전달.</p>
+    <p style="margin:0; font-size:0.88rem; color:var(--muted);">4대 설비 중 어느 게 정상이고 어느 게 위험한지 <strong>5초 안에</strong> 파악됩니다. 교대 인수인계 때 이 화면 하나로 즉시 전달 가능합니다.</p>
   </div>
 
-  <!-- SPC 관리도 (SVG 목업) -->
   <div class="card">
-    <h3>QCM 증착률 SPC 관리도 (VTE-03)</h3>
+    <h3>대시보드 구성 요소 ②: QCM 증착률 SPC 관리도 (VTE-03)</h3>
     <div class="chart-mock">
       <svg viewBox="0 0 600 180" xmlns="http://www.w3.org/2000/svg">
-        <!-- axes -->
         <line x1="50" y1="20" x2="50" y2="155" stroke="#cbd5e1" stroke-width="1.5"/>
         <line x1="50" y1="155" x2="590" y2="155" stroke="#cbd5e1" stroke-width="1.5"/>
-        <!-- UCL -->
         <line x1="50" y1="45" x2="590" y2="45" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="6,4"/>
         <text x="555" y="42" font-size="10" fill="#ef4444" font-weight="700">UCL</text>
-        <!-- CL -->
         <line x1="50" y1="95" x2="590" y2="95" stroke="#94a3b8" stroke-width="1.2" stroke-dasharray="4,4"/>
         <text x="558" y="92" font-size="10" fill="#94a3b8">CL</text>
-        <!-- LCL -->
         <line x1="50" y1="140" x2="590" y2="140" stroke="#3b82f6" stroke-width="1.5" stroke-dasharray="6,4"/>
         <text x="555" y="137" font-size="10" fill="#3b82f6" font-weight="700">LCL</text>
-        <!-- Raw line (blue) -->
         <polyline points="60,93 95,88 130,92 165,97 200,90 235,86 270,84 305,89 340,98 375,102 410,107 445,118 480,128 515,136 545,148" fill="none" stroke="#60a5fa" stroke-width="1.5"/>
-        <!-- MA line (black) -->
         <polyline points="110,91 145,92 180,92 215,90 250,87 285,86 320,92 355,98 390,104 425,112 460,121 495,132 530,142 555,149" fill="none" stroke="#0f172a" stroke-width="2.5"/>
-        <!-- OOC marker -->
         <circle cx="545" cy="148" r="8" fill="none" stroke="#ef4444" stroke-width="2.5"/>
         <circle cx="545" cy="148" r="3" fill="#ef4444"/>
-        <text x="520" y="170" font-size="10" fill="#ef4444" font-weight="700">13:22 OOC!</text>
-        <!-- Legend -->
+        <text x="510" y="170" font-size="10" fill="#ef4444" font-weight="700">13:22 OOC!</text>
         <line x1="60" y1="168" x2="90" y2="168" stroke="#60a5fa" stroke-width="2"/>
         <text x="95" y="172" font-size="10" fill="#334155">원본값</text>
         <line x1="145" y1="168" x2="175" y2="168" stroke="#0f172a" stroke-width="2.5"/>
         <text x="180" y="172" font-size="10" fill="#334155">5-point MA</text>
-        <!-- Y labels -->
         <text x="5" y="48" font-size="10" fill="#ef4444">1.35</text>
         <text x="5" y="98" font-size="10" fill="#94a3b8">1.20</text>
         <text x="5" y="143" font-size="10" fill="#3b82f6">1.05</text>
-        <!-- X labels -->
         <text x="55" y="168" font-size="9" fill="#94a3b8">13:00</text>
         <text x="540" y="168" font-size="9" fill="#94a3b8">13:22</text>
       </svg>
     </div>
-    <p style="font-size:0.87rem; color:var(--muted); margin:0;">파란 선: 원본 QCM 증착률 / 검은 선: 5-point 이동평균 / 빨간 점선: UCL / 파란 점선: LCL</p>
+    <p style="font-size:0.87rem; color:var(--muted); margin:0;">파란 선: 원본 QCM 증착률 / 검은 선: 5-point 이동평균 / 빨간 점선: UCL / 파란 점선: LCL. 이동평균(검은 선)이 LCL 아래로 내려간 순간이 13:22 OOC입니다.</p>
   </div>
 
-  <!-- OOC 알림 카드 -->
   <div class="card">
-    <h3>OOC 알림 카드</h3>
+    <h3>대시보드 구성 요소 ③: OOC 알림 카드</h3>
     <div class="alert-card ooc">
       <div class="ac-time">13:22 · QCM Rate OOC</div>
       <div class="ac-title">QCM 증착률 LCL 하회 이탈</div>
@@ -723,79 +762,168 @@
       <div class="ac-title">즉시 진단 항목</div>
       <p>유기 재료 보트 충진 PM 이력 검토, QCM 센서 주파수 보정, 챔버 배기 밸브 라인 및 열 교환 냉각수 유량을 즉시 진단하십시오.</p>
     </div>
+    <div class="narration-box" style="margin-bottom:0;">
+      알림 카드는 단순히 "이탈했다"가 아니라 <strong>맥락(25분 전 소스 온도 드리프트)</strong>과 <strong>조치 방향(SOP 점검 리스트)</strong>까지 함께 제공합니다. 이것이 AI가 만든 대시보드의 핵심 가치입니다.
+    </div>
   </div>
 
   <hr class="divider" />
 
-  <!-- SECTION 06: 전조 패턴 + 검증 -->
-  <div class="section-label">SECTION 06</div>
-  <h2>전조 패턴 읽기 + 엔지니어 검증</h2>
+  <!-- ───── 섹션 07: 전조 패턴 해석 + 현장 검증 + 리포트 공유 ───── -->
+  <div class="section-label">섹션 07</div>
+  <h2>전조 패턴 해석 · 현장 검증 · 리포트 공유</h2>
 
-  <div class="card">
-    <h3>OOC 발생 전 30분 — 전조 패턴 4가지</h3>
-    <div class="pattern-box">
-      <div class="pattern-row">
-        <span class="pattern-icon">📈</span>
-        <div>
-          <strong>연속 상승</strong> — 값이 한 번 튄 게 아니라 5회, 6회 연속 같은 방향으로 움직이면 노이즈가 아닐 가능성이 커요.
-        </div>
-      </div>
-      <div class="pattern-row">
-        <span class="pattern-icon">〰️</span>
-        <div>
-          <strong>이동평균 기울기</strong> — 원본 값은 흔들려도 이동평균이 꾸준히 올라가면 설비 상태가 실제로 이동하고 있는 거예요.
-        </div>
-      </div>
-      <div class="pattern-row">
-        <span class="pattern-icon">🔗</span>
-        <div>
-          <strong>여러 센서 동시 변화</strong> — 온도만 아니라 압력도 같은 시간대에 흔들리면 단일 센서 문제가 아닌 설비 조건 변화예요.
-        </div>
-      </div>
-      <div class="pattern-row">
-        <span class="pattern-icon">↩️</span>
-        <div>
-          <strong>복귀 여부</strong> — 올라갔다 바로 정상으로 돌아오면 일시적 이벤트. 이동평균이 계속 높게 유지되면 주의가 필요해요.
-        </div>
-      </div>
-    </div>
-    <div class="algo-box" style="font-size:0.83rem;">"OOC 발생 시점 기준 30분 전부터 센서별 변화 방향,<br> 이동평균 기울기, 연속 상승 여부, 다른 센서와의<br> 동시 변화를 요약해줘."</div>
+  <div class="narration-box">
+    이 섹션은 교안의 <strong>섹션 07(전조 패턴 해석) + Step 6(현장 검증) + Step 7(리포트 공유)</strong>을 함께 다룹니다. OOC가 발생한 후 해야 하는 일들의 순서입니다.
   </div>
 
   <div class="card">
-    <h3>엔지니어 검증 체크리스트 5가지</h3>
+    <h3>전조 패턴 해석 — OOC 발생 30분 전을 역추적</h3>
+    <p>슬라이드는 5단계 패턴 추적 흐름을 보여줍니다. 이 흐름을 순서대로 설명합니다.</p>
+    <div class="pattern-box">
+      <div class="pattern-row">
+        <span class="pattern-icon">1</span>
+        <div><strong>소스 온도 드리프트 시작점 추적</strong> — 5-point 이동평균선이 안정 상태에서 이탈해 위로 솟구치기 시작한 정확한 시점을 찾습니다.</div>
+      </div>
+      <div class="pattern-row">
+        <span class="pattern-icon">2</span>
+        <div><strong>챔버 압력 동조 확인</strong> — 온도 드리프트 직후 챔버 압력이 UCL 85% 영역에 접근했는지 크로스체크합니다.</div>
+      </div>
+      <div class="pattern-row">
+        <span class="pattern-icon">3</span>
+        <div><strong>QCM 증착률 타격 시점 필터링</strong> — 진공 저하와 온도 상승이 증착률 흔들림과 동조되어 OOC가 발생한 정확한 시점을 확인합니다.</div>
+      </div>
+      <div class="pattern-row">
+        <span class="pattern-icon">4</span>
+        <div><strong>PM 이력 매칭</strong> — 재료 보트 교환, 챔버 클리닝, QCM 보정, 진공 펌프 PM 타임스탬프와 이상 발생 시점을 대조합니다.</div>
+      </div>
+      <div class="pattern-row">
+        <span class="pattern-icon">5</span>
+        <div><strong>SOP 조치 메모 확정</strong> — AI 진단 요약을 바탕으로 정비 우선순위를 정하고 SOP를 실행합니다.</div>
+      </div>
+    </div>
+    <div class="narration-box">
+      이 5단계는 "AI가 이상을 감지했다 → 엔지니어가 원인을 확정한다"는 협업 구조를 보여줍니다. AI는 순위를 매겨주고, 엔지니어가 최종 판단을 내립니다.
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>현장 검증 — AI 결과를 맹신하면 안 되는 이유</h3>
+    <p>슬라이드의 현장 검증 표를 보면 세 가지 가설이 나옵니다.</p>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>검증 항목</th><th>원인 가설</th><th>현장 교차 확인 방법</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>유기 재료 도가니</strong></td>
+            <td>재료 잔량 부족으로 온도 불균형</td>
+            <td>최근 재료 교환 이후 48시간 데이터와 비교</td>
+          </tr>
+          <tr>
+            <td><strong>진공 배기 펌프</strong></td>
+            <td>진공 누설 또는 밸브 오작동</td>
+            <td>진공 펌프 PM 이력·오일 교체 주기 확인</td>
+          </tr>
+          <tr>
+            <td><strong>QCM 센서 오차</strong></td>
+            <td>수정진동자 수명 만료로 측정 감도 왜곡</td>
+            <td>QCM Sensor Life 잔량(%) 확인</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="narration-box" style="margin-bottom:0;">
+      재료 교체 직후의 오붕 안정화 구간은 일시적으로 OOC처럼 보일 수 있습니다. AI가 이걸 OOC로 오판할 수 있습니다. <strong>PM 이력을 교차 확인하면 오진인지 실제 이상인지 구분됩니다.</strong>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>리포트 공유 — 30분 내 선제적 대응 체계</h3>
+    <div class="role-grid">
+      <div class="role-box ai">
+        <h4>실시간 커뮤니케이션</h4>
+        <ul>
+          <li>설비 보전 엔지니어에게 OOC 경보 자동 발송</li>
+          <li>공정 기술팀·생산 관리팀 동시 알림</li>
+          <li>전조 히스토리 요약 포함한 모바일 푸시</li>
+        </ul>
+      </div>
+      <div class="role-box eng">
+        <h4>선제적 정비 실행</h4>
+        <ul>
+          <li>기판 불량 발생 전 30분 내 챔버 점검</li>
+          <li>원인 후보 좁혀 정비 우선순위 결정</li>
+          <li>AI 피드백 루프: 조치 결과 → 정상 여부 재확인</li>
+        </ul>
+      </div>
+    </div>
+    <p style="margin:0; font-size:0.9rem; color:var(--muted);">교대 인수인계 때 "오늘 VTE-03 상태 어때요?"에 대한 답이 이 리포트 한 장입니다. 말로 전달하는 것보다 데이터 기반 공유가 훨씬 정확하고 빠릅니다.</p>
+  </div>
+
+  <hr class="divider" />
+
+  <!-- ───── 섹션 08: 엔지니어 검증 ───── -->
+  <div class="section-label">섹션 08</div>
+  <h2>엔지니어 검증</h2>
+
+  <div class="narration-box">
+    슬라이드의 핵심 문장: <strong>"AI의 진단 결과는 원인 규명이 아닌, 엔지니어가 최종 교차 검증해야 하는 원인 후보지입니다."</strong> 5가지 체크리스트를 순서대로 설명합니다.
+  </div>
+
+  <div class="card">
+    <h3>AI 판정 후 엔지니어가 반드시 확인할 5가지</h3>
     <ul class="checklist">
       <li>
         <span class="checklist-num">1</span>
-        <div><strong>센서 결측 및 타임스탬프 정렬</strong> — 챔버 압력, 소스 온도, QCM 증착률이 같은 Lot ID 기준으로 정확히 동기화됐는지 확인해요.</div>
+        <div>
+          <strong>센서 결측 및 타임스탬프 정렬 상태</strong>
+          <p style="margin:0.3rem 0 0 0; font-size:0.88rem; color:#475569;">챔버 압력·소스 온도·QCM 증착률이 동일 Lot ID 기준으로 정확히 동기화됐는지 확인합니다. 센서 간 시간이 어긋나 있으면 이동평균 계산 자체가 왜곡됩니다.</p>
+        </div>
       </li>
       <li>
         <span class="checklist-num">2</span>
-        <div><strong>유기 재료 보트 충진 및 PM 이력</strong> — 재료 교체 직후 오븐 안정화 과정이 OOC로 오진된 건 아닌지 확인해요.</div>
+        <div>
+          <strong>도가니 유기 재료 보트 충진 및 PM 이력</strong>
+          <p style="margin:0.3rem 0 0 0; font-size:0.88rem; color:#475569;">재료 교체 직후에는 도가니가 안정화되는 시간이 필요합니다. 이 구간이 OOC로 오진됐을 가능성이 있습니다. PM 이력과 이상 발생 시점을 대조하세요.</p>
+        </div>
       </li>
       <li>
         <span class="checklist-num">3</span>
-        <div><strong>챔버 클리닝 및 진공 펌프 PM</strong> — 최근 정비 이력이 압력 Watch 경보와 연관됐는지 파악해요.</div>
+        <div>
+          <strong>챔버 클리닝 작업 및 진공 배기 펌프 PM 내역</strong>
+          <p style="margin:0.3rem 0 0 0; font-size:0.88rem; color:#475569;">최근 챔버 클리닝이나 진공 펌프 정비가 있었다면 압력 Watch 경보와 연관이 있을 수 있습니다. 정비 직후 압력 안정화 시간을 고려해야 합니다.</p>
+        </div>
       </li>
       <li>
         <span class="checklist-num">4</span>
-        <div><strong>QCM 수정진동자 건전성</strong> — 실제 증착률 이상인지, 센서 두께 수명 한계로 인한 측정 감도 왜곡인지 구분해요.</div>
+        <div>
+          <strong>QCM 수정진동자 센서 건전성 및 계측 보정</strong>
+          <p style="margin:0.3rem 0 0 0; font-size:0.88rem; color:#475569;">QCM 센서는 수정진동자에 막이 쌓일수록 측정 정확도가 떨어집니다. 증착률 OOC가 실제 이상인지, 센서 수명 문제인지 구분해야 합니다. Sensor Life 잔량(%)을 확인하세요.</p>
+        </div>
       </li>
       <li>
         <span class="checklist-num">5</span>
-        <div><strong>기판 분석 결과 연결</strong> — OOC가 발생한 Lot의 실제 막두께 분석, 휘도 균일성, 양산 수율과 인과관계를 매핑해요.</div>
+        <div>
+          <strong>기판 분석 결과(막 두께 편차 및 휘도 균일성) 연결</strong>
+          <p style="margin:0.3rem 0 0 0; font-size:0.88rem; color:#475569;">OOC가 발생한 Lot의 실제 기판 막 두께 분석, 휘도 균일성, 양산 수율과 연결해야 합니다. 센서 이상이 실제 제품 품질에 영향을 미쳤는지 확인하는 마지막 단계입니다.</p>
+        </div>
       </li>
     </ul>
+    <div class="key-quote">"AI는 원인을 단정하지 않습니다. 가장 먼저 봐야 할 신호를 정렬해 줄 뿐입니다."</div>
   </div>
 
   <hr class="divider" />
 
-  <!-- SECTION 07: 실습 프롬프트 -->
-  <div class="section-label">SECTION 07</div>
-  <h2>실습 프롬프트 템플릿</h2>
+  <!-- ───── 섹션 09: 실습용 프롬프트 ───── -->
+  <div class="section-label">섹션 09</div>
+  <h2>실습용 프롬프트</h2>
+
+  <div class="narration-box">
+    슬라이드의 마지막 섹션입니다. 지금까지 배운 개념(이동평균·UCL/LCL·Watch/OOC·다중 센서 진단·대시보드 구성)이 하나의 프롬프트로 집약됩니다.
+  </div>
 
   <div class="card">
-    <h3>VTE-03 OLED 증착 설비 이상 감지 프롬프트</h3>
+    <h3>VTE-03 OLED 증착 설비 이상 감지 완성 프롬프트</h3>
     <div class="prompt-box">OLED 유기물 증착 설비 VTE-03의 1분 주기 센서 로그를 분석해줘.
 
 데이터는 timestamp, equipment_id, lot_id, source_temperature,
@@ -826,12 +954,47 @@ chamber_pressure, qcm_rate, cooling_water_flow 컬럼이야.
   </div>
 
   <div class="card">
+    <h3>프롬프트 구조 분해 — 5가지 요소</h3>
+    <p>이 프롬프트가 왜 잘 작동하는지, 5가지 요소로 분해해 설명합니다.</p>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>요소</th><th>프롬프트 내 해당 부분</th><th>왜 중요한가</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>① 데이터</strong></td>
+            <td>컬럼명 6개, 1분 주기, lot_id 기준 정렬</td>
+            <td>AI가 컬럼명을 추측하지 않게 정확히 명시</td>
+          </tr>
+          <tr>
+            <td><strong>② 계산 방식</strong></td>
+            <td>5-point 이동평균, 정상 Lot 20개 기준 ±3σ</td>
+            <td>창 크기와 기준 설정이 판정 결과를 결정</td>
+          </tr>
+          <tr>
+            <td><strong>③ 판정 기준</strong></td>
+            <td>Watch: UCL 85% 3회 연속 / OOC: UCL 이탈</td>
+            <td>AI가 마음대로 기준을 정하지 못하게 고정</td>
+          </tr>
+          <tr>
+            <td><strong>④ 산출물</strong></td>
+            <td>HTML 대시보드 6개 구성 요소 명시</td>
+            <td>결과물의 형태를 구체적으로 지정</td>
+          </tr>
+          <tr>
+            <td><strong>⑤ 검증 조건</strong></td>
+            <td>30분 전조 역추적 + SOP 점검 리스트</td>
+            <td>AI 결과를 엔지니어가 검증할 수 있는 구조 포함</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
     <h3>자기 데이터에 맞게 바꿀 3가지</h3>
     <div class="tbl-wrap">
       <table>
-        <thead>
-          <tr><th>항목</th><th>템플릿</th><th>내 현장에 맞게</th></tr>
-        </thead>
+        <thead><tr><th>항목</th><th>이 프롬프트의 값</th><th>내 현장에 맞게</th></tr></thead>
         <tbody>
           <tr>
             <td><strong>컬럼명</strong></td>
@@ -840,7 +1003,7 @@ chamber_pressure, qcm_rate, cooling_water_flow 컬럼이야.
           </tr>
           <tr>
             <td><strong>이동평균 창</strong></td>
-            <td>5-point (= 5분)</td>
+            <td>5-point (= 최근 5분 평균)</td>
             <td>데이터 주기에 맞게 (10분, 15분 등)</td>
           </tr>
           <tr>
@@ -851,68 +1014,58 @@ chamber_pressure, qcm_rate, cooling_water_flow 컬럼이야.
         </tbody>
       </table>
     </div>
-    <p style="margin:0; font-size:0.9rem; color:var(--muted);">중요한 건 구조예요. <strong>데이터 → 계산 → 판정 → 산출물 → 검증</strong>. 이 구조만 기억하면 어떤 제조 데이터에도 적용할 수 있어요.</p>
+    <p style="margin:0; font-size:0.9rem; color:var(--muted);">중요한 건 구조입니다. <strong>데이터 → 계산 → 판정 → 산출물 → 검증</strong>. 이 5가지 구조만 기억하면 어떤 제조 설비 데이터에도 응용할 수 있습니다.</p>
   </div>
 
   <hr class="divider" />
 
-  <!-- 핵심 메시지 -->
-  <div class="section-label">핵심 메시지</div>
+  <!-- ───── 마무리 ───── -->
+  <div class="section-label">마무리</div>
   <div class="key-quote">
-    "AI는 원인을 단정하지 않습니다.<br>먼저 봐야 할 신호를 정리합니다."
+    "AI는 원인을 단정하지 않습니다.<br>가장 먼저 봐야 할 신호를 정렬해 줄 뿐입니다."
   </div>
 
   <div class="card">
-    <h3>오늘 6강 요약</h3>
+    <h3>6강 핵심 루프 요약</h3>
     <ul class="checklist">
       <li>
         <span class="checklist-num">✓</span>
-        <div><strong>이동평균</strong>은 노이즈와 드리프트를 구분하는 첫 번째 도구예요. 창 크기를 반드시 명시해야 해요.</div>
+        <div><strong>정상 상태 수집</strong> — 1분 주기 4종 센서를 MES/SCADA에서 수집합니다.</div>
       </li>
       <li>
         <span class="checklist-num">✓</span>
-        <div><strong>UCL/LCL</strong>은 제품 스펙이 아닌 통계적 관리 경계예요. Watch 단계에서 대응하면 OOC를 사전에 막을 수 있어요.</div>
+        <div><strong>이상 징후 포착</strong> — 5-point 이동평균으로 드리프트를 감지하고, UCL/LCL로 Watch·OOC를 판정합니다.</div>
       </li>
       <li>
         <span class="checklist-num">✓</span>
-        <div><strong>5요소 프롬프트</strong>(데이터·계산·판정·산출물·검증)를 갖추면 설비 로그가 엔지니어가 판단할 수 있는 대시보드로 바뀌어요.</div>
+        <div><strong>AI 기반 SPC 판정</strong> — 다중 센서 복합 전조 흐름(온도→압력→증착률)을 자동 추적합니다.</div>
       </li>
       <li>
         <span class="checklist-num">✓</span>
-        <div><strong>AI 산출물은 초안</strong>이에요. 현장 PM 이력, 센서 건전성, 품질 결과와 반드시 교차 검증해야 해요.</div>
+        <div><strong>현장 대시보드 리포팅</strong> — 엔지니어가 5초 안에 판단하고 30분 내 조치할 수 있는 화면을 제공합니다.</div>
+      </li>
+      <li>
+        <span class="checklist-num">✓</span>
+        <div><strong>엔지니어 교차 검증</strong> — PM 이력·센서 건전성·기판 분석으로 AI 결과를 최종 검증합니다.</div>
       </li>
     </ul>
   </div>
 
-  <!-- 6강→7강 브릿지 -->
+  <!-- 6강→7강 연결 -->
   <div class="card" style="background:#f0fdf4; border-color:#bbf7d0;">
     <div class="section-label">6강 → 7강 연결</div>
     <h3>다음 강의 미리보기</h3>
     <div class="tbl-wrap">
       <table>
-        <thead>
-          <tr><th>강의</th><th>분석 대상</th><th>핵심 도구</th></tr>
-        </thead>
+        <thead><tr><th>강의</th><th>분석 대상</th><th>핵심 도구</th></tr></thead>
         <tbody>
-          <tr>
-            <td><strong>5강</strong></td>
-            <td>공간 (어느 구역?)</td>
-            <td>히트맵 / 웨이퍼 맵</td>
-          </tr>
-          <tr>
-            <td><strong>6강</strong></td>
-            <td>시간 (언제부터?)</td>
-            <td>이동평균 / UCL/LCL / OOC</td>
-          </tr>
-          <tr>
-            <td><strong>7강</strong></td>
-            <td>관계 (무엇과 무엇이 연결?)</td>
-            <td>상관관계 분석 / 산점도</td>
-          </tr>
+          <tr><td><strong>5강</strong></td><td>공간 (어느 구역?)</td><td>히트맵 / 웨이퍼 맵</td></tr>
+          <tr><td><strong>6강</strong></td><td>시간 (언제부터?)</td><td>이동평균 / UCL/LCL / OOC</td></tr>
+          <tr><td><strong>7강</strong></td><td>관계 (무엇과 무엇이 연결?)</td><td>상관관계 분석 / 산점도</td></tr>
         </tbody>
       </table>
     </div>
-    <p style="margin:0; font-size:0.9rem; color:#166534;">7강에서는 한 설비의 센서를 넘어서 — 여러 공정 변수들이 서로 어떻게 연결되는지 상관관계 분석과 산점도로 시각화하는 방법을 배워요.</p>
+    <p style="margin:0; font-size:0.9rem; color:#166534;">7강에서는 한 설비의 센서를 넘어서 — 여러 공정 변수들이 서로 어떻게 연결되는지 상관관계 분석과 산점도로 시각화하는 방법을 배웁니다.</p>
   </div>
 
 </div>
