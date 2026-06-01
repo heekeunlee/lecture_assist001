@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2강 시연 가이드 — Pseudo-Prompt 실전 데모</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: #f8f9fa;
+    color: #1a1a1a;
+    font-family: -apple-system, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+    font-size: 16px;
+    line-height: 1.8;
+    padding-bottom: 80px;
+  }
+
+  .topbar {
+    position: sticky; top: 0; z-index: 100;
+    background: #fff;
+    border-bottom: 2px solid #e2e8f0;
+    padding: 10px 18px;
+    display: flex; align-items: center; justify-content: space-between;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+  .topbar-title { font-size: 14px; font-weight: 700; color: #1e3a5f; }
+  .topbar-links { display: flex; gap: 8px; }
+  .nav-link {
+    font-size: 11px; font-weight: 600;
+    padding: 4px 10px; border-radius: 99px; text-decoration: none;
+    border: 1.5px solid; white-space: nowrap;
+  }
+  .nav-link.slide { color: #1d4ed8; border-color: #1d4ed8; }
+  .nav-link.script { color: #6d28d9; border-color: #6d28d9; }
+
+  .content { max-width: 740px; margin: 0 auto; padding: 0 18px; }
+
+  .hero {
+    background: linear-gradient(135deg, #1e3a5f 0%, #7c3aed 100%);
+    color: #fff;
+    padding: 36px 24px 32px;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.2);
+    border-radius: 99px;
+    font-size: 12px; font-weight: 700; letter-spacing: 0.08em;
+    padding: 3px 12px; margin-bottom: 14px;
+  }
+  .hero h1 {
+    font-size: clamp(1.4rem, 4vw, 1.9rem);
+    font-weight: 900; line-height: 1.3;
+    margin-bottom: 10px; word-break: keep-all;
+    border: none; color: #fff; padding: 0;
+  }
+  .hero p { font-size: 0.95rem; color: rgba(255,255,255,0.82); word-break: keep-all; }
+  .hero-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+  .meta-tag {
+    background: rgba(255,255,255,0.15);
+    border-radius: 99px;
+    font-size: 12px; font-weight: 600;
+    padding: 4px 12px; color: #fff;
+  }
+
+  .section-header {
+    background: #f5f3ff;
+    border-left: 5px solid #7c3aed;
+    padding: 12px 18px;
+    margin: 32px -18px 18px;
+  }
+  .section-header h2 { font-size: 15px; font-weight: 800; color: #1e3a5f; line-height: 1.4; }
+  .section-header .time { font-size: 12px; color: #7c3aed; font-weight: 600; margin-top: 2px; }
+
+  .timeline-table { width: 100%; border-collapse: collapse; font-size: 14px; margin: 16px 0; }
+  .timeline-table th { background: #1e3a5f; color: #fff; padding: 8px 12px; text-align: left; font-weight: 700; font-size: 12px; }
+  .timeline-table td { padding: 9px 12px; border-bottom: 1px solid #e2e8f0; vertical-align: middle; }
+  .timeline-table tr:last-child td { border-bottom: none; }
+  .timeline-table tr:nth-child(even) td { background: #faf5ff; }
+  .tl-time { color: #7c3aed; font-weight: 800; font-size: 13px; white-space: nowrap; }
+  .tl-desc { color: #475569; font-size: 13px; }
+  .step-badge { display: inline-block; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 99px; white-space: nowrap; }
+  .badge-bad { background: #fee2e2; color: #b91c1c; }
+  .badge-bridge { background: #fef3c7; color: #92400e; }
+  .badge-good { background: #dcfce7; color: #166534; }
+  .badge-extra { background: #e0f2fe; color: #0369a1; }
+  .badge-end { background: #f3f4f6; color: #374151; }
+
+  .checklist { list-style: none; margin: 12px 0; }
+  .checklist li { display: flex; gap: 10px; align-items: flex-start; padding: 8px 0; border-bottom: 1px solid #e2e8f0; font-size: 14px; }
+  .checklist li:last-child { border-bottom: none; }
+  .check-box { flex-shrink: 0; width: 22px; height: 22px; border: 2px solid #cbd5e1; border-radius: 5px; margin-top: 1px; }
+
+  .card { background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 18px; margin-bottom: 16px; }
+  .card h3 { font-size: 15px; font-weight: 700; margin-bottom: 8px; color: #1e3a5f; }
+
+  .narration {
+    background: #f5f3ff;
+    border-left: 4px solid #a78bfa;
+    border-radius: 0 10px 10px 0;
+    padding: 14px 16px;
+    font-size: 15px; line-height: 1.85;
+    color: #4c1d95; margin: 12px 0; word-break: keep-all;
+  }
+  .narration strong { color: #6d28d9; }
+  .narration-label { font-size: 11px; font-weight: 700; color: #7c3aed; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 6px; display: block; }
+
+  .prompt-wrap { margin: 12px 0; }
+  .prompt-label { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+  .prompt-label span { font-size: 12px; font-weight: 700; letter-spacing: 0.06em; }
+  .prompt-bad-label span { color: #b91c1c; }
+  .prompt-good-label span { color: #166534; }
+  .prompt-extra-label span { color: #0369a1; }
+
+  .prompt-box {
+    background: #0f172a; color: #e2e8f0;
+    border-radius: 10px; padding: 16px 18px;
+    font-size: 13px; line-height: 1.85;
+    white-space: pre-wrap; word-break: break-word;
+    font-family: 'Courier New', 'D2Coding', monospace;
+    overflow-x: auto;
+  }
+  .prompt-box.bad { border-left: 4px solid #ef4444; }
+  .prompt-box.good { border-left: 4px solid #22c55e; color: #a5f3fc; }
+  .prompt-box.extra { border-left: 4px solid #38bdf8; color: #bfdbfe; }
+  .prompt-box .kw { color: #fbbf24; font-weight: 700; }
+  .prompt-box .val { color: #86efac; }
+  .prompt-box .step { color: #f0abfc; font-weight: 700; }
+  .prompt-box .comment { color: #64748b; }
+
+  /* TCREI 카드 */
+  .tcrei-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 12px 0; }
+  @media (max-width: 480px) { .tcrei-grid { grid-template-columns: 1fr; } }
+  .tcrei-item { border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px 12px; background: #fff; }
+  .tcrei-tag { display: inline-block; font-size: 12px; font-weight: 800; padding: 2px 8px; border-radius: 6px; margin-bottom: 4px; background: #7c3aed; color: #fff; }
+  .tcrei-title { font-weight: 700; font-size: 13px; margin-bottom: 2px; }
+  .tcrei-desc { font-size: 12px; color: #64748b; }
+
+  /* AI 응답 mock */
+  .ai-response { background: #fff; border: 1.5px solid #e2e8f0; border-radius: 12px; overflow: hidden; margin: 14px 0; }
+  .ai-response-header { background: #f8fafc; border-bottom: 1px solid #e2e8f0; padding: 10px 16px; display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; color: #475569; }
+  .ai-dot { width: 8px; height: 8px; border-radius: 50%; background: #94a3b8; }
+  .ai-response-body { padding: 16px; font-size: 13.5px; color: #334155; line-height: 1.85; }
+  .ai-response-body p { margin-bottom: 10px; }
+  .ai-response-body ul { padding-left: 18px; color: #64748b; }
+  .ai-response-body ul li { margin-bottom: 6px; }
+  .ai-question { color: #1d4ed8; font-weight: 600; }
+  .ai-tag-bad { display: inline-block; font-size: 11px; font-weight: 700; background: #fee2e2; color: #b91c1c; padding: 2px 10px; border-radius: 99px; margin: 0 0 0 auto; }
+  .ai-tag-good { display: inline-block; font-size: 11px; font-weight: 700; background: #dcfce7; color: #166534; padding: 2px 10px; border-radius: 99px; margin: 0 0 0 auto; }
+
+  /* HTML 결과 미리보기 */
+  .html-preview { border: 2px solid #7c3aed; border-radius: 14px; overflow: hidden; margin: 14px 0; background: #fff; }
+  .html-preview-header { background: #f5f3ff; border-bottom: 1px solid #ddd6fe; padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; }
+  .html-preview-header span { font-size: 12px; font-weight: 700; color: #6d28d9; }
+  .html-preview-body { padding: 18px; }
+
+  /* 메일 미리보기 */
+  .mail-wrap { border: 1px solid #e2e8f0; border-radius: 10px; overflow: hidden; margin-bottom: 14px; }
+  .mail-header { background: #f1f5f9; padding: 10px 14px; font-size: 12px; color: #475569; border-bottom: 1px solid #e2e8f0; }
+  .mail-header div { margin-bottom: 3px; }
+  .mail-header span { font-weight: 700; color: #1e3a5f; margin-right: 8px; }
+  .mail-body { padding: 14px; font-size: 13px; color: #334155; line-height: 1.75; }
+
+  /* 결과 표 */
+  .r-table { width: 100%; border-collapse: collapse; font-size: 12.5px; margin-bottom: 14px; }
+  .r-table th { background: #1e3a5f; color: #fff; padding: 7px 10px; text-align: center; font-size: 12px; }
+  .r-table td { padding: 7px 10px; border-bottom: 1px solid #e2e8f0; text-align: center; }
+  .r-normal { background: #fff; }
+  .r-watch { background: #fefce8; color: #854d0e; font-weight: 700; }
+  .r-danger { background: #fef2f2; color: #991b1b; font-weight: 700; }
+  .r-badge-n { background:#dcfce7; color:#166534; padding:2px 8px; border-radius:99px; font-size:11px; font-weight:700; }
+  .r-badge-w { background:#fef3c7; color:#92400e; padding:2px 8px; border-radius:99px; font-size:11px; font-weight:700; }
+  .r-badge-d { background:#fee2e2; color:#991b1b; padding:2px 8px; border-radius:99px; font-size:11px; font-weight:700; }
+
+  /* 꺾은선 차트 */
+  .r-chart-wrap { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px; margin-bottom: 14px; }
+  .r-chart-title { font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 10px; }
+  .r-legend { display: flex; gap: 14px; margin-top: 8px; font-size: 11px; }
+  .r-legend span { display: flex; align-items: center; gap: 4px; font-weight: 600; }
+
+  .r-section-title { font-size: 13px; font-weight: 800; color: #1e3a5f; margin: 14px 0 8px; border-bottom: 1.5px solid #e2e8f0; padding-bottom: 4px; }
+
+  /* 조치권고 */
+  .r-action { display: grid; gap: 6px; margin-bottom: 14px; }
+  .r-action-item { display: flex; align-items: flex-start; gap: 10px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 8px 12px; font-size: 12.5px; }
+  .r-action-item.urgent { background: #fef2f2; border-color: #fca5a5; }
+  .r-action-item.watch { background: #fefce8; border-color: #fde68a; }
+  .r-tag { flex-shrink:0; font-size:11px; font-weight:700; padding:2px 8px; border-radius:99px; }
+  .r-tag.u { background:#ef4444; color:#fff; }
+  .r-tag.w { background:#f59e0b; color:#fff; }
+
+  /* 결과 설명 */
+  .result-guide { margin: 12px 0; }
+  .result-item { display: flex; gap: 12px; align-items: flex-start; padding: 10px 0; border-bottom: 1px solid #f1f5f9; font-size: 14px; }
+  .result-item:last-child { border-bottom: none; }
+  .result-num { flex-shrink:0; width:26px; height:26px; border-radius:50%; background:#7c3aed; color:#fff; font-size:12px; font-weight:800; display:flex; align-items:center; justify-content:center; margin-top:1px; }
+  .result-item strong { display: block; font-size: 14px; margin-bottom: 2px; }
+  .result-item p { color: #475569; font-size: 13px; margin: 0; }
+
+  /* 마무리 */
+  .closing { background: #1e3a5f; color: #fff; border-radius: 14px; padding: 24px 22px; margin: 24px 0; }
+  .closing h3 { font-size: 16px; font-weight: 800; margin-bottom: 14px; color: #c4b5fd; }
+  .closing-point { display: flex; gap: 12px; align-items: flex-start; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.08); font-size: 14px; }
+  .closing-point:last-child { border-bottom: none; }
+  .closing-point p { color: #e2e8f0; line-height: 1.6; word-break: keep-all; }
+  .closing-point strong { color: #fff; }
+
+  .key-message { background: #fef3c7; border: 2px solid #f59e0b; border-radius: 12px; padding: 18px 20px; margin: 20px 0; font-size: 15px; font-weight: 700; color: #92400e; text-align: center; word-break: keep-all; line-height: 1.7; }
+
+  .related-links { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 20px 0; }
+  @media (max-width: 480px) { .related-links { grid-template-columns: 1fr; } }
+  .related-link { display: block; text-decoration: none; border: 1.5px solid; border-radius: 10px; padding: 12px 14px; }
+  .related-link.slide { border-color: #1d4ed8; background: #eff6ff; }
+  .related-link.script { border-color: #6d28d9; background: #f5f3ff; }
+  .related-link .link-label { font-size: 11px; font-weight: 700; letter-spacing: 0.06em; margin-bottom: 3px; }
+  .related-link.slide .link-label { color: #1d4ed8; }
+  .related-link.script .link-label { color: #6d28d9; }
+  .related-link .link-title { font-size: 13px; font-weight: 700; color: #1a1a1a; }
+  .related-link .link-url { font-size: 11px; color: #64748b; margin-top: 2px; word-break: break-all; }
+
+  /* CSV 박스 */
+  .csv-wrap { margin: 14px 0; }
+  .csv-label { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+  .csv-label span { font-size: 12px; font-weight: 700; color: #166534; }
+  .csv-copy-btn { font-size: 11px; font-weight: 700; background: #16a34a; color: #fff; border: none; border-radius: 99px; padding: 3px 12px; cursor: pointer; }
+  .csv-box { background: #0f172a; color: #86efac; border-radius: 10px; padding: 14px 16px; font-size: 13px; line-height: 1.8; white-space: pre; overflow-x: auto; font-family: 'Courier New', 'D2Coding', monospace; border-left: 4px solid #22c55e; }
+
+  .divider { border: none; border-top: 1px solid #e2e8f0; margin: 28px 0; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-title">2강 시연 가이드 · Pseudo-Prompt 실전 데모</div>
+  <div class="topbar-links">
+    <a class="nav-link slide" href="https://heekeunlee.github.io/lecture02/" target="_blank">강의 교안</a>
+    <a class="nav-link script" href="https://heekeunlee.github.io/lecture_assist001/scripts/lecture02/" target="_blank">강의 스크립트</a>
+  </div>
+</div>
+
+<div class="hero">
+  <div class="content">
+    <div class="hero-badge">2강 · 부록 시연 영상 가이드</div>
+    <h1>일반 프롬프트 vs Pseudo-Prompt<br>— 수율 보고 메일 자동 생성</h1>
+    <p>같은 데이터로 두 번 입력합니다.<br>
+    첫 번째는 막연하게, 두 번째는 TCREI + Pseudo-Prompt 구조로.<br>
+    단순 역질문이 HTML 메일 초안으로 바뀌는 과정을 보여주는 10분 시연입니다.</p>
+    <div class="hero-meta">
+      <span class="meta-tag">⏱ 10분</span>
+      <span class="meta-tag">Claude.ai / Claude Code</span>
+      <span class="meta-tag">TCREI 프레임워크</span>
+      <span class="meta-tag">Pseudo-Prompt</span>
+      <span class="meta-tag">수율 메일 자동 생성</span>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- 전체 타임라인 -->
+  <div class="section-header">
+    <div class="time">00:00 – 10:00</div>
+    <h2>전체 진행 순서 (10분)</h2>
+  </div>
+
+  <table class="timeline-table">
+    <thead><tr><th>시간</th><th>구간</th><th>내용</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="tl-time">00:00–01:00</td>
+        <td><span class="step-badge badge-end">인트로</span></td>
+        <td class="tl-desc">2강 핵심 소개 — Pseudo-Prompt란 무엇인가</td>
+      </tr>
+      <tr>
+        <td class="tl-time">01:00–02:30</td>
+        <td><span class="step-badge badge-bad">Step 1</span></td>
+        <td class="tl-desc">수율 데이터 + 일반 프롬프트 입력 → AI 역질문 확인</td>
+      </tr>
+      <tr>
+        <td class="tl-time">02:30–03:30</td>
+        <td><span class="step-badge badge-bridge">브리지</span></td>
+        <td class="tl-desc">TCREI 5요소 + Pseudo-Prompt 3원칙 30초 소개</td>
+      </tr>
+      <tr>
+        <td class="tl-time">03:30–07:00</td>
+        <td><span class="step-badge badge-good">Step 2</span></td>
+        <td class="tl-desc">TCREI + Pseudo-Prompt 완성형 입력 → HTML 메일 초안 생성</td>
+      </tr>
+      <tr>
+        <td class="tl-time">07:00–08:30</td>
+        <td><span class="step-badge badge-good">결과 설명</span></td>
+        <td class="tl-desc">메일 형식·색상 표·꺾은선·조치권고·엔지니어 확인 항목 짚기</td>
+      </tr>
+      <tr>
+        <td class="tl-time">08:30–09:30</td>
+        <td><span class="step-badge badge-extra">Step 3</span></td>
+        <td class="tl-desc">변수 하나만 수정 (TARGET_YIELD 변경) → 즉시 재실행</td>
+      </tr>
+      <tr>
+        <td class="tl-time">09:30–10:00</td>
+        <td><span class="step-badge badge-end">마무리</span></td>
+        <td class="tl-desc">"프롬프트 설계는 엔지니어의 새로운 설계도입니다"</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- 사전 준비 -->
+  <div class="section-header">
+    <div class="time">촬영 전 준비</div>
+    <h2>사전 준비 체크리스트</h2>
+  </div>
+
+  <div class="card">
+    <ul class="checklist">
+      <li><div class="check-box"></div><span>Claude.ai 또는 Claude Code 로그인 확인 (빈 화면으로 대기)</span></li>
+      <li><div class="check-box"></div><span>Step 2 프롬프트를 메모장에 미리 복사해두기 (길기 때문에 붙여넣기로 진행)</span></li>
+      <li><div class="check-box"></div><span>브라우저 확대 125% — 프롬프트 구조([SETTING], [STEP])가 화면에 명확히 보여야 함</span></li>
+      <li><div class="check-box"></div><span>화면 녹화 1080p 이상 설정</span></li>
+      <li><div class="check-box"></div><span>Step 1 결과 vs Step 2 결과를 탭 전환으로 비교할 준비</span></li>
+    </ul>
+  </div>
+
+  <!-- 소스 데이터 -->
+  <div class="section-header">
+    <div class="time">촬영 전 준비 · 데이터</div>
+    <h2>소스 데이터 — Step 1·2·3 모두 같은 데이터 사용</h2>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-bottom:8px;">이 데이터를 Step 1·2 프롬프트 안에 직접 붙여넣습니다</h3>
+    <p style="font-size:13px; color:#475569; margin-bottom:0;">파일 첨부 없이 프롬프트 텍스트 안에 데이터를 포함시키는 방식입니다.<br>
+    이렇게 하면 화면에서 "데이터가 프롬프트의 일부"라는 것이 명확히 보입니다.</p>
+  </div>
+
+  <div class="csv-wrap">
+    <div class="csv-label">
+      <span>📊 수율 데이터 (프롬프트 안에 그대로 포함)</span>
+      <button class="csv-copy-btn" onclick="copyCSV()">복사</button>
+    </div>
+    <div class="csv-box" id="csvContent">날짜,  공정,  수율(%)
+04-22, Photo, 95.3
+04-23, Photo, 94.8
+04-24, Photo, 93.1
+04-25, Etch,  91.8
+04-26, Array, 92.6
+04-27, Array, 95.1
+04-28, Etch,  95.4</div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- 인트로 -->
+  <div class="section-header">
+    <div class="time">00:00 – 01:00</div>
+    <h2>인트로</h2>
+  </div>
+
+  <div class="narration">
+    <span class="narration-label">💬 발화</span>
+    "오늘 2강에서 배운 핵심은 두 가지입니다.<br>
+    <strong>TCREI 5요소</strong>로 AI에게 역할과 맥락을 주는 것.<br>
+    <strong>Pseudo-Prompt</strong>로 분석 단계를 설계도처럼 지시하는 것.<br>
+    지금부터 같은 데이터로 두 방법의 차이를 직접 보여드리겠습니다."
+  </div>
+
+  <hr class="divider">
+
+  <!-- Step 1 -->
+  <div class="section-header">
+    <div class="time">01:00 – 02:30</div>
+    <h2>Step 1 — 일반 프롬프트 입력</h2>
+  </div>
+
+  <div class="prompt-wrap">
+    <div class="prompt-label prompt-bad-label">
+      <span>❌ 입력할 프롬프트 (그대로 복사 · 붙여넣기)</span>
+    </div>
+    <div class="prompt-box bad">수율 데이터에서 낮은 날만 골라서 파트장님께 보낼 메일로 요약해줘.
+
+날짜,  공정,  수율(%)
+04-22, Photo, 95.3
+04-23, Photo, 94.8
+04-24, Photo, 93.1
+04-25, Etch,  91.8
+04-26, Array, 92.6
+04-27, Array, 95.1
+04-28, Etch,  95.4</div>
+  </div>
+
+  <!-- 나쁜 프롬프트 결과 예측 -->
+  <div class="ai-response">
+    <div class="ai-response-header">
+      <div class="ai-dot"></div>
+      <span>Claude 응답 예측 — 일반 프롬프트 입력 시</span>
+      <div class="ai-tag-bad">❌ 일반 프롬프트 결과</div>
+    </div>
+    <div class="ai-response-body">
+      <p>데이터를 확인했습니다. 분석을 진행하기 전에 몇 가지 확인이 필요합니다.</p>
+      <ul>
+        <li class="ai-question">"낮은 날"의 기준이 어떻게 되나요? (예: 94% 미만, 평균 이하, 전일 대비 하락 등)</li>
+        <li class="ai-question">메일 수신자가 파트장님이시면 공식 형식으로 작성할까요, 아니면 간단한 요약 형식으로 드릴까요?</li>
+        <li class="ai-question">조치 권고 문구도 포함할까요?</li>
+      </ul>
+      <p style="margin-top:12px; color:#94a3b8; font-size:12px;">일단 간단하게 정리해드릴게요:</p>
+      <p style="color:#94a3b8; font-size:12px;">전체 7일 중 평균(94.0%) 이하로 보이는 날은 04-24(93.1%), 04-25(91.8%), 04-26(92.6%)입니다. 파트장님께 보고할 메일을 작성해드릴까요?</p>
+    </div>
+  </div>
+  <p style="font-size:12.5px; color:#ef4444; font-weight:700; margin:4px 0 0 4px;">
+    → 역질문 3개 + 기준 없는 단순 텍스트 요약. 색상 표·그래프·조치권고·메일 형식 없음.
+  </p>
+
+  <div class="narration">
+    <span class="narration-label">💬 발화 (30초)</span>
+    "기준이 없으니 AI가 되묻습니다. 데이터가 있어도<br>
+    <strong>'낮다'의 기준, 메일 형식, 조치 권고 포함 여부</strong>를 말하지 않으면<br>
+    원하는 결과가 나오지 않습니다."
+  </div>
+
+  <hr class="divider">
+
+  <!-- 브리지 -->
+  <div class="section-header">
+    <div class="time">02:30 – 03:30</div>
+    <h2>브리지 — TCREI + Pseudo-Prompt 30초 소개</h2>
+  </div>
+
+  <div class="narration">
+    <span class="narration-label">💬 발화</span>
+    "2강에서 배운 두 가지 도구를 지금 바로 써보겠습니다.<br>
+    <strong>TCREI</strong> — Role(역할)·Context(맥락)·Task(할 일)·Exemplar(형식)·Input(데이터).<br>
+    <strong>Pseudo-Prompt</strong> — SETTING(기준값), STEP(단계), 조건(IF)으로 로직을 설계합니다.<br>
+    코드 한 줄 없이, 설계도처럼 AI에게 지시하는 방식입니다."
+  </div>
+
+  <div class="tcrei-grid">
+    <div class="tcrei-item">
+      <div class="tcrei-tag">T — Task</div>
+      <div class="tcrei-desc">수율 94% 미만 필터 → HTML 메일 초안 생성</div>
+    </div>
+    <div class="tcrei-item">
+      <div class="tcrei-tag">C — Context</div>
+      <div class="tcrei-desc">신규 라인 안정화 단계, 파트장 즉시 보고 필요</div>
+    </div>
+    <div class="tcrei-item">
+      <div class="tcrei-tag">R — Role</div>
+      <div class="tcrei-desc">15년차 공정 데이터 분석 전문 엔지니어</div>
+    </div>
+    <div class="tcrei-item">
+      <div class="tcrei-tag">E — Exemplar</div>
+      <div class="tcrei-desc">색상 표 + 꺾은선 + 조치권고 포함 공식 HTML 메일</div>
+    </div>
+    <div class="tcrei-item" style="grid-column:1/-1;">
+      <div class="tcrei-tag">I — Input</div>
+      <div class="tcrei-desc">04-22~04-28 공정별 수율(%) 데이터 7행</div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- Step 2 -->
+  <div class="section-header">
+    <div class="time">03:30 – 07:00</div>
+    <h2>Step 2 — TCREI + Pseudo-Prompt 완성형 입력</h2>
+  </div>
+
+  <div class="prompt-wrap">
+    <div class="prompt-label prompt-good-label">
+      <span>✅ 입력할 프롬프트 (그대로 복사 · 붙여넣기)</span>
+    </div>
+    <div class="prompt-box good"><span class="kw">[ROLE]</span>
+너는 15년차 반도체 공정 데이터 분석 전문 엔지니어야.
+공정 이상 구간을 빠르게 식별하고 실무자용 보고서를 작성하는 게 특기야.
+
+<span class="kw">[CONTEXT]</span>
+신규 라인 안정화 단계에서 수율이 기준치를 밑도는 날이 발생했어.
+품질혁신 파트장님께 즉시 보고해야 해.
+
+<span class="kw">[SETTING]</span>
+TARGET_YIELD = <span class="val">94.0</span>%
+REPORT_RECIPIENT = <span class="val">'품질혁신 파트장'</span>
+
+<span class="kw">[INPUT - 수율 데이터]</span>
+날짜,  공정,  수율(%)
+04-22, Photo, 95.3
+04-23, Photo, 94.8
+04-24, Photo, 93.1
+04-25, Etch,  91.8
+04-26, Array, 92.6
+04-27, Array, 95.1
+04-28, Etch,  95.4
+
+<span class="step">[STEP 1]</span> 데이터를 날짜 순으로 정렬한다.
+
+<span class="step">[STEP 2]</span> 수율이 TARGET_YIELD(94.0%) 미만인 행만 필터링한다.
+
+<span class="step">[STEP 3]</span> 필터링된 행에서 [날짜, 공정, 수율, 전일대비 차이, 조치권고]를 계산한다.
+<span class="comment">         - 전일 대비 -2% 이상 하락 → '긴급 점검'</span>
+<span class="comment">         - 전일 대비 -1~2% 하락   → '모니터링'</span>
+
+<span class="step">[STEP 4]</span> 전체 7일 수율 추이를 꺾은선 그래프 (SVG)로 만든다.
+         94% 기준선을 빨간 점선으로 표시한다.
+
+<span class="step">[STEP 5]</span> 위 결과를 REPORT_RECIPIENT에게 보내는 HTML 메일 초안으로 만든다.
+<span class="comment">         - 수율 미달 행은 빨간색, 정상 행은 흰색으로 표시</span>
+<span class="comment">         - 메일 제목: "4월 4주차 수율 이상 보고 — 즉시 확인 요청"</span>
+<span class="comment">         - 하단에 엔지니어 현장 확인 체크리스트 3항목 포함</span>
+
+<span class="kw">[TASK]</span>
+위 STEP 1~5를 순서대로 실행해서 완성된 HTML 메일 보고서를 출력해줘.</div>
+  </div>
+
+  <div class="narration">
+    <span class="narration-label">💬 발화 — 결과 생성 대기 중 (30초)</span>
+    "Role로 역할을 줬고, SETTING으로 기준값을 명시했고,<br>
+    STEP으로 분석 순서를 설계도처럼 지시했습니다.<br>
+    AI가 역질문 없이 바로 실행합니다."
+  </div>
+
+  <!-- 좋은 프롬프트 결과 예측 -->
+  <div class="html-preview">
+    <div class="html-preview-header">
+      <span>✅ Claude 결과 예측 — HTML 메일 보고서 출력 미리보기</span>
+      <div class="ai-tag-good">Pseudo-Prompt 결과</div>
+    </div>
+    <div class="html-preview-body">
+
+      <!-- 메일 형식 -->
+      <div class="mail-wrap">
+        <div class="mail-header">
+          <div><span>받는 사람:</span>품질혁신 파트장</div>
+          <div><span>제 &nbsp; &nbsp; 목:</span>4월 4주차 수율 이상 보고 — 즉시 확인 요청</div>
+          <div><span>작 성 자:</span>공정 엔지니어 (AI 초안)</div>
+        </div>
+        <div class="mail-body">
+          <p>파트장님, 안녕하세요.<br>
+          4월 4주차(04-22~04-28) 수율 모니터링 결과, <strong>TARGET 94.0% 미만 구간 3건</strong>이 확인되었습니다.<br>
+          특히 04-25 Etch 공정의 <strong>전일 대비 -1.3%p 하락</strong> 건을 우선 확인 권고드립니다.</p>
+        </div>
+      </div>
+
+      <!-- 수율 표 -->
+      <div class="r-section-title">수율 현황 표 (TARGET: 94.0% 미만 = 위험)</div>
+      <div style="overflow-x:auto;">
+        <table class="r-table">
+          <thead>
+            <tr><th>날짜</th><th>공정</th><th>수율</th><th>전일대비</th><th>조치권고</th></tr>
+          </thead>
+          <tbody>
+            <tr class="r-normal"><td>04-22</td><td>Photo</td><td>95.3%</td><td>—</td><td><span class="r-badge-n">정상</span></td></tr>
+            <tr class="r-normal"><td>04-23</td><td>Photo</td><td>94.8%</td><td>-0.5%</td><td><span class="r-badge-n">정상</span></td></tr>
+            <tr class="r-watch"><td>04-24</td><td>Photo</td><td>93.1%</td><td>-1.7%</td><td><span class="r-badge-w">모니터링</span></td></tr>
+            <tr class="r-danger"><td>04-25</td><td>Etch</td><td>91.8%</td><td>-1.3%</td><td><span class="r-badge-d">긴급 점검</span></td></tr>
+            <tr class="r-watch"><td>04-26</td><td>Array</td><td>92.6%</td><td>+0.8%</td><td><span class="r-badge-w">모니터링</span></td></tr>
+            <tr class="r-normal"><td>04-27</td><td>Array</td><td>95.1%</td><td>+2.5%</td><td><span class="r-badge-n">정상</span></td></tr>
+            <tr class="r-normal"><td>04-28</td><td>Etch</td><td>95.4%</td><td>+0.3%</td><td><span class="r-badge-n">정상</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 꺾은선 그래프 -->
+      <div class="r-chart-wrap">
+        <div class="r-chart-title">공정별 수율 추이 (04-22 ~ 04-28) — 빨간 점선: 94% 기준선</div>
+        <svg viewBox="0 0 560 160" style="width:100%;height:auto;">
+          <line x1="50" y1="20" x2="50" y2="130" stroke="#e2e8f0" stroke-width="1"/>
+          <line x1="50" y1="130" x2="540" y2="130" stroke="#e2e8f0" stroke-width="1"/>
+          <!-- 94% 기준선 -->
+          <line x1="50" y1="70" x2="540" y2="70" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="5,4"/>
+          <text x="490" y="66" font-size="9" fill="#ef4444" font-weight="700">94% 기준</text>
+          <!-- Y축 라벨 -->
+          <text x="5" y="30" font-size="9" fill="#94a3b8">96%</text>
+          <text x="5" y="70" font-size="9" fill="#ef4444">94%</text>
+          <text x="5" y="110" font-size="9" fill="#94a3b8">91%</text>
+          <!-- X축 라벨 -->
+          <text x="52" y="145" font-size="8" fill="#94a3b8">04-22</text>
+          <text x="128" y="145" font-size="8" fill="#94a3b8">04-23</text>
+          <text x="205" y="145" font-size="8" fill="#94a3b8">04-24</text>
+          <text x="280" y="145" font-size="8" fill="#94a3b8">04-25</text>
+          <text x="355" y="145" font-size="8" fill="#94a3b8">04-26</text>
+          <text x="430" y="145" font-size="8" fill="#94a3b8">04-27</text>
+          <text x="505" y="145" font-size="8" fill="#94a3b8">04-28</text>
+          <!-- 수율 선 -->
+          <polyline points="65,28 145,38 225,88 305,110 385,100 460,30 535,25"
+            fill="none" stroke="#7c3aed" stroke-width="2.5"/>
+          <!-- 기준 이하 점 강조 -->
+          <circle cx="225" cy="88" r="5" fill="#f59e0b" stroke="#fff" stroke-width="1.5"/>
+          <circle cx="305" cy="110" r="6" fill="#ef4444" stroke="#fff" stroke-width="1.5"/>
+          <circle cx="385" cy="100" r="5" fill="#f59e0b" stroke="#fff" stroke-width="1.5"/>
+          <!-- 정상 점 -->
+          <circle cx="65" cy="28" r="4" fill="#7c3aed"/>
+          <circle cx="145" cy="38" r="4" fill="#7c3aed"/>
+          <circle cx="460" cy="30" r="4" fill="#7c3aed"/>
+          <circle cx="535" cy="25" r="4" fill="#7c3aed"/>
+          <text x="285" y="106" font-size="8" fill="#ef4444" font-weight="700">최저↓</text>
+        </svg>
+        <div class="r-legend">
+          <span><svg width="20" height="4"><line x1="0" y1="2" x2="20" y2="2" stroke="#7c3aed" stroke-width="2.5"/></svg> 수율 추이</span>
+          <span><svg width="20" height="4"><line x1="0" y1="2" x2="20" y2="2" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="4,3"/></svg> 94% 기준선</span>
+          <span style="color:#ef4444;">● 긴급점검</span>
+          <span style="color:#f59e0b;">● 모니터링</span>
+        </div>
+      </div>
+
+      <!-- 조치권고 -->
+      <div class="r-section-title">조치권고 요약</div>
+      <div class="r-action">
+        <div class="r-action-item urgent">
+          <span class="r-tag u">긴급 점검</span>
+          <div><strong>04-25 Etch 공정</strong> — 수율 91.8%, 기준 대비 -2.2%p<br>
+          <span style="font-size:12px; color:#64748b;">Etch 챔버 압력 로그 및 가스 유량 즉시 확인 권고</span></div>
+        </div>
+        <div class="r-action-item watch">
+          <span class="r-tag w">모니터링</span>
+          <div><strong>04-24 Photo 공정</strong> — 수율 93.1%, 기준 대비 -0.9%p<br>
+          <span style="font-size:12px; color:#64748b;">PR 도포 두께 및 Viscosity 데이터 추적 필요</span></div>
+        </div>
+        <div class="r-action-item watch">
+          <span class="r-tag w">모니터링</span>
+          <div><strong>04-26 Array 공정</strong> — 수율 92.6%, 전일 대비 +0.8% 회복 중<br>
+          <span style="font-size:12px; color:#64748b;">회복 추세이나 기준 미달 지속 — 추가 모니터링 필요</span></div>
+        </div>
+      </div>
+
+      <!-- 엔지니어 확인 항목 -->
+      <div style="background:#fef9c3; border:1.5px solid #fde68a; border-radius:8px; padding:12px 14px;">
+        <div style="font-weight:800; color:#92400e; margin-bottom:8px;">👷 엔지니어 현장 확인 체크리스트</div>
+        <ul style="padding-left:16px; color:#78350f; line-height:1.9; font-size:12.5px;">
+          <li>04-24~04-25 사이 레시피 변경 또는 자재 로트 교체 이력 확인</li>
+          <li>Etch 장비 PM(예방 정비) 주기 및 최근 정비 이력 대조</li>
+          <li>동일 공정 타 라인에서 같은 시기 수율 하락이 있었는지 비교</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+  <p style="font-size:12.5px; color:#166534; font-weight:700; margin:4px 0 16px 4px;">
+    → 공식 메일 형식 · 색상 표 · SVG 그래프 · 조치권고 · 엔지니어 체크리스트 — 한 번에 완성.
+  </p>
+
+  <hr class="divider">
+
+  <!-- 결과 설명 -->
+  <div class="section-header">
+    <div class="time">07:00 – 08:30</div>
+    <h2>결과 설명 — 화면 짚어가며</h2>
+  </div>
+
+  <div class="card">
+    <h3>화면 스크롤하면서 이 순서로 짚어줍니다</h3>
+    <div class="result-guide">
+      <div class="result-item">
+        <div class="result-num">1</div>
+        <div>
+          <strong>메일 헤더 (받는 사람·제목)</strong>
+          <p>"REPORT_RECIPIENT에 넣은 '품질혁신 파트장'이 자동으로 수신자에 들어갔습니다. 제목도 지시한 그대로입니다."</p>
+        </div>
+      </div>
+      <div class="result-item">
+        <div class="result-num">2</div>
+        <div>
+          <strong>색상 수율 표</strong>
+          <p>"94% 기준 이하인 세 날이 자동으로 색상 구분됩니다. SETTING에서 TARGET_YIELD를 명시했기 때문입니다."</p>
+        </div>
+      </div>
+      <div class="result-item">
+        <div class="result-num">3</div>
+        <div>
+          <strong>94% 기준선이 있는 꺾은선 그래프</strong>
+          <p>"STEP 4에서 '94% 기준선을 빨간 점선으로'라고 지시했습니다. 지시한 것만 들어갑니다."</p>
+        </div>
+      </div>
+      <div class="result-item">
+        <div class="result-num">4</div>
+        <div>
+          <strong>조치권고 (긴급 점검 / 모니터링)</strong>
+          <p>"STEP 3의 조건문 그대로 실행됐습니다. -2% 이상이면 긴급, 그 이하면 모니터링."</p>
+        </div>
+      </div>
+      <div class="result-item">
+        <div class="result-num">5</div>
+        <div>
+          <strong>엔지니어 확인 체크리스트</strong>
+          <p>"AI가 만든 초안입니다. 레시피 변경·PM 이력·타 라인 비교는 엔지니어가 직접 확인합니다."</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- Step 3 -->
+  <div class="section-header">
+    <div class="time">08:30 – 09:30</div>
+    <h2>Step 3 — 변수 하나만 수정 후 재실행</h2>
+  </div>
+
+  <div class="prompt-wrap">
+    <div class="prompt-label prompt-extra-label">
+      <span>➕ 추가 입력할 프롬프트</span>
+    </div>
+    <div class="prompt-box extra">SETTING에서 TARGET_YIELD를 94.0%에서 93.0%로 낮춰서 다시 실행해줘.
+그리고 메일 제목을 "4월 4주차 수율 모니터링 — 현황 공유"로 바꿔줘.</div>
+  </div>
+
+  <div class="narration">
+    <span class="narration-label">💬 발화 — 결과 나온 후</span>
+    "변수 하나만 바꿨습니다. TARGET_YIELD 93.0%로.<br>
+    이제 04-24, 04-25 두 날만 미달로 분류되고,<br>
+    04-26은 정상으로 바뀝니다.<br>
+    이게 Pseudo-Prompt의 핵심입니다 — <strong>숫자 하나만 바꾸면 전체가 달라집니다.</strong>"
+  </div>
+
+  <hr class="divider">
+
+  <!-- 마무리 -->
+  <div class="section-header">
+    <div class="time">09:30 – 10:00</div>
+    <h2>마무리 — 핵심 메시지</h2>
+  </div>
+
+  <div class="narration">
+    <span class="narration-label">💬 발화</span>
+    "오늘 시연에서 세 가지를 확인했습니다."
+  </div>
+
+  <div class="closing">
+    <h3>핵심 3가지</h3>
+    <div class="closing-point">
+      <div>1️⃣</div>
+      <p><strong>일반 프롬프트</strong>는 기준이 없어 AI가 역질문합니다. 데이터가 있어도 마찬가지입니다.</p>
+    </div>
+    <div class="closing-point">
+      <div>2️⃣</div>
+      <p><strong>TCREI + Pseudo-Prompt</strong>는 역할·맥락·기준값·단계를 모두 지정합니다.<br>AI가 역질문 없이 HTML 메일 보고서를 한 번에 만듭니다.</p>
+    </div>
+    <div class="closing-point">
+      <div>3️⃣</div>
+      <p><strong>변수(TARGET_YIELD) 하나만 바꾸면</strong> 전체 보고서 기준이 즉시 바뀝니다.<br>설계도를 한 번 만들면 다음부터는 숫자만 수정하면 됩니다.</p>
+    </div>
+  </div>
+
+  <div class="key-message">
+    "프롬프트 설계는 엔지니어의 새로운 설계도입니다."
+  </div>
+
+  <hr class="divider">
+
+  <div class="section-header" style="margin-top:0;">
+    <h2>관련 자료</h2>
+  </div>
+
+  <div class="related-links">
+    <a class="related-link slide" href="https://heekeunlee.github.io/lecture02/" target="_blank">
+      <div class="link-label">LECTURE 02 · 강의 교안</div>
+      <div class="link-title">바이브 코딩 2강 — 최소한의 IT 지식과 AI 개념</div>
+      <div class="link-url">heekeunlee.github.io/lecture02/</div>
+    </a>
+    <a class="related-link script" href="https://heekeunlee.github.io/lecture_assist001/scripts/lecture02/" target="_blank">
+      <div class="link-label">LECTURE 02 · 강의 스크립트</div>
+      <div class="link-title">2강 스크립트 — 반복업무를 AI로 바꾸는 첫걸음</div>
+      <div class="link-url">heekeunlee.github.io/lecture_assist001/<br>scripts/lecture02/</div>
+    </a>
+  </div>
+
+</div>
+
+<script>
+function copyCSV() {
+  const text = document.getElementById('csvContent').innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.querySelector('.csv-copy-btn');
+    btn.textContent = '복사됨 ✓';
+    btn.style.background = '#166534';
+    setTimeout(() => { btn.textContent = '복사'; btn.style.background = '#16a34a'; }, 2000);
+  });
+}
+</script>
+</body>
+</html>
