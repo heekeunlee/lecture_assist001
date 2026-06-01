@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3강 시연 가이드 — CVD 공정 데이터 AI 대시보드 데모</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: #f0fdf4;
+    color: #1a1a1a;
+    font-family: -apple-system, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+    font-size: 16px; line-height: 1.8; padding-bottom: 80px;
+  }
+  .topbar {
+    position: sticky; top: 0; z-index: 100;
+    background: #fff; border-bottom: 2px solid #e2e8f0;
+    padding: 10px 18px; display: flex; align-items: center; justify-content: space-between;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+  .topbar-title { font-size: 14px; font-weight: 700; color: #14532d; }
+  .topbar-links { display: flex; gap: 8px; }
+  .nav-link { font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 99px; text-decoration: none; border: 1.5px solid; white-space: nowrap; }
+  .nav-link.slide { color: #16a34a; border-color: #16a34a; }
+  .nav-link.script { color: #0891b2; border-color: #0891b2; }
+  .content { max-width: 740px; margin: 0 auto; padding: 0 18px; }
+  .hero {
+    background: linear-gradient(135deg, #14532d 0%, #059669 100%);
+    color: #fff; padding: 36px 24px 32px;
+  }
+  .hero-badge { display: inline-block; background: rgba(255,255,255,0.2); border-radius: 99px; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; padding: 3px 12px; margin-bottom: 14px; }
+  .hero h1 { font-size: clamp(1.4rem, 4vw, 1.9rem); font-weight: 900; line-height: 1.3; margin-bottom: 10px; word-break: keep-all; border: none; color: #fff; padding: 0; }
+  .hero p { font-size: 0.95rem; color: rgba(255,255,255,0.82); word-break: keep-all; }
+  .hero-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+  .meta-tag { background: rgba(255,255,255,0.15); border-radius: 99px; font-size: 12px; font-weight: 600; padding: 4px 12px; color: #fff; }
+  .section-header { background: #f0fdf4; border-left: 5px solid #16a34a; padding: 12px 18px; margin: 32px -18px 18px; }
+  .section-header h2 { font-size: 15px; font-weight: 800; color: #14532d; line-height: 1.4; }
+  .section-header .time { font-size: 12px; color: #16a34a; font-weight: 600; margin-top: 2px; }
+  .timeline-table { width: 100%; border-collapse: collapse; font-size: 14px; margin: 16px 0; }
+  .timeline-table th { background: #14532d; color: #fff; padding: 8px 12px; text-align: left; font-weight: 700; font-size: 12px; }
+  .timeline-table td { padding: 9px 12px; border-bottom: 1px solid #e2e8f0; vertical-align: middle; }
+  .timeline-table tr:last-child td { border-bottom: none; }
+  .timeline-table tr:nth-child(even) td { background: #f0fdf4; }
+  .tl-time { color: #16a34a; font-weight: 800; font-size: 13px; white-space: nowrap; }
+  .tl-desc { color: #475569; font-size: 13px; }
+  .step-badge { display: inline-block; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 99px; white-space: nowrap; }
+  .badge-bad { background: #fee2e2; color: #b91c1c; }
+  .badge-bridge { background: #fef3c7; color: #92400e; }
+  .badge-good { background: #dcfce7; color: #166534; }
+  .badge-extra { background: #e0f2fe; color: #0369a1; }
+  .badge-end { background: #f3f4f6; color: #374151; }
+  .checklist { list-style: none; margin: 12px 0; }
+  .checklist li { display: flex; gap: 10px; align-items: flex-start; padding: 8px 0; border-bottom: 1px solid #e2e8f0; font-size: 14px; }
+  .checklist li:last-child { border-bottom: none; }
+  .check-box { flex-shrink: 0; width: 22px; height: 22px; border: 2px solid #cbd5e1; border-radius: 5px; margin-top: 1px; }
+  .card { background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 18px; margin-bottom: 16px; }
+  .card h3 { font-size: 15px; font-weight: 700; margin-bottom: 8px; color: #14532d; }
+  .narration { background: #f0fdf4; border-left: 4px solid #4ade80; border-radius: 0 10px 10px 0; padding: 14px 16px; font-size: 15px; line-height: 1.85; color: #14532d; margin: 12px 0; word-break: keep-all; }
+  .narration strong { color: #16a34a; }
+  .narration-label { font-size: 11px; font-weight: 700; color: #16a34a; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 6px; display: block; }
+  .prompt-wrap { margin: 12px 0; }
+  .prompt-label { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+  .prompt-label span { font-size: 12px; font-weight: 700; letter-spacing: 0.06em; }
+  .prompt-bad-label span { color: #b91c1c; }
+  .prompt-good-label span { color: #166534; }
+  .prompt-extra-label span { color: #0369a1; }
+  .prompt-box { background: #0f172a; color: #e2e8f0; border-radius: 10px; padding: 16px 18px; font-size: 13px; line-height: 1.85; white-space: pre-wrap; word-break: break-word; font-family: 'Courier New', 'D2Coding', monospace; overflow-x: auto; }
+  .prompt-box.bad { border-left: 4px solid #ef4444; }
+  .prompt-box.good { border-left: 4px solid #22c55e; color: #a5f3fc; }
+  .prompt-box.extra { border-left: 4px solid #38bdf8; color: #bfdbfe; }
+  .prompt-box .kw { color: #fbbf24; font-weight: 700; }
+  .prompt-box .val { color: #86efac; }
+  .prompt-box .spec { color: #f9a8d4; font-weight: 700; }
+  .prompt-box .comment { color: #64748b; }
+
+  /* CVD 개념 카드 */
+  .cvd-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 12px 0; }
+  @media (max-width: 520px) { .cvd-grid { grid-template-columns: 1fr 1fr; } }
+  .cvd-item { border: 1px solid #bbf7d0; border-radius: 10px; padding: 10px 12px; background: #f0fdf4; }
+  .cvd-tag { display: inline-block; font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 6px; margin-bottom: 4px; background: #16a34a; color: #fff; }
+  .cvd-desc { font-size: 12px; color: #374151; }
+
+  /* AI 응답 mock */
+  .ai-response { background: #fff; border: 1.5px solid #e2e8f0; border-radius: 12px; overflow: hidden; margin: 14px 0; }
+  .ai-response-header { background: #f8fafc; border-bottom: 1px solid #e2e8f0; padding: 10px 16px; display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; color: #475569; }
+  .ai-dot { width: 8px; height: 8px; border-radius: 50%; background: #94a3b8; }
+  .ai-response-body { padding: 16px; font-size: 13.5px; color: #334155; line-height: 1.85; }
+  .ai-response-body p { margin-bottom: 10px; }
+  .ai-response-body ul { padding-left: 18px; color: #64748b; }
+  .ai-response-body ul li { margin-bottom: 6px; }
+  .ai-question { color: #1d4ed8; font-weight: 600; }
+  .ai-tag-bad { display: inline-block; font-size: 11px; font-weight: 700; background: #fee2e2; color: #b91c1c; padding: 2px 10px; border-radius: 99px; margin: 0 0 0 auto; }
+  .ai-tag-good { display: inline-block; font-size: 11px; font-weight: 700; background: #dcfce7; color: #166534; padding: 2px 10px; border-radius: 99px; margin: 0 0 0 auto; }
+
+  /* HTML 결과 미리보기 */
+  .html-preview { border: 2px solid #16a34a; border-radius: 14px; overflow: hidden; margin: 14px 0; background: #fff; }
+  .html-preview-header { background: #f0fdf4; border-bottom: 1px solid #bbf7d0; padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; }
+  .html-preview-header span { font-size: 12px; font-weight: 700; color: #14532d; }
+  .html-preview-body { padding: 18px; }
+
+  /* 대시보드 요약 카드 */
+  .dash-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 16px; }
+  @media (max-width: 520px) { .dash-cards { grid-template-columns: repeat(2, 1fr); } }
+  .dash-card { border-radius: 10px; padding: 12px; text-align: center; border: 1px solid #e2e8f0; }
+  .dash-card.normal { background: #f0fdf4; border-color: #bbf7d0; }
+  .dash-card.warn { background: #fefce8; border-color: #fde68a; }
+  .dash-card.danger { background: #fef2f2; border-color: #fca5a5; }
+  .dash-card .dc-val { font-size: 1.4rem; font-weight: 900; line-height: 1.1; margin-bottom: 4px; }
+  .dash-card.normal .dc-val { color: #166534; }
+  .dash-card.warn .dc-val { color: #92400e; }
+  .dash-card.danger .dc-val { color: #991b1b; }
+  .dash-card .dc-label { font-size: 11px; color: #64748b; font-weight: 600; }
+
+  /* 스펙 타임라인 차트 */
+  .r-chart-wrap { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px; margin-bottom: 14px; }
+  .r-chart-title { font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 10px; }
+  .r-legend { display: flex; gap: 14px; margin-top: 8px; font-size: 11px; }
+  .r-legend span { display: flex; align-items: center; gap: 4px; font-weight: 600; }
+  .r-section-title { font-size: 13px; font-weight: 800; color: #14532d; margin: 14px 0 8px; border-bottom: 1.5px solid #e2e8f0; padding-bottom: 4px; }
+
+  /* Zone 비교 표 */
+  .r-table { width: 100%; border-collapse: collapse; font-size: 12.5px; margin-bottom: 14px; }
+  .r-table th { background: #14532d; color: #fff; padding: 7px 10px; text-align: center; font-size: 12px; }
+  .r-table td { padding: 7px 10px; border-bottom: 1px solid #e2e8f0; text-align: center; }
+  .r-normal { background: #fff; }
+  .r-watch { background: #fefce8; color: #854d0e; font-weight: 700; }
+  .r-danger { background: #fef2f2; color: #991b1b; font-weight: 700; }
+  .r-badge-ok { background:#dcfce7; color:#166534; padding:2px 8px; border-radius:99px; font-size:11px; font-weight:700; }
+  .r-badge-w { background:#fef3c7; color:#92400e; padding:2px 8px; border-radius:99px; font-size:11px; font-weight:700; }
+  .r-badge-d { background:#fee2e2; color:#991b1b; padding:2px 8px; border-radius:99px; font-size:11px; font-weight:700; }
+
+  /* 챔버 분석 */
+  .chamber-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
+  @media (max-width: 480px) { .chamber-grid { grid-template-columns: 1fr; } }
+  .chamber-card { border-radius: 10px; padding: 12px; border: 1.5px solid; }
+  .chamber-card.ok { border-color: #86efac; background: #f0fdf4; }
+  .chamber-card.alert { border-color: #fca5a5; background: #fef2f2; }
+  .chamber-card .ch-name { font-weight: 800; font-size: 14px; margin-bottom: 6px; }
+  .chamber-card.ok .ch-name { color: #166534; }
+  .chamber-card.alert .ch-name { color: #991b1b; }
+  .chamber-card .ch-row { font-size: 12px; color: #475569; display: flex; justify-content: space-between; padding: 2px 0; }
+  .ch-val-ok { color: #166534; font-weight: 700; }
+  .ch-val-bad { color: #991b1b; font-weight: 700; }
+
+  /* 엔지니어 확인 */
+  .r-verify { background: #fef9c3; border: 1.5px solid #fde68a; border-radius: 8px; padding: 12px 14px; }
+  .r-verify-title { font-weight: 800; color: #92400e; margin-bottom: 8px; }
+  .r-verify ul { padding-left: 16px; color: #78350f; line-height: 1.9; font-size: 12.5px; }
+
+  /* 결과 설명 */
+  .result-guide { margin: 12px 0; }
+  .result-item { display: flex; gap: 12px; align-items: flex-start; padding: 10px 0; border-bottom: 1px solid #f1f5f9; font-size: 14px; }
+  .result-item:last-child { border-bottom: none; }
+  .result-num { flex-shrink: 0; width: 26px; height: 26px; border-radius: 50%; background: #16a34a; color: #fff; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center; margin-top: 1px; }
+  .result-item strong { display: block; font-size: 14px; margin-bottom: 2px; }
+  .result-item p { color: #475569; font-size: 13px; margin: 0; }
+
+  /* CSV 박스 */
+  .csv-wrap { margin: 14px 0; }
+  .csv-label { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+  .csv-label span { font-size: 12px; font-weight: 700; color: #166534; }
+  .csv-copy-btn { font-size: 11px; font-weight: 700; background: #16a34a; color: #fff; border: none; border-radius: 99px; padding: 3px 12px; cursor: pointer; }
+  .csv-box { background: #0f172a; color: #86efac; border-radius: 10px; padding: 14px 16px; font-size: 13px; line-height: 1.8; white-space: pre; overflow-x: auto; font-family: 'Courier New', 'D2Coding', monospace; border-left: 4px solid #22c55e; }
+
+  /* 마무리 */
+  .closing { background: #14532d; color: #fff; border-radius: 14px; padding: 24px 22px; margin: 24px 0; }
+  .closing h3 { font-size: 16px; font-weight: 800; margin-bottom: 14px; color: #86efac; }
+  .closing-point { display: flex; gap: 12px; align-items: flex-start; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.08); font-size: 14px; }
+  .closing-point:last-child { border-bottom: none; }
+  .closing-point p { color: #e2e8f0; line-height: 1.6; word-break: keep-all; }
+  .closing-point strong { color: #fff; }
+  .key-message { background: #fef3c7; border: 2px solid #f59e0b; border-radius: 12px; padding: 18px 20px; margin: 20px 0; font-size: 15px; font-weight: 700; color: #92400e; text-align: center; word-break: keep-all; line-height: 1.7; }
+  .related-links { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 20px 0; }
+  @media (max-width: 480px) { .related-links { grid-template-columns: 1fr; } }
+  .related-link { display: block; text-decoration: none; border: 1.5px solid; border-radius: 10px; padding: 12px 14px; }
+  .related-link.slide { border-color: #16a34a; background: #f0fdf4; }
+  .related-link.script { border-color: #0891b2; background: #ecfeff; }
+  .related-link .link-label { font-size: 11px; font-weight: 700; letter-spacing: 0.06em; margin-bottom: 3px; }
+  .related-link.slide .link-label { color: #16a34a; }
+  .related-link.script .link-label { color: #0891b2; }
+  .related-link .link-title { font-size: 13px; font-weight: 700; color: #1a1a1a; }
+  .related-link .link-url { font-size: 11px; color: #64748b; margin-top: 2px; word-break: break-all; }
+  .divider { border: none; border-top: 1px solid #e2e8f0; margin: 28px 0; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-title">3강 시연 가이드 · CVD 공정 데이터 AI 대시보드</div>
+  <div class="topbar-links">
+    <a class="nav-link slide" href="https://heekeunlee.github.io/lecture03/" target="_blank">강의 교안</a>
+    <a class="nav-link script" href="https://heekeunlee.github.io/lecture_assist001/scripts/lecture03/" target="_blank">강의 스크립트</a>
+  </div>
+</div>
+
+<div class="hero">
+  <div class="content">
+    <div class="hero-badge">3강 · 부록 시연 영상 가이드</div>
+    <h1>CVD 공정 두께 데이터<br>→ AI 대시보드로 바꾸기</h1>
+    <p>엑셀로는 보이지 않는 Edge-high 패턴과 USL 이탈을<br>
+    4단계 반복 프롬프트로 대시보드 한 장에 담는 과정을 보여주는 10분 시연입니다.</p>
+    <div class="hero-meta">
+      <span class="meta-tag">⏱ 10분</span>
+      <span class="meta-tag">Claude.ai / Antigravity</span>
+      <span class="meta-tag">CVD 두께 데이터</span>
+      <span class="meta-tag">4단계 반복 프롬프트</span>
+      <span class="meta-tag">Edge-high 패턴 감지</span>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- 전체 타임라인 -->
+  <div class="section-header">
+    <div class="time">00:00 – 10:00</div>
+    <h2>전체 진행 순서 (10분)</h2>
+  </div>
+
+  <table class="timeline-table">
+    <thead><tr><th>시간</th><th>구간</th><th>내용</th></tr></thead>
+    <tbody>
+      <tr><td class="tl-time">00:00–01:00</td><td><span class="step-badge badge-end">인트로</span></td><td class="tl-desc">엑셀의 한계 → AI 대시보드로 해결하는 흐름 소개</td></tr>
+      <tr><td class="tl-time">01:00–02:30</td><td><span class="step-badge badge-bad">Step 1</span></td><td class="tl-desc">막연한 프롬프트 입력 → AI 역질문 확인</td></tr>
+      <tr><td class="tl-time">02:30–03:30</td><td><span class="step-badge badge-bridge">브리지</span></td><td class="tl-desc">CVD 데이터 구조 + 스펙 기준 + 4단계 프롬프트 개념 설명</td></tr>
+      <tr><td class="tl-time">03:30–07:00</td><td><span class="step-badge badge-good">Step 2</span></td><td class="tl-desc">완성형 프롬프트 입력 → HTML 대시보드 생성 (요약카드·타임라인·Zone표·챔버분석)</td></tr>
+      <tr><td class="tl-time">07:00–08:30</td><td><span class="step-badge badge-good">결과 설명</span></td><td class="tl-desc">대시보드 화면 짚기 — Edge-high·USL 이탈·챔버별 상태 설명</td></tr>
+      <tr><td class="tl-time">08:30–09:30</td><td><span class="step-badge badge-extra">Step 3</span></td><td class="tl-desc">시각화 고도화 지시 → CVD-03 경고 강조 + Edge 이탈 셀 하이라이트</td></tr>
+      <tr><td class="tl-time">09:30–10:00</td><td><span class="step-badge badge-end">마무리</span></td><td class="tl-desc">"엑셀을 버리는 게 아니라 패턴 발견을 AI에게 맡기는 것"</td></tr>
+    </tbody>
+  </table>
+
+  <!-- 사전 준비 -->
+  <div class="section-header">
+    <div class="time">촬영 전 준비</div>
+    <h2>사전 준비 체크리스트</h2>
+  </div>
+  <div class="card">
+    <ul class="checklist">
+      <li><div class="check-box"></div><span>Claude.ai 또는 Antigravity 로그인 확인</span></li>
+      <li><div class="check-box"></div><span>Step 2 프롬프트를 메모장에 미리 복사해두기 (데이터 포함해 길기 때문에 붙여넣기로 진행)</span></li>
+      <li><div class="check-box"></div><span>브라우저 확대 125% — 프롬프트 구조와 데이터 컬럼이 화면에 잘 보여야 함</span></li>
+      <li><div class="check-box"></div><span>화면 녹화 1080p 이상 설정</span></li>
+      <li><div class="check-box"></div><span>Step 1(막연한 결과) vs Step 2(대시보드)를 탭 전환으로 비교 준비</span></li>
+    </ul>
+  </div>
+
+  <!-- 소스 데이터 -->
+  <div class="section-header">
+    <div class="time">촬영 전 준비 · 데이터</div>
+    <h2>소스 데이터 — 프롬프트 안에 직접 붙여넣는 방식</h2>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-bottom:6px;">CVD 두께 데이터 12행 — Step 1·2·3 모두 동일 데이터 사용</h3>
+    <p style="font-size:13px; color:#475569; margin-bottom:0;">
+      2개 Lot, 2개 챔버(CVD-01·CVD-03), 3개 Zone(Center/Middle/Edge), 2개 시간대.<br>
+      <strong>CVD-L02의 CVD-03 챔버 Edge T+012m이 USL(2.75μm)을 초과</strong> — 이탈 포인트가 핵심 시연 포인트입니다.
+    </p>
+  </div>
+
+  <div class="csv-wrap">
+    <div class="csv-label">
+      <span>📊 CVD 두께 데이터 (프롬프트 안에 그대로 포함)</span>
+      <button class="csv-copy-btn" onclick="copyCSV()">복사</button>
+    </div>
+    <div class="csv-box" id="csvContent">Lot,     Chamber, Zone,   Time,   Thickness(μm)
+CVD-L01, CVD-01,  Center, T+000m, 2.48
+CVD-L01, CVD-01,  Middle, T+000m, 2.50
+CVD-L01, CVD-01,  Edge,   T+000m, 2.53
+CVD-L01, CVD-01,  Center, T+012m, 2.51
+CVD-L01, CVD-01,  Middle, T+012m, 2.52
+CVD-L01, CVD-01,  Edge,   T+012m, 2.64
+CVD-L02, CVD-03,  Center, T+000m, 2.49
+CVD-L02, CVD-03,  Middle, T+000m, 2.51
+CVD-L02, CVD-03,  Edge,   T+000m, 2.60
+CVD-L02, CVD-03,  Center, T+012m, 2.52
+CVD-L02, CVD-03,  Middle, T+012m, 2.54
+CVD-L02, CVD-03,  Edge,   T+012m, 2.88  ← USL 초과!</div>
+  </div>
+
+  <div class="card" style="background:#fef9c3; border-color:#fde68a;">
+    <h3 style="color:#92400e;">시연 핵심 포인트 — 이것을 강조하세요</h3>
+    <p style="font-size:13px; color:#78350f; margin:0;">
+      CVD-L02 / CVD-03 챔버 / Edge 위치 / T+012m → <strong>두께 2.88μm = USL(2.75μm) 초과</strong><br>
+      엑셀에서는 120개 행 중 이 한 줄을 찾기 어렵지만, AI 대시보드는 즉시 빨간색으로 표시합니다.
+    </p>
+  </div>
+
+  <hr class="divider">
+
+  <!-- 인트로 -->
+  <div class="section-header">
+    <div class="time">00:00 – 01:00</div>
+    <h2>인트로</h2>
+  </div>
+  <div class="narration">
+    <span class="narration-label">💬 발화</span>
+    "3강의 핵심 질문입니다. CVD 공정 데이터 120개 행이 있을 때,<br>
+    Edge 위치에서 두께가 USL을 초과하는 패턴을 엑셀로 찾으려면<br>
+    필터·피벗·조건부 서식을 반복해야 합니다. 몇 분이 걸릴까요?<br>
+    지금부터 같은 데이터를 AI에게 넘기면 어떻게 되는지 보여드리겠습니다."
+  </div>
+
+  <div class="card">
+    <h3 style="margin-bottom:8px;">CVD 공정 핵심 용어 — 시연 전 30초 설명용</h3>
+    <div class="cvd-grid">
+      <div class="cvd-item">
+        <div class="cvd-tag">CVD</div>
+        <div class="cvd-desc">화학 기상 증착 — 가스를 반응시켜 웨이퍼 위에 얇은 막을 쌓는 공정</div>
+      </div>
+      <div class="cvd-item">
+        <div class="cvd-tag">Zone</div>
+        <div class="cvd-desc">Center(중앙) / Middle(중간) / Edge(가장자리) — 위치별 두께 차이가 핵심</div>
+      </div>
+      <div class="cvd-item">
+        <div class="cvd-tag">USL/LSL</div>
+        <div class="cvd-desc">관리 상한(2.75μm) / 하한(2.35μm) — 이 범위를 벗어나면 불량 위험</div>
+      </div>
+      <div class="cvd-item">
+        <div class="cvd-tag">Edge-high</div>
+        <div class="cvd-desc">가장자리 두께가 중앙보다 두꺼워지는 이상 패턴</div>
+      </div>
+      <div class="cvd-item">
+        <div class="cvd-tag">Chamber</div>
+        <div class="cvd-desc">CVD-01~04 — 챔버마다 가스 흐름·온도 특성이 달라 분석 단위가 됨</div>
+      </div>
+      <div class="cvd-item">
+        <div class="cvd-tag">Lot</div>
+        <div class="cvd-desc">동일 조건으로 처리되는 웨이퍼 묶음 — Lot 단위로 이상 여부를 판단</div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- Step 1 -->
+  <div class="section-header">
+    <div class="time">01:00 – 02:30</div>
+    <h2>Step 1 — 막연한 프롬프트 입력</h2>
+  </div>
+  <div class="prompt-wrap">
+    <div class="prompt-label prompt-bad-label">
+      <span>❌ 입력할 프롬프트</span>
+    </div>
+    <div class="prompt-box bad">CVD 공정 두께 데이터를 분석해서 이상한 부분을 찾아줘.
+
+Lot,     Chamber, Zone,   Time,   Thickness(μm)
+CVD-L01, CVD-01,  Center, T+000m, 2.48
+CVD-L01, CVD-01,  Middle, T+000m, 2.50
+CVD-L01, CVD-01,  Edge,   T+000m, 2.53
+CVD-L01, CVD-01,  Center, T+012m, 2.51
+CVD-L01, CVD-01,  Middle, T+012m, 2.52
+CVD-L01, CVD-01,  Edge,   T+012m, 2.64
+CVD-L02, CVD-03,  Center, T+000m, 2.49
+CVD-L02, CVD-03,  Middle, T+000m, 2.51
+CVD-L02, CVD-03,  Edge,   T+000m, 2.60
+CVD-L02, CVD-03,  Center, T+012m, 2.52
+CVD-L02, CVD-03,  Middle, T+012m, 2.54
+CVD-L02, CVD-03,  Edge,   T+012m, 2.88</div>
+  </div>
+
+  <!-- 나쁜 프롬프트 결과 예측 -->
+  <div class="ai-response">
+    <div class="ai-response-header">
+      <div class="ai-dot"></div>
+      <span>Claude 응답 예측 — 막연한 프롬프트 입력 시</span>
+      <div class="ai-tag-bad">❌ 막연한 프롬프트 결과</div>
+    </div>
+    <div class="ai-response-body">
+      <p>데이터를 확인했습니다. 몇 가지 사항을 정확히 알아야 분석을 진행할 수 있습니다.</p>
+      <ul>
+        <li class="ai-question">두께의 정상 범위(USL/LSL)가 어떻게 되나요? 기준값 없이는 "이상"을 판단할 수 없습니다.</li>
+        <li class="ai-question">어떤 형태로 결과를 보여드릴까요? 표, 그래프, 보고서 등 원하시는 형식이 있으신가요?</li>
+        <li class="ai-question">Zone별(Center/Middle/Edge) 차이가 중요한가요, 아니면 시간(T+000m/T+012m) 변화가 더 중요한가요?</li>
+      </ul>
+      <p style="margin-top:12px; color:#94a3b8; font-size:12px;">일단 눈에 띄는 것만 말씀드리면:</p>
+      <p style="color:#94a3b8; font-size:12px;">CVD-L02의 CVD-03 Edge T+012m 값(2.88)이 다른 값들보다 상당히 높습니다. 하지만 기준값 없이는 이것이 이상인지 판단하기 어렵습니다.</p>
+    </div>
+  </div>
+  <p style="font-size:12.5px; color:#ef4444; font-weight:700; margin:4px 0 0 4px;">
+    → USL 기준 없어서 이탈 판정 불가. 시각화 없음. Zone 패턴 분석 없음. 챔버별 비교 없음.
+  </p>
+
+  <div class="narration">
+    <span class="narration-label">💬 발화 (30초)</span>
+    "데이터가 있어도 <strong>스펙 기준(USL/LSL), Zone 분석 방향, 결과물 형식</strong>을 말하지 않으면<br>
+    AI는 판단을 내리지 못합니다. 지금부터 이 세 가지를 모두 담은 프롬프트를 입력하겠습니다."
+  </div>
+
+  <hr class="divider">
+
+  <!-- 브리지 -->
+  <div class="section-header">
+    <div class="time">02:30 – 03:30</div>
+    <h2>브리지 — 4단계 프롬프트 전략 소개</h2>
+  </div>
+  <div class="narration">
+    <span class="narration-label">💬 발화</span>
+    "3강에서 배운 4단계 반복 프롬프트입니다.<br>
+    1차에서 데이터 구조와 뼈대를 잡고,<br>
+    2차에서 공정 의미와 용어 맥락을 추가하고,<br>
+    3차에서 엑셀 수준을 넘는 시각화를 지시합니다.<br>
+    오늘 시연에서는 이 과정을 <strong>하나의 완성형 프롬프트</strong>로 보여드립니다."
+  </div>
+
+  <hr class="divider">
+
+  <!-- Step 2 -->
+  <div class="section-header">
+    <div class="time">03:30 – 07:00</div>
+    <h2>Step 2 — 완성형 프롬프트 입력</h2>
+  </div>
+  <div class="prompt-wrap">
+    <div class="prompt-label prompt-good-label">
+      <span>✅ 입력할 프롬프트 (그대로 복사 · 붙여넣기)</span>
+    </div>
+    <div class="prompt-box good"><span class="kw">[공정 배경]</span>
+CVD(화학 기상 증착) 공정에서 웨이퍼 위치별 박막 두께 데이터야.
+Zone은 Center(중앙) / Middle(중간) / Edge(가장자리)이고,
+Edge 위치에서 두께가 USL에 가까워지면 공정 이상 징후야.
+
+<span class="kw">[스펙 기준]</span>
+목표 두께: <span class="spec">2.50μm</span>
+USL(상한): <span class="spec">2.75μm</span>  ← 이 값을 초과하면 즉시 이상 판정
+LSL(하한): <span class="spec">2.35μm</span>
+
+<span class="kw">[데이터]</span>
+Lot,     Chamber, Zone,   Time,   Thickness(μm)
+CVD-L01, CVD-01,  Center, T+000m, 2.48
+CVD-L01, CVD-01,  Middle, T+000m, 2.50
+CVD-L01, CVD-01,  Edge,   T+000m, 2.53
+CVD-L01, CVD-01,  Center, T+012m, 2.51
+CVD-L01, CVD-01,  Middle, T+012m, 2.52
+CVD-L01, CVD-01,  Edge,   T+012m, 2.64
+CVD-L02, CVD-03,  Center, T+000m, 2.49
+CVD-L02, CVD-03,  Middle, T+000m, 2.51
+CVD-L02, CVD-03,  Edge,   T+000m, 2.60
+CVD-L02, CVD-03,  Center, T+012m, 2.52
+CVD-L02, CVD-03,  Middle, T+012m, 2.54
+CVD-L02, CVD-03,  Edge,   T+012m, 2.88
+
+<span class="kw">[분석 요청]</span>
+1. USL(2.75μm)을 초과한 측정값을 즉시 빨간색으로 표시해줘.
+2. Zone별(Center/Middle/Edge) 평균 두께를 시간 흐름에 따라
+   꺾은선 그래프로 그려줘. USL/LSL 기준선을 함께 표시해줘.
+3. 챔버별(CVD-01, CVD-03) 상태를 요약해줘.
+   Edge 위치 T+012m 두께가 USL의 90% 이상이면 Watch,
+   USL 초과면 이상(Alert) 판정해줘.
+4. 상단에 요약 카드 4개를 만들어줘:
+   평균 두께 / 최대 두께 / USL 이탈 건수 / 이상 챔버
+
+<span class="kw">[산출물]</span>
+위 내용을 모두 담은 HTML 대시보드로 만들어줘.
+하단에 "엔지니어 현장 확인 항목" 3가지를 체크리스트로 넣어줘.</div>
+  </div>
+
+  <div class="narration">
+    <span class="narration-label">💬 발화 — 결과 생성 대기 중 (30초)</span>
+    "공정 배경, 스펙 기준, 데이터, 분석 방향, 산출물 형식.<br>
+    이 다섯 가지를 모두 담았습니다.<br>
+    AI가 역질문 없이 바로 실행합니다."
+  </div>
+
+  <!-- 좋은 프롬프트 결과 예측 -->
+  <div class="html-preview">
+    <div class="html-preview-header">
+      <span>✅ Claude 결과 예측 — HTML 대시보드 출력 미리보기</span>
+      <div class="ai-tag-good">완성형 프롬프트 결과</div>
+    </div>
+    <div class="html-preview-body">
+
+      <!-- 요약 카드 -->
+      <div class="r-section-title">요약 카드 (상단 4개)</div>
+      <div class="dash-cards">
+        <div class="dash-card normal">
+          <div class="dc-val">2.53μm</div>
+          <div class="dc-label">전체 평균 두께</div>
+        </div>
+        <div class="dash-card danger">
+          <div class="dc-val">2.88μm</div>
+          <div class="dc-label">최대 두께 (USL 초과)</div>
+        </div>
+        <div class="dash-card danger">
+          <div class="dc-val">1건</div>
+          <div class="dc-label">USL 이탈 측정값</div>
+        </div>
+        <div class="dash-card warn">
+          <div class="dc-val">CVD-03</div>
+          <div class="dc-label">이상 챔버 (Alert)</div>
+        </div>
+      </div>
+
+      <!-- 스펙 타임라인 차트 -->
+      <div class="r-chart-wrap">
+        <div class="r-chart-title">Zone별 두께 추이 (T+000m → T+012m) — USL/LSL 기준선 포함</div>
+        <svg viewBox="0 0 560 170" style="width:100%;height:auto;">
+          <!-- 격자 -->
+          <line x1="60" y1="20" x2="60" y2="140" stroke="#e2e8f0" stroke-width="1"/>
+          <line x1="60" y1="140" x2="540" y2="140" stroke="#e2e8f0" stroke-width="1"/>
+          <!-- USL -->
+          <line x1="60" y1="35" x2="540" y2="35" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="5,4"/>
+          <text x="480" y="31" font-size="9" fill="#ef4444" font-weight="700">USL 2.75μm</text>
+          <!-- 목표 -->
+          <line x1="60" y1="85" x2="540" y2="85" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3,3"/>
+          <text x="480" y="81" font-size="9" fill="#94a3b8">Target 2.50μm</text>
+          <!-- LSL -->
+          <line x1="60" y1="130" x2="540" y2="130" stroke="#3b82f6" stroke-width="1.5" stroke-dasharray="5,4"/>
+          <text x="480" y="126" font-size="9" fill="#3b82f6" font-weight="700">LSL 2.35μm</text>
+          <!-- X 라벨 -->
+          <text x="120" y="155" font-size="10" fill="#94a3b8" text-anchor="middle">T+000m</text>
+          <text x="450" y="155" font-size="10" fill="#94a3b8" text-anchor="middle">T+012m</text>
+          <!-- Center: 2.48→2.51 / 2.49→2.52 (초록) -->
+          <line x1="120" y1="93" x2="450" y2="87" stroke="#16a34a" stroke-width="2"/>
+          <circle cx="120" cy="93" r="4" fill="#16a34a"/>
+          <circle cx="450" cy="87" r="4" fill="#16a34a"/>
+          <!-- Middle: 2.50→2.52 / 2.51→2.54 (파랑) -->
+          <line x1="120" y1="85" x2="450" y2="80" stroke="#0891b2" stroke-width="2"/>
+          <circle cx="120" cy="85" r="4" fill="#0891b2"/>
+          <circle cx="450" cy="80" r="4" fill="#0891b2"/>
+          <!-- CVD-L01 Edge: 2.53→2.64 (주황) -->
+          <line x1="120" y1="73" x2="450" y2="50" stroke="#f59e0b" stroke-width="2"/>
+          <circle cx="120" cy="73" r="4" fill="#f59e0b"/>
+          <circle cx="450" cy="50" r="4" fill="#f59e0b"/>
+          <!-- CVD-L02 Edge: 2.60→2.88 USL 초과 (빨강) -->
+          <line x1="120" y1="58" x2="450" y2="10" stroke="#ef4444" stroke-width="2.5"/>
+          <circle cx="120" cy="58" r="4" fill="#ef4444"/>
+          <circle cx="450" cy="10" r="6" fill="#ef4444" stroke="#fff" stroke-width="1.5"/>
+          <text x="460" y="10" font-size="9" fill="#ef4444" font-weight="700">⚠ USL 초과!</text>
+          <!-- Y 라벨 -->
+          <text x="5" y="39" font-size="9" fill="#ef4444">2.75</text>
+          <text x="5" y="89" font-size="9" fill="#94a3b8">2.50</text>
+          <text x="5" y="134" font-size="9" fill="#3b82f6">2.35</text>
+        </svg>
+        <div class="r-legend">
+          <span><svg width="16" height="4"><line x1="0" y1="2" x2="16" y2="2" stroke="#16a34a" stroke-width="2"/></svg> Center</span>
+          <span><svg width="16" height="4"><line x1="0" y1="2" x2="16" y2="2" stroke="#0891b2" stroke-width="2"/></svg> Middle</span>
+          <span><svg width="16" height="4"><line x1="0" y1="2" x2="16" y2="2" stroke="#f59e0b" stroke-width="2"/></svg> Edge(L01)</span>
+          <span><svg width="16" height="4"><line x1="0" y1="2" x2="16" y2="2" stroke="#ef4444" stroke-width="2.5"/></svg> Edge(L02) ⚠</span>
+        </div>
+      </div>
+
+      <!-- Zone별 두께 표 -->
+      <div class="r-section-title">Zone × 시간별 두께 상세표</div>
+      <div style="overflow-x:auto;">
+        <table class="r-table">
+          <thead>
+            <tr><th>Lot</th><th>Chamber</th><th>Zone</th><th>T+000m</th><th>T+012m</th><th>변화</th><th>판정</th></tr>
+          </thead>
+          <tbody>
+            <tr class="r-normal"><td>CVD-L01</td><td>CVD-01</td><td>Center</td><td>2.48</td><td>2.51</td><td>+0.03</td><td><span class="r-badge-ok">정상</span></td></tr>
+            <tr class="r-normal"><td>CVD-L01</td><td>CVD-01</td><td>Middle</td><td>2.50</td><td>2.52</td><td>+0.02</td><td><span class="r-badge-ok">정상</span></td></tr>
+            <tr class="r-watch"><td>CVD-L01</td><td>CVD-01</td><td>Edge</td><td>2.53</td><td>2.64</td><td>+0.11</td><td><span class="r-badge-w">Watch</span></td></tr>
+            <tr class="r-normal"><td>CVD-L02</td><td>CVD-03</td><td>Center</td><td>2.49</td><td>2.52</td><td>+0.03</td><td><span class="r-badge-ok">정상</span></td></tr>
+            <tr class="r-normal"><td>CVD-L02</td><td>CVD-03</td><td>Middle</td><td>2.51</td><td>2.54</td><td>+0.03</td><td><span class="r-badge-ok">정상</span></td></tr>
+            <tr class="r-danger"><td>CVD-L02</td><td>CVD-03</td><td><strong>Edge</strong></td><td>2.60</td><td><strong>2.88</strong></td><td style="color:#ef4444; font-weight:700;">+0.28</td><td><span class="r-badge-d">Alert (USL 초과)</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 챔버별 상태 -->
+      <div class="r-section-title">챔버별 상태 요약</div>
+      <div class="chamber-grid">
+        <div class="chamber-card ok">
+          <div class="ch-name">CVD-01 — 정상</div>
+          <div class="ch-row"><span>Lot</span><span class="ch-val-ok">CVD-L01</span></div>
+          <div class="ch-row"><span>Edge 최대 두께</span><span class="ch-val-ok">2.64μm</span></div>
+          <div class="ch-row"><span>USL 대비</span><span class="ch-val-ok">USL의 85.8% — 정상 범위</span></div>
+          <div class="ch-row"><span>판정</span><span class="ch-val-ok">정상 운전 중</span></div>
+        </div>
+        <div class="chamber-card alert">
+          <div class="ch-name">CVD-03 — ⚠ Alert</div>
+          <div class="ch-row"><span>Lot</span><span class="ch-val-bad">CVD-L02</span></div>
+          <div class="ch-row"><span>Edge 최대 두께</span><span class="ch-val-bad">2.88μm (USL 초과)</span></div>
+          <div class="ch-row"><span>USL 대비</span><span class="ch-val-bad">USL의 104.7% — 이탈!</span></div>
+          <div class="ch-row"><span>판정</span><span class="ch-val-bad">즉시 점검 필요</span></div>
+        </div>
+      </div>
+
+      <!-- 엔지니어 확인 -->
+      <div class="r-verify">
+        <div class="r-verify-title">👷 엔지니어 현장 확인 체크리스트</div>
+        <ul>
+          <li>CVD-03 챔버 가스 분배판(Showerhead) 상태 및 최근 PM 이력 확인</li>
+          <li>CVD-L02 Lot의 Edge 위치 실측 두께 재검사 (계측기 오차 여부 포함)</li>
+          <li>CVD-03 챔버 온도 분포 맵과 Gas-flow 설정값 CVD-01과 비교</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+  <p style="font-size:12.5px; color:#166534; font-weight:700; margin:4px 0 16px 4px;">
+    → 요약 카드 · 스펙 타임라인 · Zone 상세표 · 챔버 상태 · 체크리스트 — 한 번에 완성.
+  </p>
+
+  <hr class="divider">
+
+  <!-- 결과 설명 -->
+  <div class="section-header">
+    <div class="time">07:00 – 08:30</div>
+    <h2>결과 설명 — 화면 짚어가며</h2>
+  </div>
+  <div class="card">
+    <h3>화면 스크롤하면서 이 순서로 짚어줍니다</h3>
+    <div class="result-guide">
+      <div class="result-item">
+        <div class="result-num">1</div>
+        <div><strong>요약 카드 (상단 4개)</strong>
+        <p>"최대 두께 2.88μm, USL 이탈 1건, 이상 챔버 CVD-03 — 5초 안에 파악됩니다."</p></div>
+      </div>
+      <div class="result-item">
+        <div class="result-num">2</div>
+        <div><strong>스펙 타임라인 꺾은선</strong>
+        <p>"CVD-L02 Edge 선(빨간색)만 USL을 넘습니다. Center·Middle은 정상입니다. Edge-high 패턴이 한눈에 보입니다."</p></div>
+      </div>
+      <div class="result-item">
+        <div class="result-num">3</div>
+        <div><strong>Zone 상세표 빨간 셀</strong>
+        <p>"CVD-L02 / CVD-03 / Edge / T+012m — 2.88μm. 이 한 줄이 핵심입니다. 기준을 말했기 때문에 자동으로 빨간색이 됩니다."</p></div>
+      </div>
+      <div class="result-item">
+        <div class="result-num">4</div>
+        <div><strong>챔버별 상태 카드</strong>
+        <p>"CVD-01은 정상(초록), CVD-03은 Alert(빨강). 4대 챔버 중 어느 챔버가 문제인지 즉시 파악됩니다."</p></div>
+      </div>
+      <div class="result-item">
+        <div class="result-num">5</div>
+        <div><strong>엔지니어 확인 체크리스트</strong>
+        <p>"Showerhead PM 이력, 실측 재검사, 온도 맵 비교. AI가 만든 초안입니다. 현장 판단은 엔지니어가 합니다."</p></div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- Step 3 -->
+  <div class="section-header">
+    <div class="time">08:30 – 09:30</div>
+    <h2>Step 3 — 시각화 고도화 지시</h2>
+  </div>
+  <div class="prompt-wrap">
+    <div class="prompt-label prompt-extra-label">
+      <span>➕ 추가 입력할 프롬프트</span>
+    </div>
+    <div class="prompt-box extra">두 가지만 추가해줘.
+
+1. Zone 상세표에서 USL을 초과한 셀(2.88)에
+   빨간 굵은 테두리를 추가하고 배경을 더 진한 빨간색으로 강조해줘.
+
+2. 챔버 상태 카드에서 CVD-03을 "⚠ 즉시 점검 — Showerhead 가스 분배 이상 의심"
+   문구를 경고 박스로 추가해줘.</div>
+  </div>
+  <div class="narration">
+    <span class="narration-label">💬 발화 — 결과 나온 후</span>
+    "이게 3강에서 배운 4단계 반복 프롬프트입니다.<br>
+    첫 번째 결과를 받고, 더 강조할 부분만 추가 지시합니다.<br>
+    <strong>처음부터 완벽한 프롬프트를 쓸 필요가 없습니다.</strong><br>
+    보고 수정하면 됩니다."
+  </div>
+
+  <hr class="divider">
+
+  <!-- 마무리 -->
+  <div class="section-header">
+    <div class="time">09:30 – 10:00</div>
+    <h2>마무리 — 핵심 메시지</h2>
+  </div>
+  <div class="narration">
+    <span class="narration-label">💬 발화</span>
+    "오늘 시연에서 세 가지를 확인했습니다."
+  </div>
+  <div class="closing">
+    <h3>핵심 3가지</h3>
+    <div class="closing-point">
+      <div>1️⃣</div>
+      <p>데이터가 있어도 <strong>스펙 기준(USL/LSL)과 분석 방향</strong>을 말하지 않으면 AI는 판단을 내리지 못합니다.</p>
+    </div>
+    <div class="closing-point">
+      <div>2️⃣</div>
+      <p>공정 배경·스펙·분석 요청·산출물 형식을 담으면<br><strong>요약 카드·꺾은선·Zone 표·챔버 상태</strong>가 한 번에 완성됩니다.</p>
+    </div>
+    <div class="closing-point">
+      <div>3️⃣</div>
+      <p>결과를 받고 <strong>"이 부분만 더 강조해줘"</strong>로 추가 지시하면 됩니다.<br>처음부터 완벽한 프롬프트가 아니어도 됩니다.</p>
+    </div>
+  </div>
+  <div class="key-message">
+    "엑셀을 버리는 게 아닙니다.<br>반복 집계와 패턴 발견을 AI에게 맡기는 것입니다."
+  </div>
+
+  <hr class="divider">
+
+  <div class="section-header" style="margin-top:0;"><h2>관련 자료</h2></div>
+  <div class="related-links">
+    <a class="related-link slide" href="https://heekeunlee.github.io/lecture03/" target="_blank">
+      <div class="link-label">LECTURE 03 · 강의 교안</div>
+      <div class="link-title">Ch.3 CVD 공정 데이터를 AI 대시보드로 바꾸기</div>
+      <div class="link-url">heekeunlee.github.io/lecture03/</div>
+    </a>
+    <a class="related-link script" href="https://heekeunlee.github.io/lecture_assist001/scripts/lecture03/" target="_blank">
+      <div class="link-label">LECTURE 03 · 강의 스크립트</div>
+      <div class="link-title">3강 스크립트 — CVD 공정 데이터 AI 대시보드</div>
+      <div class="link-url">heekeunlee.github.io/lecture_assist001/<br>scripts/lecture03/</div>
+    </a>
+  </div>
+
+</div>
+
+<script>
+function copyCSV() {
+  const text = document.getElementById('csvContent').innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.querySelector('.csv-copy-btn');
+    btn.textContent = '복사됨 ✓';
+    btn.style.background = '#166534';
+    setTimeout(() => { btn.textContent = '복사'; btn.style.background = '#16a34a'; }, 2000);
+  });
+}
+</script>
+</body>
+</html>
