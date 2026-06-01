@@ -275,6 +275,81 @@
 
   /* divider */
   .divider { border: none; border-top: 1px solid #e2e8f0; margin: 28px 0; }
+
+  /* 소스 데이터 옵션 카드 */
+  .option-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 14px 0; }
+  @media (max-width: 520px) { .option-cards { grid-template-columns: 1fr; } }
+  .option-card {
+    border: 2px solid; border-radius: 12px; padding: 16px;
+    position: relative;
+  }
+  .option-card.simple { border-color: #cbd5e1; background: #f8fafc; }
+  .option-card.impact { border-color: #1d4ed8; background: #eff6ff; }
+  .option-badge {
+    display: inline-block; font-size: 11px; font-weight: 700;
+    padding: 2px 10px; border-radius: 99px; margin-bottom: 8px;
+  }
+  .option-card.simple .option-badge { background: #e2e8f0; color: #475569; }
+  .option-card.impact .option-badge { background: #1d4ed8; color: #fff; }
+  .option-card h4 { font-size: 14px; font-weight: 800; margin-bottom: 6px; color: #1e3a5f; }
+  .option-card p { font-size: 13px; color: #475569; line-height: 1.65; margin: 0; word-break: keep-all; }
+  .option-card .result-tag {
+    display: inline-block; margin-top: 8px;
+    font-size: 12px; font-weight: 700;
+    background: #fef3c7; color: #92400e;
+    padding: 3px 10px; border-radius: 99px;
+  }
+  .option-card.impact .result-tag { background: #dcfce7; color: #166534; }
+  .recommend-badge {
+    position: absolute; top: -10px; right: 12px;
+    background: #f59e0b; color: #fff;
+    font-size: 10px; font-weight: 800; letter-spacing: 0.05em;
+    padding: 2px 10px; border-radius: 99px;
+  }
+
+  /* CSV 박스 */
+  .csv-wrap { margin: 14px 0; }
+  .csv-label {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 6px;
+  }
+  .csv-label span { font-size: 12px; font-weight: 700; color: #166534; }
+  .csv-copy-btn {
+    font-size: 11px; font-weight: 700;
+    background: #16a34a; color: #fff;
+    border: none; border-radius: 99px;
+    padding: 3px 12px; cursor: pointer;
+  }
+  .csv-box {
+    background: #0f172a;
+    color: #86efac;
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-size: 13px;
+    line-height: 1.8;
+    white-space: pre;
+    overflow-x: auto;
+    font-family: 'Courier New', 'D2Coding', monospace;
+    border-left: 4px solid #22c55e;
+  }
+
+  /* 추천 흐름 표 */
+  .flow-table { width: 100%; border-collapse: collapse; font-size: 13px; margin: 14px 0; }
+  .flow-table th {
+    background: #1e3a5f; color: #fff;
+    padding: 8px 12px; text-align: left; font-size: 12px; font-weight: 700;
+  }
+  .flow-table td { padding: 9px 12px; border-bottom: 1px solid #e2e8f0; vertical-align: top; }
+  .flow-table tr:last-child td { border-bottom: none; }
+  .flow-table tr:nth-child(even) td { background: #f8faff; }
+  .flow-num {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 22px; height: 22px; border-radius: 50%;
+    background: #1d4ed8; color: #fff;
+    font-size: 11px; font-weight: 800; flex-shrink: 0;
+  }
+  .flow-action { font-weight: 700; font-size: 13px; }
+  .flow-point { font-size: 12px; color: #64748b; margin-top: 2px; }
 </style>
 </head>
 <body>
@@ -321,12 +396,12 @@
       <tr>
         <td class="tl-time">00:00–01:00</td>
         <td class="tl-step"><span class="step-badge badge-end">인트로</span></td>
-        <td class="tl-desc">오늘 시연 목적 한 마디 소개 / 도구 화면 보여주기</td>
+        <td class="tl-desc">오늘 시연 목적 한 마디 소개 / yield_data.csv 파일 화면에 미리 열어두기</td>
       </tr>
       <tr>
         <td class="tl-time">01:00–02:30</td>
         <td class="tl-step"><span class="step-badge badge-bad">Step 1</span></td>
-        <td class="tl-desc">나쁜 프롬프트 입력 → 결과 확인 (AI가 되묻거나 엉뚱한 결과)</td>
+        <td class="tl-desc">yield_data.csv 첨부 + "수율 분석해줘." 입력 → 결과 확인 (두루뭉술한 응답)</td>
       </tr>
       <tr>
         <td class="tl-time">02:30–03:30</td>
@@ -371,6 +446,93 @@
       <li><div class="check-box"></div><span>Step 1 결과 vs Step 2 결과를 나란히 비교할 방법 준비 (탭 전환 or 스크린샷)</span></li>
       <li><div class="check-box"></div><span>불필요한 탭·알림 모두 닫기</span></li>
     </ul>
+  </div>
+
+  <hr class="divider">
+
+  <!-- 소스 데이터 준비 -->
+  <div class="section-header">
+    <div class="time">촬영 전 준비 · 데이터</div>
+    <h2>소스 데이터 — Step 1에서 무엇을 쓸 것인가</h2>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-bottom:12px;">"수율 분석해줘" 한 마디를 입력할 때, 데이터는 어떻게 처리하나요?</h3>
+    <div class="option-cards">
+      <div class="option-card simple">
+        <div class="option-badge">선택지 1 · 단순</div>
+        <h4>데이터 없이 바로 입력</h4>
+        <p>Claude를 열고 아무것도 첨부하지 않은 채 "수율 분석해줘."만 타이핑합니다.</p>
+        <div class="result-tag">AI가 "어떤 데이터인가요?" 역으로 질문</div>
+      </div>
+      <div class="option-card impact">
+        <div class="recommend-badge">⭐ 추천</div>
+        <div class="option-badge">선택지 2 · 임팩트</div>
+        <h4>CSV 파일 첨부 후 나쁜 프롬프트 입력</h4>
+        <p>아래 CSV를 파일로 저장해 Claude에 첨부한 뒤, 프롬프트는 "수율 분석해줘."만 입력합니다.</p>
+        <div class="result-tag">파일 있어도 결과가 두루뭉술 → Step 2와 대비 극명</div>
+      </div>
+    </div>
+    <p style="font-size:13px; color:#475569; margin-top:4px;">
+      <strong>선택지 2 추천 이유:</strong> "데이터는 똑같은데 프롬프트만 달랐을 뿐" — 이 대비가 5요소의 필요성을 가장 직관적으로 보여줍니다.
+    </p>
+  </div>
+
+  <div class="csv-wrap">
+    <div class="csv-label">
+      <span>📂 yield_data.csv — 이 내용을 파일로 저장해서 사용하세요</span>
+      <button class="csv-copy-btn" onclick="copyCSV()">복사</button>
+    </div>
+    <div class="csv-box" id="csvContent">라인,공정,모델,날짜,수율(%)
+A라인,Array,OLED-14,2026-05-22,95.1
+A라인,Array,OLED-14,2026-05-23,94.8
+A라인,Array,OLED-14,2026-05-24,94.2
+A라인,Array,OLED-14,2026-05-25,93.6
+A라인,Array,OLED-14,2026-05-26,91.0
+A라인,Array,OLED-14,2026-05-27,88.3
+A라인,Array,OLED-14,2026-05-28,87.9
+B라인,Array,OLED-14,2026-05-22,95.0
+B라인,Array,OLED-14,2026-05-23,95.2
+B라인,Array,OLED-14,2026-05-24,94.9
+B라인,Array,OLED-14,2026-05-25,95.1
+B라인,Array,OLED-14,2026-05-26,95.3
+B라인,Array,OLED-14,2026-05-27,94.8
+B라인,Array,OLED-14,2026-05-28,95.0</div>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-bottom:12px;">추천 시연 흐름 — 같은 CSV로 Step 1·2·3 모두 진행</h3>
+    <table class="flow-table">
+      <thead>
+        <tr><th>순서</th><th>행동</th><th>화면에서 보여주는 포인트</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="flow-num">①</span></td>
+          <td>
+            <div class="flow-action">yield_data.csv 첨부 + "수율 분석해줘." 입력</div>
+            <div class="flow-point">Step 1 · 나쁜 프롬프트</div>
+          </td>
+          <td style="font-size:13px; color:#475569;">파일이 있어도 기준·산출물이 없으면 결과가 애매함</td>
+        </tr>
+        <tr>
+          <td><span class="flow-num">②</span></td>
+          <td>
+            <div class="flow-action">같은 파일 첨부 + 5요소 프롬프트 입력</div>
+            <div class="flow-point">Step 2 · 좋은 프롬프트</div>
+          </td>
+          <td style="font-size:13px; color:#475569;">색상 표·꺾은선 그래프·원인 후보·검증 항목 한 번에 등장</td>
+        </tr>
+        <tr>
+          <td><span class="flow-num">③</span></td>
+          <td>
+            <div class="flow-action">"두 가지만 추가해줘..." 입력</div>
+            <div class="flow-point">Step 3 · 추가 수정</div>
+          </td>
+          <td style="font-size:13px; color:#475569;">빨간 세로선 + 경고 박스 추가 → 수정도 자유자재</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 
   <hr class="divider">
@@ -657,5 +819,16 @@ B라인, Array, OLED-14, 2026-05-28, 95.0
 
 </div><!-- /content -->
 
+<script>
+function copyCSV() {
+  const text = document.getElementById('csvContent').innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.querySelector('.csv-copy-btn');
+    btn.textContent = '복사됨 ✓';
+    btn.style.background = '#166534';
+    setTimeout(() => { btn.textContent = '복사'; btn.style.background = '#16a34a'; }, 2000);
+  });
+}
+</script>
 </body>
 </html>
