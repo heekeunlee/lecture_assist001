@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1강 시연 가이드 — 바이브 코딩 실전 데모</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: #f8f9fa;
+    color: #1a1a1a;
+    font-family: -apple-system, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+    font-size: 16px;
+    line-height: 1.8;
+    padding-bottom: 80px;
+  }
+
+  /* 상단 바 */
+  .topbar {
+    position: sticky; top: 0; z-index: 100;
+    background: #fff;
+    border-bottom: 2px solid #e2e8f0;
+    padding: 10px 18px;
+    display: flex; align-items: center; justify-content: space-between;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+  .topbar-title { font-size: 14px; font-weight: 700; color: #1e3a5f; }
+  .topbar-links { display: flex; gap: 8px; }
+  .nav-link {
+    font-size: 11px; font-weight: 600;
+    padding: 4px 10px; border-radius: 99px; text-decoration: none;
+    border: 1.5px solid;
+    white-space: nowrap;
+  }
+  .nav-link.slide { color: #1d4ed8; border-color: #1d4ed8; }
+  .nav-link.script { color: #6d28d9; border-color: #6d28d9; }
+
+  .content { max-width: 740px; margin: 0 auto; padding: 0 18px; }
+
+  /* 히어로 */
+  .hero {
+    background: linear-gradient(135deg, #1e3a5f 0%, #1d4ed8 100%);
+    color: #fff;
+    padding: 36px 24px 32px;
+    margin-bottom: 0;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.2);
+    border-radius: 99px;
+    font-size: 12px; font-weight: 700; letter-spacing: 0.08em;
+    padding: 3px 12px;
+    margin-bottom: 14px;
+  }
+  .hero h1 {
+    font-size: clamp(1.4rem, 4vw, 1.9rem);
+    font-weight: 900; line-height: 1.3;
+    margin-bottom: 10px; word-break: keep-all;
+    border: none; color: #fff; padding: 0;
+  }
+  .hero p { font-size: 0.95rem; color: rgba(255,255,255,0.8); word-break: keep-all; }
+  .hero-meta {
+    display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px;
+  }
+  .meta-tag {
+    background: rgba(255,255,255,0.15);
+    border-radius: 99px;
+    font-size: 12px; font-weight: 600;
+    padding: 4px 12px; color: #fff;
+  }
+
+  /* 섹션 헤더 */
+  .section-header {
+    background: #eff6ff;
+    border-left: 5px solid #1d4ed8;
+    padding: 12px 18px;
+    margin: 32px -18px 18px;
+  }
+  .section-header h2 {
+    font-size: 15px; font-weight: 800; color: #1e3a5f; line-height: 1.4;
+  }
+  .section-header .time { font-size: 12px; color: #3b82f6; font-weight: 600; margin-top: 2px; }
+
+  /* 타임라인 표 */
+  .timeline-table { width: 100%; border-collapse: collapse; font-size: 14px; margin: 16px 0; }
+  .timeline-table th {
+    background: #1e3a5f; color: #fff;
+    padding: 8px 12px; text-align: left; font-weight: 700; font-size: 12px;
+  }
+  .timeline-table td { padding: 9px 12px; border-bottom: 1px solid #e2e8f0; vertical-align: middle; }
+  .timeline-table tr:last-child td { border-bottom: none; }
+  .timeline-table tr:nth-child(even) td { background: #f8faff; }
+  .tl-time { color: #1d4ed8; font-weight: 800; font-size: 13px; white-space: nowrap; }
+  .tl-step { font-weight: 700; }
+  .tl-desc { color: #475569; font-size: 13px; }
+  .step-badge {
+    display: inline-block; font-size: 11px; font-weight: 700;
+    padding: 2px 8px; border-radius: 99px;
+    white-space: nowrap;
+  }
+  .badge-bad { background: #fee2e2; color: #b91c1c; }
+  .badge-bridge { background: #fef3c7; color: #92400e; }
+  .badge-good { background: #dcfce7; color: #166534; }
+  .badge-extra { background: #e0f2fe; color: #0369a1; }
+  .badge-end { background: #f3f4f6; color: #374151; }
+
+  /* 체크리스트 */
+  .checklist { list-style: none; margin: 12px 0; }
+  .checklist li {
+    display: flex; gap: 10px; align-items: flex-start;
+    padding: 8px 0; border-bottom: 1px solid #e2e8f0;
+    font-size: 14px;
+  }
+  .checklist li:last-child { border-bottom: none; }
+  .check-box {
+    flex-shrink: 0; width: 22px; height: 22px;
+    border: 2px solid #cbd5e1; border-radius: 5px;
+    margin-top: 1px;
+  }
+
+  /* 카드 */
+  .card {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 18px;
+    margin-bottom: 16px;
+  }
+  .card h3 { font-size: 15px; font-weight: 700; margin-bottom: 8px; color: #1e3a5f; }
+
+  /* 발화 박스 */
+  .narration {
+    background: #f0f9ff;
+    border-left: 4px solid #38bdf8;
+    border-radius: 0 10px 10px 0;
+    padding: 14px 16px;
+    font-size: 15px;
+    line-height: 1.85;
+    color: #0c4a6e;
+    margin: 12px 0;
+    word-break: keep-all;
+  }
+  .narration strong { color: #0369a1; }
+  .narration-label {
+    font-size: 11px; font-weight: 700; color: #0ea5e9;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    margin-bottom: 6px; display: block;
+  }
+
+  /* 프롬프트 박스 */
+  .prompt-wrap { margin: 12px 0; }
+  .prompt-label {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 6px;
+  }
+  .prompt-label span {
+    font-size: 12px; font-weight: 700; letter-spacing: 0.06em;
+  }
+  .prompt-label .copy-btn {
+    font-size: 11px; font-weight: 700;
+    background: #1d4ed8; color: #fff;
+    border: none; border-radius: 99px;
+    padding: 3px 12px; cursor: pointer;
+  }
+  .prompt-bad-label span { color: #b91c1c; }
+  .prompt-good-label span { color: #166534; }
+  .prompt-extra-label span { color: #0369a1; }
+
+  .prompt-box {
+    background: #0f172a;
+    color: #e2e8f0;
+    border-radius: 10px;
+    padding: 16px 18px;
+    font-size: 13.5px;
+    line-height: 1.85;
+    white-space: pre-wrap;
+    word-break: break-word;
+    font-family: 'Courier New', 'D2Coding', monospace;
+    overflow-x: auto;
+  }
+  .prompt-box.bad { border-left: 4px solid #ef4444; }
+  .prompt-box.good { border-left: 4px solid #22c55e; color: #a5f3fc; }
+  .prompt-box.extra { border-left: 4px solid #38bdf8; color: #bfdbfe; }
+
+  .highlight { background: rgba(250,204,21,0.25); border-radius: 3px; padding: 0 3px; color: #fef08a; }
+
+  /* 결과 설명 */
+  .result-guide { margin: 12px 0; }
+  .result-item {
+    display: flex; gap: 12px; align-items: flex-start;
+    padding: 10px 0; border-bottom: 1px solid #f1f5f9;
+    font-size: 14px;
+  }
+  .result-item:last-child { border-bottom: none; }
+  .result-num {
+    flex-shrink: 0;
+    width: 26px; height: 26px; border-radius: 50%;
+    background: #1d4ed8; color: #fff;
+    font-size: 12px; font-weight: 800;
+    display: flex; align-items: center; justify-content: center;
+    margin-top: 1px;
+  }
+  .result-item strong { display: block; font-size: 14px; margin-bottom: 2px; }
+  .result-item p { color: #475569; font-size: 13px; margin: 0; }
+
+  /* 5요소 설명 */
+  .five-elem { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 12px 0; }
+  @media (max-width: 480px) { .five-elem { grid-template-columns: 1fr; } }
+  .elem-item {
+    border: 1px solid #e2e8f0; border-radius: 10px;
+    padding: 10px 12px; background: #fff;
+  }
+  .elem-num {
+    display: inline-block; width: 20px; height: 20px;
+    border-radius: 50%; background: #1e3a5f; color: #fff;
+    font-size: 11px; font-weight: 800; text-align: center; line-height: 20px;
+    margin-bottom: 4px;
+  }
+  .elem-title { font-weight: 700; font-size: 13px; margin-bottom: 2px; }
+  .elem-desc { font-size: 12px; color: #64748b; }
+
+  /* 마무리 */
+  .closing {
+    background: #1e3a5f;
+    color: #fff;
+    border-radius: 14px;
+    padding: 24px 22px;
+    margin: 24px 0;
+  }
+  .closing h3 { font-size: 16px; font-weight: 800; margin-bottom: 14px; color: #93c5fd; }
+  .closing-point {
+    display: flex; gap: 12px; align-items: flex-start;
+    padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.08);
+    font-size: 14px;
+  }
+  .closing-point:last-child { border-bottom: none; }
+  .closing-icon { flex-shrink: 0; font-size: 16px; }
+  .closing-point p { color: #e2e8f0; line-height: 1.6; word-break: keep-all; }
+  .closing-point strong { color: #fff; }
+
+  /* 키 메시지 */
+  .key-message {
+    background: #fef3c7;
+    border: 2px solid #f59e0b;
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin: 20px 0;
+    font-size: 15px;
+    font-weight: 700;
+    color: #92400e;
+    text-align: center;
+    word-break: keep-all;
+    line-height: 1.7;
+  }
+
+  /* 연결 링크 */
+  .related-links {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 10px; margin: 20px 0;
+  }
+  @media (max-width: 480px) { .related-links { grid-template-columns: 1fr; } }
+  .related-link {
+    display: block; text-decoration: none;
+    border: 1.5px solid; border-radius: 10px;
+    padding: 12px 14px;
+  }
+  .related-link.slide { border-color: #1d4ed8; background: #eff6ff; }
+  .related-link.script { border-color: #6d28d9; background: #f5f3ff; }
+  .related-link .link-label { font-size: 11px; font-weight: 700; letter-spacing: 0.06em; margin-bottom: 3px; }
+  .related-link.slide .link-label { color: #1d4ed8; }
+  .related-link.script .link-label { color: #6d28d9; }
+  .related-link .link-title { font-size: 13px; font-weight: 700; color: #1a1a1a; }
+  .related-link .link-url { font-size: 11px; color: #64748b; margin-top: 2px; word-break: break-all; }
+
+  /* divider */
+  .divider { border: none; border-top: 1px solid #e2e8f0; margin: 28px 0; }
+</style>
+</head>
+<body>
+
+<!-- 상단 바 -->
+<div class="topbar">
+  <div class="topbar-title">1강 시연 가이드 · 바이브 코딩 실전 데모</div>
+  <div class="topbar-links">
+    <a class="nav-link slide" href="https://heekeunlee.github.io/lecture01/" target="_blank">강의 교안</a>
+    <a class="nav-link script" href="https://heekeunlee.github.io/lecture_assist001/scripts/lecture01/" target="_blank">강의 스크립트</a>
+  </div>
+</div>
+
+<!-- 히어로 -->
+<div class="hero">
+  <div class="content">
+    <div class="hero-badge">1강 · 부록 시연 영상 가이드</div>
+    <h1>나쁜 프롬프트 vs 좋은 프롬프트<br>— 실전 시연 A</h1>
+    <p>같은 주제(수율 분석)로 프롬프트를 두 번 입력합니다.<br>
+    첫 번째는 막연하게, 두 번째는 5요소 작업지시서 구조로.<br>
+    결과가 얼마나 달라지는지 직접 보여주는 10분 시연입니다.</p>
+    <div class="hero-meta">
+      <span class="meta-tag">⏱ 10분</span>
+      <span class="meta-tag">Claude.ai / Claude Code</span>
+      <span class="meta-tag">5요소 프롬프트</span>
+      <span class="meta-tag">수율 보고서 생성</span>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- 전체 타임라인 -->
+  <div class="section-header">
+    <div class="time">00:00 – 10:00</div>
+    <h2>전체 진행 순서 (10분)</h2>
+  </div>
+
+  <table class="timeline-table">
+    <thead>
+      <tr><th>시간</th><th>구간</th><th>내용</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="tl-time">00:00–01:00</td>
+        <td class="tl-step"><span class="step-badge badge-end">인트로</span></td>
+        <td class="tl-desc">오늘 시연 목적 한 마디 소개 / 도구 화면 보여주기</td>
+      </tr>
+      <tr>
+        <td class="tl-time">01:00–02:30</td>
+        <td class="tl-step"><span class="step-badge badge-bad">Step 1</span></td>
+        <td class="tl-desc">나쁜 프롬프트 입력 → 결과 확인 (AI가 되묻거나 엉뚱한 결과)</td>
+      </tr>
+      <tr>
+        <td class="tl-time">02:30–03:30</td>
+        <td class="tl-step"><span class="step-badge badge-bridge">브리지</span></td>
+        <td class="tl-desc">"왜 이렇게 나왔는가" → 5요소 개념 30초 언급</td>
+      </tr>
+      <tr>
+        <td class="tl-time">03:30–07:00</td>
+        <td class="tl-step"><span class="step-badge badge-good">Step 2</span></td>
+        <td class="tl-desc">5요소 완성 프롬프트 입력 → HTML 결과물 등장</td>
+      </tr>
+      <tr>
+        <td class="tl-time">07:00–08:30</td>
+        <td class="tl-step"><span class="step-badge badge-good">결과 설명</span></td>
+        <td class="tl-desc">HTML 화면 스크롤하며 표·그래프·원인 후보·검증 항목 짚기</td>
+      </tr>
+      <tr>
+        <td class="tl-time">08:30–09:30</td>
+        <td class="tl-step"><span class="step-badge badge-extra">Step 3</span></td>
+        <td class="tl-desc">추가 수정 지시 → 그래프에 빨간선·경고 박스 추가</td>
+      </tr>
+      <tr>
+        <td class="tl-time">09:30–10:00</td>
+        <td class="tl-step"><span class="step-badge badge-end">마무리</span></td>
+        <td class="tl-desc">핵심 메시지 3줄 정리 / "이게 바이브 코딩입니다"</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- 사전 준비 -->
+  <div class="section-header">
+    <div class="time">촬영 전 준비</div>
+    <h2>사전 준비 체크리스트</h2>
+  </div>
+
+  <div class="card">
+    <ul class="checklist">
+      <li><div class="check-box"></div><span>Claude.ai 또는 Claude Code 로그인 확인 (화면에 이미 열려있어야 함)</span></li>
+      <li><div class="check-box"></div><span>Step 2·Step 3 프롬프트를 메모장에 미리 복사해두기 (입력 시간 단축)</span></li>
+      <li><div class="check-box"></div><span>브라우저 확대 125~150% — 프롬프트 텍스트가 화면에 크게 보여야 함</span></li>
+      <li><div class="check-box"></div><span>화면 녹화 해상도 1080p 이상 설정</span></li>
+      <li><div class="check-box"></div><span>Step 1 결과 vs Step 2 결과를 나란히 비교할 방법 준비 (탭 전환 or 스크린샷)</span></li>
+      <li><div class="check-box"></div><span>불필요한 탭·알림 모두 닫기</span></li>
+    </ul>
+  </div>
+
+  <hr class="divider">
+
+  <!-- 인트로 -->
+  <div class="section-header">
+    <div class="time">00:00 – 01:00</div>
+    <h2>인트로 — 말로만, 화면은 도구 빈 화면</h2>
+  </div>
+
+  <div class="narration">
+    <span class="narration-label">💬 발화</span>
+    "지금부터 같은 주제로 프롬프트를 두 번 입력할 겁니다.<br>
+    첫 번째는 막연하게, 두 번째는 1강에서 배운 <strong>5요소 작업지시서 구조</strong>로.<br>
+    결과가 얼마나 달라지는지 직접 보여드리겠습니다."
+  </div>
+
+  <hr class="divider">
+
+  <!-- Step 1 -->
+  <div class="section-header">
+    <div class="time">01:00 – 02:30</div>
+    <h2>Step 1 — 나쁜 프롬프트 입력</h2>
+  </div>
+
+  <div class="prompt-wrap">
+    <div class="prompt-label prompt-bad-label">
+      <span>❌ 입력할 프롬프트 (그대로 복사 · 붙여넣기)</span>
+    </div>
+    <div class="prompt-box bad">수율 분석해줘.</div>
+  </div>
+
+  <div class="card">
+    <h3>예상 결과</h3>
+    <p style="font-size:14px; color:#475569;">AI가 다음과 같이 되묻거나 일반적인 설명만 반환합니다:</p>
+    <ul style="margin-top:8px; padding-left:18px; font-size:13px; color:#64748b; line-height:2;">
+      <li>"어떤 데이터를 분석할까요?"</li>
+      <li>"기간은 어떻게 되나요?"</li>
+      <li>"어떤 형식으로 결과를 드릴까요?"</li>
+    </ul>
+  </div>
+
+  <div class="narration">
+    <span class="narration-label">💬 발화 (30초)</span>
+    "AI가 되묻고 있습니다. 또는 제가 원하는 것과 전혀 다른 결과가 나왔습니다.<br>
+    이게 바로 1강에서 말한 <strong>'막연한 요청'</strong>입니다.<br>
+    <strong>'분석해줘'</strong> 한 마디에는 — 어떤 데이터인지, 어떤 기준인지,<br>
+    결과를 어떤 형식으로 받을지 — 아무것도 없습니다."
+  </div>
+
+  <hr class="divider">
+
+  <!-- 브리지 -->
+  <div class="section-header">
+    <div class="time">02:30 – 03:30</div>
+    <h2>브리지 — 5요소 개념 연결</h2>
+  </div>
+
+  <div class="narration">
+    <span class="narration-label">💬 발화</span>
+    "1강에서 배운 <strong>작업지시서의 5요소</strong>가 기억나시나요?<br>
+    문제 / 데이터 / 기준 / 산출물 / 검증 조건.<br>
+    지금 Step 2에서는 이 다섯 가지를 모두 넣어서 입력해보겠습니다."
+  </div>
+
+  <div class="five-elem">
+    <div class="elem-item">
+      <div class="elem-num">1</div>
+      <div class="elem-title">문제</div>
+      <div class="elem-desc">A라인 OLED-14 수율 하락 — 하락 폭이 큰 날 파악</div>
+    </div>
+    <div class="elem-item">
+      <div class="elem-num">2</div>
+      <div class="elem-title">데이터</div>
+      <div class="elem-desc">라인·공정·모델·날짜·수율(%) 8일치 가상 데이터</div>
+    </div>
+    <div class="elem-item">
+      <div class="elem-num">3</div>
+      <div class="elem-title">기준</div>
+      <div class="elem-desc">전일 대비 -2% 이상→위험(빨강) / -1~2%→주의(노랑)</div>
+    </div>
+    <div class="elem-item">
+      <div class="elem-num">4</div>
+      <div class="elem-title">산출물</div>
+      <div class="elem-desc">색상 표 + 꺾은선 그래프 + 원인 후보 TOP3 → HTML</div>
+    </div>
+    <div class="elem-item" style="grid-column: 1 / -1;">
+      <div class="elem-num">5</div>
+      <div class="elem-title">검증 조건</div>
+      <div class="elem-desc">PM 이력·레시피 변경·B라인 비교 → 엔지니어 확인 항목으로 포함</div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- Step 2 -->
+  <div class="section-header">
+    <div class="time">03:30 – 07:00</div>
+    <h2>Step 2 — 5요소 완성 프롬프트 입력</h2>
+  </div>
+
+  <div class="prompt-wrap">
+    <div class="prompt-label prompt-good-label">
+      <span>✅ 입력할 프롬프트 (그대로 복사 · 붙여넣기)</span>
+    </div>
+    <div class="prompt-box good">아래 조건으로 수율 데이터를 분석하고 HTML 보고서를 만들어줘.
+
+[문제]
+A라인 Array 공정 OLED-14 모델에서 최근 수율이 떨어지고 있어.
+전일 대비 하락 폭이 큰 날을 빠르게 파악하고 싶어.
+
+[데이터]
+라인, 공정, 모델, 날짜, 수율(%)
+A라인, Array, OLED-14, 2026-05-22, 95.1
+A라인, Array, OLED-14, 2026-05-23, 94.8
+A라인, Array, OLED-14, 2026-05-24, 94.2
+A라인, Array, OLED-14, 2026-05-25, 93.6
+A라인, Array, OLED-14, 2026-05-26, 91.0
+A라인, Array, OLED-14, 2026-05-27, 88.3
+A라인, Array, OLED-14, 2026-05-28, 87.9
+B라인, Array, OLED-14, 2026-05-22, 95.0
+B라인, Array, OLED-14, 2026-05-23, 95.2
+B라인, Array, OLED-14, 2026-05-24, 94.9
+B라인, Array, OLED-14, 2026-05-25, 95.1
+B라인, Array, OLED-14, 2026-05-26, 95.3
+B라인, Array, OLED-14, 2026-05-27, 94.8
+B라인, Array, OLED-14, 2026-05-28, 95.0
+
+[기준]
+- 전일 대비 -2% 이상 하락 → 위험 (빨간색)
+- 전일 대비 -1% 이상 -2% 미만 → 주의 (노란색)
+- 전일 대비 변화 없거나 상승 → 정상 (흰색)
+
+[산출물]
+1. 날짜별 수율 표 (전일 대비 변화량 + 상태 색상 포함)
+2. A라인과 B라인 수율을 나란히 비교한 꺾은선 그래프
+3. 하락 폭 상위 3일과 원인 후보 3가지
+4. 위 내용을 모두 담은 HTML 보고서
+
+[검증 조건]
+보고서 하단에 "엔지니어 확인 필요 항목"을 추가해줘.
+- 해당 날짜에 PM(예방 정비) 이력이 있었는지
+- 레시피 변경 또는 자재 로트 교체가 있었는지
+- B라인 동일 모델에서는 같은 현상이 없는지</div>
+  </div>
+
+  <div class="narration">
+    <span class="narration-label">💬 발화 — 결과 생성 대기 중 (30초)</span>
+    "방금 입력한 프롬프트, 길어 보이지만 구조는 단순합니다.<br>
+    <strong>문제 한 줄 — 데이터 — 기준 — 원하는 결과물 — 검증 항목.</strong><br>
+    이 다섯 칸만 채우면 됩니다."
+  </div>
+
+  <hr class="divider">
+
+  <!-- 결과 설명 -->
+  <div class="section-header">
+    <div class="time">07:00 – 08:30</div>
+    <h2>결과 설명 — HTML 화면 짚어가며</h2>
+  </div>
+
+  <div class="card">
+    <h3>화면 스크롤하면서 이 순서로 짚어줍니다</h3>
+    <div class="result-guide">
+      <div class="result-item">
+        <div class="result-num">1</div>
+        <div>
+          <strong>수율 표 상단</strong>
+          <p>"날짜별 수율이 한눈에 보입니다. 5월 26일부터 빨간색으로 바뀌었습니다."</p>
+        </div>
+      </div>
+      <div class="result-item">
+        <div class="result-num">2</div>
+        <div>
+          <strong>색상 셀 강조</strong>
+          <p>"전일 대비 -2% 이상 하락한 날이 자동으로 빨간색입니다. 기준을 말했기 때문입니다."</p>
+        </div>
+      </div>
+      <div class="result-item">
+        <div class="result-num">3</div>
+        <div>
+          <strong>B라인 비교 꺾은선</strong>
+          <p>"B라인은 내내 정상입니다. A라인만 문제입니다. 설비나 레시피 이슈일 가능성이 높습니다."</p>
+        </div>
+      </div>
+      <div class="result-item">
+        <div class="result-num">4</div>
+        <div>
+          <strong>원인 후보 TOP3</strong>
+          <p>"AI가 원인 후보 3가지를 정리해줬습니다. 이게 결론이 아닙니다. 엔지니어가 확인할 체크리스트입니다."</p>
+        </div>
+      </div>
+      <div class="result-item">
+        <div class="result-num">5</div>
+        <div>
+          <strong>하단 검증 조건 박스</strong>
+          <p>"보고서 하단에 엔지니어 확인 항목이 자동으로 붙어 있습니다. 이게 역할 분리입니다. AI가 초안, 판단은 사람이."</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- Step 3 -->
+  <div class="section-header">
+    <div class="time">08:30 – 09:30</div>
+    <h2>Step 3 — 추가 수정 지시</h2>
+  </div>
+
+  <div class="prompt-wrap">
+    <div class="prompt-label prompt-extra-label">
+      <span>➕ 추가 입력할 프롬프트</span>
+    </div>
+    <div class="prompt-box extra">고마워. 두 가지만 추가해줘.
+
+1. A라인 수율 꺾은선 그래프에서
+   전일 대비 -2% 이상 하락한 날에 빨간 세로선을 표시해줘.
+
+2. 보고서 맨 위에
+   "5월 26일부터 A라인 수율 급락 — 즉시 원인 확인 필요"
+   문장을 빨간 경고 박스로 넣어줘.</div>
+  </div>
+
+  <div class="narration">
+    <span class="narration-label">💬 발화 — 결과 나온 후</span>
+    "이렇게 결과물을 받아보고, 필요한 부분만 추가 요청하면 됩니다.<br>
+    이게 1강에서 말한 세 번째 단계 —<br>
+    <strong>'엔지니어가 검토하고 수정 지시한다'</strong>는 흐름입니다."
+  </div>
+
+  <hr class="divider">
+
+  <!-- 마무리 -->
+  <div class="section-header">
+    <div class="time">09:30 – 10:00</div>
+    <h2>마무리 — 핵심 메시지</h2>
+  </div>
+
+  <div class="narration">
+    <span class="narration-label">💬 발화</span>
+    "오늘 시연에서 세 가지를 확인했습니다."
+  </div>
+
+  <div class="closing">
+    <h3>핵심 3가지</h3>
+    <div class="closing-point">
+      <div class="closing-icon">1️⃣</div>
+      <p><strong>'수율 분석해줘'</strong> 한 줄로는 아무것도 안 됩니다.</p>
+    </div>
+    <div class="closing-point">
+      <div class="closing-icon">2️⃣</div>
+      <p><strong>문제·데이터·기준·산출물·검증 조건</strong>, 이 5가지를 넣으면<br>HTML 보고서가 한 번에 나옵니다.</p>
+    </div>
+    <div class="closing-point">
+      <div class="closing-icon">3️⃣</div>
+      <p>결과를 받고 나서 <strong>'이 부분만 바꿔줘'</strong>로 계속 발전시킬 수 있습니다.</p>
+    </div>
+  </div>
+
+  <div class="key-message">
+    "코드를 한 줄도 안 썼습니다.<br>이게 바이브 코딩입니다."
+  </div>
+
+  <hr class="divider">
+
+  <!-- 관련 자료 링크 -->
+  <div class="section-header" style="margin-top:0;">
+    <h2>관련 자료</h2>
+  </div>
+
+  <div class="related-links">
+    <a class="related-link slide" href="https://heekeunlee.github.io/lecture01/" target="_blank">
+      <div class="link-label">LECTURE 01 · 강의 교안</div>
+      <div class="link-title">바이브 코딩 1강 — 공학적 설계에서 의도로</div>
+      <div class="link-url">heekeunlee.github.io/lecture01/</div>
+    </a>
+    <a class="related-link script" href="https://heekeunlee.github.io/lecture_assist001/scripts/lecture01/" target="_blank">
+      <div class="link-label">LECTURE 01 · 강의 스크립트</div>
+      <div class="link-title">1강 스크립트 — 바이브 코딩</div>
+      <div class="link-url">heekeunlee.github.io/lecture_assist001/<br>scripts/lecture01/</div>
+    </a>
+  </div>
+
+</div><!-- /content -->
+
+</body>
+</html>
