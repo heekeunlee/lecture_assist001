@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>5강 시연 가이드 — 수율 히트맵 & 웨이퍼 맵 시각화</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: #eef2ff;
+    color: #1a1a1a;
+    font-family: -apple-system, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+    font-size: 16px; line-height: 1.8; padding-bottom: 80px;
+  }
+  .topbar {
+    position: sticky; top: 0; z-index: 100;
+    background: #fff; border-bottom: 2px solid #c7d2fe;
+    padding: 10px 18px; display: flex; align-items: center; justify-content: space-between;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+  .topbar-title { font-size: 14px; font-weight: 700; color: #3730a3; }
+  .topbar-links { display: flex; gap: 8px; }
+  .nav-link { font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 99px; text-decoration: none; border: 1.5px solid; white-space: nowrap; }
+  .nav-link.slide  { color: #4f46e5; border-color: #4f46e5; }
+  .nav-link.script { color: #6d28d9; border-color: #6d28d9; }
+  .content { max-width: 740px; margin: 0 auto; padding: 0 18px; }
+  .hero {
+    background: linear-gradient(135deg, #3730a3 0%, #4f46e5 100%);
+    color: #fff; padding: 36px 24px 32px;
+  }
+  .hero-badge { display: inline-block; background: rgba(255,255,255,0.2); border-radius: 99px; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; padding: 3px 12px; margin-bottom: 14px; }
+  .hero h1 { font-size: clamp(1.4rem, 4vw, 1.9rem); font-weight: 900; line-height: 1.3; margin-bottom: 10px; word-break: keep-all; border: none; color: #fff; padding: 0; }
+  .hero p { font-size: 0.95rem; color: rgba(255,255,255,0.82); word-break: keep-all; }
+  .hero-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+  .meta-tag { background: rgba(255,255,255,0.15); border-radius: 99px; font-size: 12px; font-weight: 600; padding: 4px 12px; color: #fff; }
+  .section-header { background: #eef2ff; border-left: 5px solid #4f46e5; padding: 12px 18px; margin: 32px -18px 18px; }
+  .section-header h2 { font-size: 15px; font-weight: 800; color: #3730a3; line-height: 1.4; }
+  .section-header .time { font-size: 12px; color: #4f46e5; font-weight: 600; margin-top: 2px; }
+  .timeline-table { width: 100%; border-collapse: collapse; font-size: 14px; margin: 16px 0; }
+  .timeline-table th { background: #3730a3; color: #fff; padding: 8px 12px; text-align: left; font-weight: 700; font-size: 12px; }
+  .timeline-table td { padding: 9px 12px; border-bottom: 1px solid #c7d2fe; vertical-align: middle; }
+  .timeline-table tr:last-child td { border-bottom: none; }
+  .timeline-table tr:nth-child(even) td { background: #eef2ff; }
+  .tl-time { color: #4f46e5; font-weight: 800; font-size: 13px; white-space: nowrap; }
+  .tl-desc { color: #475569; font-size: 13px; }
+  .step-badge { display: inline-block; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 99px; white-space: nowrap; }
+  .badge-bad    { background: #fee2e2; color: #b91c1c; }
+  .badge-bridge { background: #fef3c7; color: #92400e; }
+  .badge-good   { background: #dcfce7; color: #166534; }
+  .badge-extra  { background: #e0f2fe; color: #0369a1; }
+  .badge-end    { background: #f3f4f6; color: #374151; }
+  .checklist { list-style: none; margin: 12px 0; }
+  .checklist li { display: flex; gap: 10px; align-items: flex-start; padding: 8px 0; border-bottom: 1px solid #c7d2fe; font-size: 14px; }
+  .checklist li:last-child { border-bottom: none; }
+  .check-box { flex-shrink: 0; width: 22px; height: 22px; border: 2px solid #a5b4fc; border-radius: 5px; margin-top: 1px; }
+  .card { background: #fff; border: 1px solid #c7d2fe; border-radius: 12px; padding: 18px; margin-bottom: 16px; }
+  .card h3 { font-size: 15px; font-weight: 700; margin-bottom: 8px; color: #3730a3; }
+  .narration { background: #eef2ff; border-left: 4px solid #818cf8; border-radius: 0 10px 10px 0; padding: 14px 16px; font-size: 15px; line-height: 1.85; color: #312e81; margin: 12px 0; word-break: keep-all; }
+  .narration strong { color: #4f46e5; }
+  .narration-label { font-size: 11px; font-weight: 700; color: #4f46e5; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 6px; display: block; }
+  .prompt-wrap { margin: 12px 0; }
+  .prompt-label { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+  .prompt-label span { font-size: 12px; font-weight: 700; letter-spacing: 0.06em; }
+  .prompt-bad-label span   { color: #b91c1c; }
+  .prompt-good-label span  { color: #166534; }
+  .prompt-extra-label span { color: #0369a1; }
+  .prompt-box { background: #0f172a; color: #e2e8f0; border-radius: 10px; padding: 16px 18px; font-size: 13px; line-height: 1.85; white-space: pre-wrap; word-break: break-word; font-family: 'Courier New','D2Coding',monospace; overflow-x: auto; }
+  .prompt-box.bad   { border-left: 4px solid #ef4444; }
+  .prompt-box.good  { border-left: 4px solid #22c55e; color: #a5f3fc; }
+  .prompt-box.extra { border-left: 4px solid #38bdf8; color: #bfdbfe; }
+  .prompt-box .kw   { color: #fbbf24; font-weight: 700; }
+  .prompt-box .val  { color: #86efac; }
+  .prompt-box .comment { color: #64748b; }
+  .ai-response { background: #fff; border: 1.5px solid #e2e8f0; border-radius: 12px; overflow: hidden; margin: 14px 0; }
+  .ai-response-header { background: #f8fafc; border-bottom: 1px solid #e2e8f0; padding: 10px 16px; display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; color: #475569; }
+  .ai-dot { width: 8px; height: 8px; border-radius: 50%; background: #94a3b8; }
+  .ai-response-body { padding: 16px; font-size: 13.5px; color: #334155; line-height: 1.85; }
+  .ai-response-body p { margin-bottom: 10px; }
+  .ai-response-body ul { padding-left: 18px; color: #64748b; }
+  .ai-response-body ul li { margin-bottom: 6px; }
+  .ai-question { color: #1d4ed8; font-weight: 600; }
+  .ai-tag-bad  { display: inline-block; font-size: 11px; font-weight: 700; background: #fee2e2; color: #b91c1c; padding: 2px 10px; border-radius: 99px; margin: 0 0 0 auto; }
+  .ai-tag-good { display: inline-block; font-size: 11px; font-weight: 700; background: #dcfce7; color: #166534; padding: 2px 10px; border-radius: 99px; margin: 0 0 0 auto; }
+  .html-preview { border: 2px solid #4f46e5; border-radius: 14px; overflow: hidden; margin: 14px 0; background: #fff; }
+  .html-preview-header { background: #eef2ff; border-bottom: 1px solid #c7d2fe; padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; }
+  .html-preview-header span { font-size: 12px; font-weight: 700; color: #3730a3; }
+  .html-preview-body { padding: 18px; }
+  .dash-cards { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; margin-bottom: 14px; }
+  @media(max-width:520px){ .dash-cards { grid-template-columns: repeat(2,1fr); } }
+  .dash-card { border-radius: 10px; padding: 12px; text-align: center; border: 1px solid #e2e8f0; }
+  .dash-card.blue  { background: #eff6ff; border-color: #bfdbfe; }
+  .dash-card.red   { background: #fef2f2; border-color: #fca5a5; }
+  .dash-card.yel   { background: #fefce8; border-color: #fde68a; }
+  .dash-card.green { background: #f0fdf4; border-color: #bbf7d0; }
+  .dash-card.indigo{ background: #eef2ff; border-color: #c7d2fe; }
+  .dash-card .dc-val { font-size: 1.3rem; font-weight: 900; line-height: 1.1; margin-bottom: 4px; }
+  .dash-card.blue  .dc-val { color: #1d4ed8; }
+  .dash-card.red   .dc-val { color: #991b1b; }
+  .dash-card.yel   .dc-val { color: #92400e; }
+  .dash-card.green .dc-val { color: #166534; }
+  .dash-card.indigo .dc-val { color: #3730a3; }
+  .dash-card .dc-label { font-size: 10.5px; color: #64748b; font-weight: 600; word-break: keep-all; }
+  .r-chart-wrap { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px; margin-bottom: 14px; }
+  .r-chart-title { font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 8px; }
+  .r-section-title { font-size: 13px; font-weight: 800; color: #3730a3; margin: 14px 0 8px; border-bottom: 1.5px solid #c7d2fe; padding-bottom: 4px; }
+  .r-legend { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 8px; font-size: 11px; }
+  .r-legend span { display: flex; align-items: center; gap: 4px; font-weight: 600; }
+  .result-guide { margin: 12px 0; }
+  .result-item { display: flex; gap: 12px; align-items: flex-start; padding: 10px 0; border-bottom: 1px solid #c7d2fe; font-size: 14px; }
+  .result-item:last-child { border-bottom: none; }
+  .result-num { flex-shrink: 0; width: 26px; height: 26px; border-radius: 50%; background: #4f46e5; color: #fff; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center; margin-top: 1px; }
+  .result-item strong { display: block; font-size: 14px; margin-bottom: 2px; }
+  .result-item p { color: #475569; font-size: 13px; margin: 0; }
+  .csv-wrap { margin: 14px 0; }
+  .csv-label { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+  .csv-label span { font-size: 12px; font-weight: 700; color: #4f46e5; }
+  .csv-copy-btn { font-size: 11px; font-weight: 700; background: #4f46e5; color: #fff; border: none; border-radius: 99px; padding: 3px 12px; cursor: pointer; }
+  .csv-box { background: #0f172a; color: #a5b4fc; border-radius: 10px; padding: 14px 16px; font-size: 12.5px; line-height: 1.8; white-space: pre; overflow-x: auto; font-family: 'Courier New','D2Coding',monospace; border-left: 4px solid #4f46e5; }
+  .pattern-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin: 12px 0; }
+  @media(max-width:520px){ .pattern-grid { grid-template-columns: 1fr; } }
+  .pattern-item { border-radius: 10px; padding: 12px; border: 1.5px solid; }
+  .pattern-item.edge { background: #fff1f2; border-color: #fecdd3; }
+  .pattern-item.center { background: #f0fdf4; border-color: #bbf7d0; }
+  .pattern-item.band { background: #fef3c7; border-color: #fde68a; }
+  .pattern-tag { display: inline-block; font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 6px; margin-bottom: 4px; }
+  .pattern-item.edge .pattern-tag   { background: #e11d48; color: #fff; }
+  .pattern-item.center .pattern-tag { background: #16a34a; color: #fff; }
+  .pattern-item.band .pattern-tag   { background: #d97706; color: #fff; }
+  .pattern-title { font-weight: 700; font-size: 13px; margin-bottom: 4px; }
+  .pattern-desc  { font-size: 12px; color: #475569; }
+  .pattern-cause { font-size: 11px; font-weight: 700; margin-top: 6px; }
+  .pattern-item.edge .pattern-cause   { color: #e11d48; }
+  .pattern-item.center .pattern-cause { color: #16a34a; }
+  .pattern-item.band .pattern-cause   { color: #d97706; }
+  .closing { background: #312e81; color: #fff; border-radius: 14px; padding: 24px 22px; margin: 24px 0; }
+  .closing h3 { font-size: 16px; font-weight: 800; margin-bottom: 14px; color: #a5b4fc; }
+  .closing-point { display: flex; gap: 12px; align-items: flex-start; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.08); font-size: 14px; }
+  .closing-point:last-child { border-bottom: none; }
+  .closing-point p { color: #e2e8f0; line-height: 1.6; word-break: keep-all; }
+  .closing-point strong { color: #fff; }
+  .key-message { background: #fef3c7; border: 2px solid #f59e0b; border-radius: 12px; padding: 18px 20px; margin: 20px 0; font-size: 15px; font-weight: 700; color: #92400e; text-align: center; word-break: keep-all; line-height: 1.7; }
+  .related-links { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 20px 0; }
+  @media(max-width:480px){ .related-links { grid-template-columns: 1fr; } }
+  .related-link { display: block; text-decoration: none; border: 1.5px solid; border-radius: 10px; padding: 12px 14px; }
+  .related-link.slide  { border-color: #4f46e5; background: #eef2ff; }
+  .related-link.script { border-color: #6d28d9; background: #f5f3ff; }
+  .related-link .link-label { font-size: 11px; font-weight: 700; letter-spacing: 0.06em; margin-bottom: 3px; }
+  .related-link.slide  .link-label { color: #4f46e5; }
+  .related-link.script .link-label { color: #6d28d9; }
+  .related-link .link-title { font-size: 13px; font-weight: 700; color: #1a1a1a; }
+  .related-link .link-url { font-size: 11px; color: #64748b; margin-top: 2px; word-break: break-all; }
+  .divider { border: none; border-top: 1px solid #c7d2fe; margin: 28px 0; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-title">5강 시연 가이드 · 수율 히트맵 & 웨이퍼 맵 시각화</div>
+  <div class="topbar-links">
+    <a class="nav-link slide"  href="https://heekeunlee.github.io/lecture05/" target="_blank">강의 교안</a>
+    <a class="nav-link script" href="https://heekeunlee.github.io/lecture_assist001/scripts/lecture05/" target="_blank">강의 스크립트</a>
+  </div>
+</div>
+
+<!-- 히어로 -->
+<div class="hero">
+  <div class="content">
+    <div class="hero-badge">5강 · 부록 시연 영상 가이드</div>
+    <h1>수율 히트맵 & 웨이퍼 맵<br>숫자 100개를 색 지도 한 장으로</h1>
+    <p>같은 웨이퍼 수율 데이터로 두 번 입력합니다.<br>
+    위치 정보 없이 "히트맵 그려줘" vs 5요소 완성형 지시.<br>
+    우하단 불량 군집이 3초 만에 보이는 웨이퍼 맵이 나오는 과정을 보여주는 10분 시연입니다.</p>
+    <div class="hero-meta">
+      <span class="meta-tag">⏱ 10분</span>
+      <span class="meta-tag">Claude.ai / Claude Code</span>
+      <span class="meta-tag">300mm 웨이퍼 수율</span>
+      <span class="meta-tag">인터랙티브 히트맵</span>
+      <span class="meta-tag">패턴→원인 후보 도출</span>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- 전체 타임라인 -->
+  <div class="section-header">
+    <div class="time">00:00 – 10:00</div>
+    <h2>전체 진행 순서 (10분)</h2>
+  </div>
+  <table class="timeline-table">
+    <thead><tr><th>시간</th><th>구간</th><th>내용</th></tr></thead>
+    <tbody>
+      <tr><td class="tl-time">00:00–01:00</td><td><span class="step-badge badge-end">인트로</span></td><td class="tl-desc">숫자 표 vs 히트맵 — "3초 안에 우하단이 빨갛다"</td></tr>
+      <tr><td class="tl-time">01:00–02:30</td><td><span class="step-badge badge-bad">Step 1</span></td><td class="tl-desc">위치·기준 없는 프롬프트 → AI 역질문 5개</td></tr>
+      <tr><td class="tl-time">02:30–03:30</td><td><span class="step-badge badge-bridge">브리지</span></td><td class="tl-desc">히트맵 5요소 — 문제·데이터·기준·산출물·검증</td></tr>
+      <tr><td class="tl-time">03:30–07:00</td><td><span class="step-badge badge-good">Step 2</span></td><td class="tl-desc">5요소 완성형 입력 → 인터랙티브 웨이퍼 히트맵 생성</td></tr>
+      <tr><td class="tl-time">07:00–08:30</td><td><span class="step-badge badge-good">결과 설명</span></td><td class="tl-desc">상태 카드·히트맵·패턴→원인 후보 표 짚기</td></tr>
+      <tr><td class="tl-time">08:30–09:30</td><td><span class="step-badge badge-extra">Step 3</span></td><td class="tl-desc">가장자리 vs 중심 수율 비교 막대 추가 요청</td></tr>
+      <tr><td class="tl-time">09:30–10:00</td><td><span class="step-badge badge-end">마무리</span></td><td class="tl-desc">"패턴의 의미를 읽는 것은 엔지니어의 몫"</td></tr>
+    </tbody>
+  </table>
+
+  <!-- 사전 준비 -->
+  <div class="section-header">
+    <div class="time">촬영 전 준비</div>
+    <h2>사전 준비 체크리스트</h2>
+  </div>
+  <div class="card">
+    <ul class="checklist">
+      <li><div class="check-box"></div><span>Claude.ai 또는 Claude Code 로그인 확인</span></li>
+      <li><div class="check-box"></div><span>Step 2 프롬프트를 메모장에 미리 복사해두기 (붙여넣기로 진행)</span></li>
+      <li><div class="check-box"></div><span>브라우저 확대 125% — Die_X/Die_Y 좌표와 기준값(±5%)이 화면에 명확히 보여야 함</span></li>
+      <li><div class="check-box"></div><span>화면 녹화 1080p 이상 설정</span></li>
+      <li><div class="check-box"></div><span>히트맵에서 우하단 빨간색 구역 마우스로 가리킬 준비</span></li>
+    </ul>
+  </div>
+
+  <!-- 소스 데이터 -->
+  <div class="section-header">
+    <div class="time">촬영 전 준비 · 데이터</div>
+    <h2>소스 데이터 — 300mm 웨이퍼 수율 (우하단 군집 불량 포함)</h2>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-bottom:8px;">데이터 설계 포인트 — 시연 중 반드시 짚어주세요</h3>
+    <div class="pattern-grid">
+      <div class="pattern-item edge">
+        <div class="pattern-tag">우하단 군집</div>
+        <div class="pattern-title">Die_X 4~5, Die_Y 4~5</div>
+        <div class="pattern-desc">수율 38~55% — 빨강 구역. 4다이가 몰려 있음</div>
+        <div class="pattern-cause">→ 타겟 race-track 침식 의심</div>
+      </div>
+      <div class="pattern-item center">
+        <div class="pattern-tag">중심 정상</div>
+        <div class="pattern-title">Die_X 2~3, Die_Y 2~3</div>
+        <div class="pattern-desc">수율 91~96% — 파랑 구역. 공정 조건 안정</div>
+        <div class="pattern-cause">→ 기준 정상 범위 확인</div>
+      </div>
+      <div class="pattern-item band">
+        <div class="pattern-tag">가장자리 저하</div>
+        <div class="pattern-title">Die_X/Y = 0 또는 5</div>
+        <div class="pattern-desc">수율 72~81% — 노랑 구역. 중심↔가장자리 구배</div>
+        <div class="pattern-cause">→ Ar 유량 구배 또는 스퍼터 출력 분포</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="csv-wrap">
+    <div class="csv-label">
+      <span>📊 PVD-01 웨이퍼 수율 데이터 (프롬프트 안에 그대로 포함)</span>
+      <button class="csv-copy-btn" onclick="copyCSV()">복사</button>
+    </div>
+    <div class="csv-box" id="csvContent">Die_X, Die_Y, SheetResistance_mohm, Yield_pct
+0,     0,     128.4,              76
+0,     1,     124.7,              81
+0,     2,     121.3,              84
+0,     3,     123.8,              79
+0,     4,     129.1,              74
+0,     5,     131.2,              72
+1,     0,     120.5,              85
+1,     1,     117.2,              91
+1,     2,     115.8,              94
+1,     3,     116.4,              93
+1,     4,     119.7,              88
+1,     5,     122.3,              82
+2,     0,     119.4,              87
+2,     1,     115.1,              95
+2,     2,     114.6,              96
+2,     3,     114.9,              96
+2,     4,     118.3,              90
+2,     5,     120.8,              85
+3,     0,     120.1,              86
+3,     1,     115.6,              94
+3,     2,     114.8,              96
+3,     3,     115.2,              95
+3,     4,     119.0,              89
+3,     5,     121.5,              83
+4,     0,     123.6,              80
+4,     1,     121.0,              85
+4,     2,     120.4,              86
+4,     3,     125.7,              77
+4,     4,     138.9,              55   ← 이상 구역 (타겟 침식 의심)
+4,     5,     142.3,              48   ← 이상 구역
+5,     0,     127.8,              75
+5,     1,     124.2,              80
+5,     2,     122.1,              83
+5,     3,     130.4,              71
+5,     4,     145.6,              43   ← 이상 구역
+5,     5,     148.9,              38   ← 이상 구역 (최저)</div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- 인트로 -->
+  <div class="section-header">
+    <div class="time">00:00 – 01:00</div>
+    <h2>인트로</h2>
+  </div>
+  <div class="narration">
+    <span class="narration-label">💬 발화</span>
+    "5강의 핵심은 하나입니다. <strong>같은 데이터인데, 보는 방식이 달라지면 3초 만에 패턴이 보입니다.</strong><br>
+    이 웨이퍼에는 36개 다이의 수율이 숫자로 있습니다.<br>
+    어느 구역이 낮은지 숫자로 찾으면 20~30분. 히트맵으로 바꾸면 3초.<br>
+    지금부터 AI에게 어떻게 지시하느냐가 이 차이를 만드는지 보여드리겠습니다."
+  </div>
+
+  <hr class="divider">
+
+  <!-- Step 1 -->
+  <div class="section-header">
+    <div class="time">01:00 – 02:30</div>
+    <h2>Step 1 — 위치·기준 없는 프롬프트 입력</h2>
+  </div>
+  <div class="prompt-wrap">
+    <div class="prompt-label prompt-bad-label">
+      <span>❌ 입력할 프롬프트</span>
+    </div>
+    <div class="prompt-box bad">수율 데이터 히트맵으로 그려줘.
+
+Die_X, Die_Y, SheetResistance_mohm, Yield_pct
+0, 0, 128.4, 76
+0, 1, 124.7, 81
+... (이하 동일 데이터)</div>
+  </div>
+
+  <div class="ai-response">
+    <div class="ai-response-header">
+      <div class="ai-dot"></div>
+      <span>Claude 응답 예측 — 막연한 프롬프트 입력 시</span>
+      <div class="ai-tag-bad">❌ 막연한 프롬프트 결과</div>
+    </div>
+    <div class="ai-response-body">
+      <p>데이터를 확인했습니다. 히트맵을 만들기 전에 몇 가지를 결정해주셔야 합니다.</p>
+      <ul>
+        <li class="ai-question">X축과 Y축에 각각 어떤 컬럼을 쓸까요? Die_X/Die_Y 좌표 기준인가요?</li>
+        <li class="ai-question">색상은 SheetResistance와 Yield_pct 중 어떤 값을 기준으로 할까요?</li>
+        <li class="ai-question">이상 판정 기준값은 무엇인가요? 수율 몇 % 미만을 이상으로 볼까요?</li>
+        <li class="ai-question">결과를 정적 이미지(PNG)로 드릴까요, 마우스를 올리면 값이 보이는 인터랙티브 HTML로 드릴까요?</li>
+        <li class="ai-question">원인 분석까지 포함할까요, 시각화만 원하시나요?</li>
+      </ul>
+      <p style="margin-top:12px; color:#94a3b8; font-size:12px;">참고로 Die_X 4~5, Die_Y 4~5 구간의 수율이 38~55%로 낮아 보입니다.</p>
+    </div>
+  </div>
+  <p style="font-size:12.5px; color:#ef4444; font-weight:700; margin:4px 0 0 4px;">
+    → 역질문 5개. 좌표 컬럼·기준값·출력 형식·원인 분석 여부 모두 되물음. 히트맵 없음.
+  </p>
+
+  <div class="narration">
+    <span class="narration-label">💬 발화 (30초)</span>
+    "데이터가 있어도 <strong>어떤 컬럼을 좌표로 쓸지, 이상 기준값이 얼마인지, 어떤 형식으로 받을지</strong>를<br>
+    말하지 않으면 AI는 선택을 사람에게 돌려보냅니다.<br>
+    5강에서 배운 히트맵 5요소 작업지시서가 바로 이것을 해결합니다."
+  </div>
+
+  <hr class="divider">
+
+  <!-- 브리지 -->
+  <div class="section-header">
+    <div class="time">02:30 – 03:30</div>
+    <h2>브리지 — 히트맵 5요소 작업지시서</h2>
+  </div>
+  <div class="narration">
+    <span class="narration-label">💬 발화</span>
+    "5강 히트맵 작업지시서 5요소입니다.<br>
+    ① 문제 — 어떤 공정·설비에서 무엇이 의심되는가<br>
+    ② 데이터 — 파일명·컬럼·단위·좌표 열 이름까지 명시<br>
+    ③ 기준 — 이상 판정 임계값(목표값 ±5% 등)을 직접 지정<br>
+    ④ 산출물 — 인터랙티브 HTML 히트맵 + 비교표<br>
+    ⑤ 검증 — 엔지니어가 재확인할 후보 원인 3가지<br>
+    지금 이 다섯 가지를 모두 담아서 입력하겠습니다."
+  </div>
+
+  <hr class="divider">
+
+  <!-- Step 2 -->
+  <div class="section-header">
+    <div class="time">03:30 – 07:00</div>
+    <h2>Step 2 — 5요소 완성형 프롬프트 입력</h2>
+  </div>
+  <div class="prompt-wrap">
+    <div class="prompt-label prompt-good-label">
+      <span>✅ 입력할 프롬프트 (그대로 복사 · 붙여넣기)</span>
+    </div>
+    <div class="prompt-box good"><span class="kw">[① 문제]</span>
+PVD 스퍼터링 후 웨이퍼 가장자리 저항 상승 의심.
+특히 우하단(Die_X 4~5, Die_Y 4~5) 구역 수율 저하 패턴 확인 필요.
+
+<span class="kw">[② 데이터]</span>
+아래 CSV 데이터를 사용해줘.
+컬럼: Die_X(열, 0~5), Die_Y(행, 0~5), SheetResistance_mohm, Yield_pct
+
+Die_X, Die_Y, SheetResistance_mohm, Yield_pct
+0, 0, 128.4, 76
+0, 1, 124.7, 81
+0, 2, 121.3, 84
+0, 3, 123.8, 79
+0, 4, 129.1, 74
+0, 5, 131.2, 72
+1, 0, 120.5, 85
+1, 1, 117.2, 91
+1, 2, 115.8, 94
+1, 3, 116.4, 93
+1, 4, 119.7, 88
+1, 5, 122.3, 82
+2, 0, 119.4, 87
+2, 1, 115.1, 95
+2, 2, 114.6, 96
+2, 3, 114.9, 96
+2, 4, 118.3, 90
+2, 5, 120.8, 85
+3, 0, 120.1, 86
+3, 1, 115.6, 94
+3, 2, 114.8, 96
+3, 3, 115.2, 95
+3, 4, 119.0, 89
+3, 5, 121.5, 83
+4, 0, 123.6, 80
+4, 1, 121.0, 85
+4, 2, 120.4, 86
+4, 3, 125.7, 77
+4, 4, 138.9, 55
+4, 5, 142.3, 48
+5, 0, 127.8, 75
+5, 1, 124.2, 80
+5, 2, 122.1, 83
+5, 3, 130.4, 71
+5, 4, 145.6, 43
+5, 5, 148.9, 38
+
+<span class="kw">[③ 기준]</span>
+수율 <span class="val">≥90%</span> = 정상(파랑), 60~89% = 주의(노랑), <span class="val">&lt;60%</span> = 이상(빨강)
+저항 목표값 <span class="val">115mΩ/□ ±5%</span> (109~121mΩ) 초과 = 이상
+
+<span class="kw">[④ 산출물]</span>
+HTML 파일 하나로:
+1. 요약 카드 4개: 정상 다이 수 / 주의 다이 수 / 이상 다이 수 / 전체 평균 수율
+2. 인터랙티브 웨이퍼 히트맵
+   <span class="comment">   - 마우스 올리면 Die_X, Die_Y, Yield_pct, SheetResistance 표시</span>
+   <span class="comment">   - 색상: 파랑(정상) → 노랑(주의) → 빨강(이상)</span>
+3. 원인 후보 3가지 표 (패턴 설명 포함)
+
+<span class="kw">[⑤ 검증]</span>
+보고서 하단에 "엔지니어 재확인 필요 항목" 추가:
+- 타겟 race-track 침식 위치와 우하단 이상 구역 일치 여부
+- Ar 유량·스퍼터 출력의 공간 분포 측정값과 비교
+- 동일 Lot 내 다른 웨이퍼에서 같은 패턴 반복 여부</div>
+  </div>
+
+  <div class="narration">
+    <span class="narration-label">💬 발화 — 결과 생성 대기 중 (30초)</span>
+    "좌표 컬럼, 정상·주의·이상 기준값, 인터랙티브 HTML 요청까지 모두 담았습니다.<br>
+    AI가 역질문 없이 바로 실행합니다."
+  </div>
+
+  <!-- 좋은 프롬프트 결과 예측 -->
+  <div class="html-preview">
+    <div class="html-preview-header">
+      <span>✅ Claude 결과 예측 — 웨이퍼 히트맵 출력 미리보기</span>
+      <div class="ai-tag-good">5요소 완성형 결과</div>
+    </div>
+    <div class="html-preview-body">
+
+      <!-- 요약 카드 -->
+      <div class="r-section-title">요약 카드 (상단 4개)</div>
+      <div class="dash-cards">
+        <div class="dash-card blue">
+          <div class="dc-val">16개</div>
+          <div class="dc-label">정상 다이 (≥90%)</div>
+        </div>
+        <div class="dash-card yel">
+          <div class="dc-val">16개</div>
+          <div class="dc-label">주의 다이 (60~89%)</div>
+        </div>
+        <div class="dash-card red">
+          <div class="dc-val">4개</div>
+          <div class="dc-label">이상 다이 (&lt;60%)</div>
+        </div>
+        <div class="dash-card indigo">
+          <div class="dc-val">82.3%</div>
+          <div class="dc-label">전체 평균 수율</div>
+        </div>
+      </div>
+
+      <!-- 웨이퍼 히트맵 SVG -->
+      <div class="r-section-title">인터랙티브 웨이퍼 히트맵</div>
+      <div class="r-chart-wrap">
+        <div class="r-chart-title">Die_X(열) × Die_Y(행) — 수율 히트맵 | 마우스 오버 시 상세값 표시</div>
+        <svg viewBox="0 0 360 360" style="width:100%;max-width:400px;height:auto;display:block;margin:0 auto;">
+          <!-- Row 0: Y=0 -->
+          <rect x="40"  y="40"  width="50" height="50" fill="#93c5fd" rx="3"/>
+          <rect x="95"  y="40"  width="50" height="50" fill="#bfdbfe" rx="3"/>
+          <rect x="150" y="40"  width="50" height="50" fill="#dbeafe" rx="3"/>
+          <rect x="205" y="40"  width="50" height="50" fill="#dbeafe" rx="3"/>
+          <rect x="260" y="40"  width="50" height="50" fill="#93c5fd" rx="3"/>
+          <rect x="315" y="40"  width="50" height="50" fill="#93c5fd" rx="3"/>
+          <!-- Row 1: Y=1 -->
+          <rect x="40"  y="95"  width="50" height="50" fill="#bfdbfe" rx="3"/>
+          <rect x="95"  y="95"  width="50" height="50" fill="#60a5fa" rx="3"/>
+          <rect x="150" y="95"  width="50" height="50" fill="#3b82f6" rx="3"/>
+          <rect x="205" y="95"  width="50" height="50" fill="#3b82f6" rx="3"/>
+          <rect x="260" y="95"  width="50" height="50" fill="#bfdbfe" rx="3"/>
+          <rect x="315" y="95"  width="50" height="50" fill="#93c5fd" rx="3"/>
+          <!-- Row 2: Y=2 -->
+          <rect x="40"  y="150" width="50" height="50" fill="#bfdbfe" rx="3"/>
+          <rect x="95"  y="150" width="50" height="50" fill="#3b82f6" rx="3"/>
+          <rect x="150" y="150" width="50" height="50" fill="#1d4ed8" rx="3"/>
+          <rect x="205" y="150" width="50" height="50" fill="#1d4ed8" rx="3"/>
+          <rect x="260" y="150" width="50" height="50" fill="#60a5fa" rx="3"/>
+          <rect x="315" y="150" width="50" height="50" fill="#bfdbfe" rx="3"/>
+          <!-- Row 3: Y=3 -->
+          <rect x="40"  y="205" width="50" height="50" fill="#bfdbfe" rx="3"/>
+          <rect x="95"  y="205" width="50" height="50" fill="#3b82f6" rx="3"/>
+          <rect x="150" y="205" width="50" height="50" fill="#1d4ed8" rx="3"/>
+          <rect x="205" y="205" width="50" height="50" fill="#1d4ed8" rx="3"/>
+          <rect x="260" y="205" width="50" height="50" fill="#60a5fa" rx="3"/>
+          <rect x="315" y="205" width="50" height="50" fill="#fde68a" rx="3"/>
+          <!-- Row 4: Y=4 -->
+          <rect x="40"  y="260" width="50" height="50" fill="#93c5fd" rx="3"/>
+          <rect x="95"  y="260" width="50" height="50" fill="#bfdbfe" rx="3"/>
+          <rect x="150" y="260" width="50" height="50" fill="#bfdbfe" rx="3"/>
+          <rect x="205" y="260" width="50" height="50" fill="#93c5fd" rx="3"/>
+          <rect x="260" y="260" width="50" height="50" fill="#fca5a5" rx="3"/>
+          <rect x="315" y="260" width="50" height="50" fill="#ef4444" rx="3"/>
+          <!-- Row 5: Y=5 -->
+          <rect x="40"  y="315" width="50" height="50" fill="#93c5fd" rx="3"/>
+          <rect x="95"  y="315" width="50" height="50" fill="#93c5fd" rx="3"/>
+          <rect x="150" y="315" width="50" height="50" fill="#bfdbfe" rx="3"/>
+          <rect x="205" y="315" width="50" height="50" fill="#fde68a" rx="3"/>
+          <rect x="260" y="315" width="50" height="50" fill="#ef4444" rx="3"/>
+          <rect x="315" y="315" width="50" height="50" fill="#dc2626" rx="3"/>
+          <!-- 수율 숫자 -->
+          <text x="65"  y="70"  text-anchor="middle" font-size="10" fill="#1e40af" font-weight="700">76%</text>
+          <text x="120" y="70"  text-anchor="middle" font-size="10" fill="#1e40af" font-weight="700">81%</text>
+          <text x="175" y="70"  text-anchor="middle" font-size="10" fill="#1e40af" font-weight="700">84%</text>
+          <text x="230" y="70"  text-anchor="middle" font-size="10" fill="#1e40af" font-weight="700">79%</text>
+          <text x="285" y="70"  text-anchor="middle" font-size="10" fill="#1e40af" font-weight="700">74%</text>
+          <text x="340" y="70"  text-anchor="middle" font-size="10" fill="#1e40af" font-weight="700">72%</text>
+          <text x="65"  y="125" text-anchor="middle" font-size="10" fill="#1e40af" font-weight="700">85%</text>
+          <text x="120" y="125" text-anchor="middle" font-size="10" fill="#1e40af" font-weight="700">91%</text>
+          <text x="175" y="125" text-anchor="middle" font-size="10" fill="#fff"    font-weight="700">94%</text>
+          <text x="230" y="125" text-anchor="middle" font-size="10" fill="#fff"    font-weight="700">93%</text>
+          <text x="285" y="125" text-anchor="middle" font-size="10" fill="#1e40af" font-weight="700">88%</text>
+          <text x="340" y="125" text-anchor="middle" font-size="10" fill="#1e40af" font-weight="700">82%</text>
+          <text x="175" y="180" text-anchor="middle" font-size="11" fill="#fff" font-weight="800">96%</text>
+          <text x="230" y="180" text-anchor="middle" font-size="11" fill="#fff" font-weight="800">96%</text>
+          <text x="175" y="235" text-anchor="middle" font-size="11" fill="#fff" font-weight="800">96%</text>
+          <text x="230" y="235" text-anchor="middle" font-size="11" fill="#fff" font-weight="800">95%</text>
+          <text x="285" y="290" text-anchor="middle" font-size="10" fill="#991b1b" font-weight="700">55%</text>
+          <text x="340" y="290" text-anchor="middle" font-size="10" fill="#fff"    font-weight="700">48%</text>
+          <text x="285" y="345" text-anchor="middle" font-size="10" fill="#fff"    font-weight="700">43%</text>
+          <text x="340" y="345" text-anchor="middle" font-size="10" fill="#fff"    font-weight="700">38%</text>
+          <!-- 이상 구역 표시 -->
+          <rect x="258" y="258" width="109" height="109" fill="none" stroke="#dc2626" stroke-width="2.5" stroke-dasharray="5,3" rx="4"/>
+          <text x="363" y="256" font-size="9" fill="#dc2626" font-weight="700">이상 구역</text>
+          <!-- 축 라벨 -->
+          <text x="65"  y="32" text-anchor="middle" font-size="9" fill="#64748b">X=0</text>
+          <text x="120" y="32" text-anchor="middle" font-size="9" fill="#64748b">X=1</text>
+          <text x="175" y="32" text-anchor="middle" font-size="9" fill="#64748b">X=2</text>
+          <text x="230" y="32" text-anchor="middle" font-size="9" fill="#64748b">X=3</text>
+          <text x="285" y="32" text-anchor="middle" font-size="9" fill="#64748b">X=4</text>
+          <text x="340" y="32" text-anchor="middle" font-size="9" fill="#64748b">X=5</text>
+          <text x="28" y="70"  text-anchor="end" font-size="9" fill="#64748b">Y=0</text>
+          <text x="28" y="125" text-anchor="end" font-size="9" fill="#64748b">Y=1</text>
+          <text x="28" y="180" text-anchor="end" font-size="9" fill="#64748b">Y=2</text>
+          <text x="28" y="235" text-anchor="end" font-size="9" fill="#64748b">Y=3</text>
+          <text x="28" y="290" text-anchor="end" font-size="9" fill="#64748b">Y=4</text>
+          <text x="28" y="345" text-anchor="end" font-size="9" fill="#64748b">Y=5</text>
+        </svg>
+        <div class="r-legend">
+          <span style="color:#1d4ed8; font-weight:800;">■ 파랑 ≥90% 정상</span>
+          <span style="color:#92400e; font-weight:800;">■ 노랑 60~89% 주의</span>
+          <span style="color:#dc2626; font-weight:800;">■ 빨강 &lt;60% 이상</span>
+        </div>
+      </div>
+
+      <!-- 원인 후보 표 -->
+      <div class="r-section-title">원인 후보 3가지 (패턴 기반)</div>
+      <div style="overflow-x:auto;">
+        <table style="width:100%;border-collapse:collapse;font-size:12.5px;">
+          <thead>
+            <tr style="background:#3730a3;color:#fff;">
+              <th style="padding:8px 10px;text-align:left;">패턴</th>
+              <th style="padding:8px 10px;text-align:left;">원인 후보</th>
+              <th style="padding:8px 10px;text-align:left;">확인 항목</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="background:#fff1f2;border-bottom:1px solid #fecdd3;">
+              <td style="padding:8px 10px;">우하단 군집 &lt;60%</td>
+              <td style="padding:8px 10px;font-weight:700;color:#b91c1c;">타겟 race-track 침식</td>
+              <td style="padding:8px 10px;color:#475569;">침식 위치 육안 확인 + 타겟 사용량 이력</td>
+            </tr>
+            <tr style="background:#fefce8;border-bottom:1px solid #fde68a;">
+              <td style="padding:8px 10px;">가장자리 전체 저하</td>
+              <td style="padding:8px 10px;font-weight:700;color:#92400e;">Ar 유량 공간 분포 불균일</td>
+              <td style="padding:8px 10px;color:#475569;">유량 센서 구역별 측정값 비교</td>
+            </tr>
+            <tr style="background:#f0fdf4;">
+              <td style="padding:8px 10px;">중심 정상, 가장자리 저하</td>
+              <td style="padding:8px 10px;font-weight:700;color:#166534;">스퍼터 파워 구배</td>
+              <td style="padding:8px 10px;color:#475569;">RF 출력 분포 맵 측정</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+  <p style="font-size:12.5px; color:#166534; font-weight:700; margin:4px 0 16px 4px;">
+    → 요약 카드 · 인터랙티브 히트맵(우하단 빨강 명확) · 원인 후보 3가지 — 한 번에 완성. 역질문 0회.
+  </p>
+
+  <hr class="divider">
+
+  <!-- 결과 설명 -->
+  <div class="section-header">
+    <div class="time">07:00 – 08:30</div>
+    <h2>결과 설명 — 화면 짚어가며</h2>
+  </div>
+  <div class="card">
+    <h3>화면 스크롤하면서 이 순서로 짚어줍니다</h3>
+    <div class="result-guide">
+      <div class="result-item">
+        <div class="result-num">1</div>
+        <div><strong>요약 카드 4개</strong>
+        <p>"정상 16개, 주의 16개, 이상 4개. 전체 평균 82.3%. 숫자가 한눈에 보입니다."</p></div>
+      </div>
+      <div class="result-item">
+        <div class="result-num">2</div>
+        <div><strong>히트맵 — 마우스를 우하단으로</strong>
+        <p>"보세요. 우하단이 전부 빨간색입니다. 48%, 43%, 38%. 3초 만에 문제 위치가 특정됩니다."</p></div>
+      </div>
+      <div class="result-item">
+        <div class="result-num">3</div>
+        <div><strong>히트맵 — 중심부 클릭</strong>
+        <p>"중심 96%가 정상입니다. 문제는 가장자리가 아니라 우하단 특정 구역에 군집되어 있습니다."</p></div>
+      </div>
+      <div class="result-item">
+        <div class="result-num">4</div>
+        <div><strong>원인 후보 3가지 표</strong>
+        <p>"AI가 패턴을 보고 타겟 침식, Ar 유량 분포, 스퍼터 파워 구배 세 가지를 제시합니다. 확정이 아닙니다."</p></div>
+      </div>
+      <div class="result-item">
+        <div class="result-num">5</div>
+        <div><strong>엔지니어 재확인 항목</strong>
+        <p>"타겟 침식 위치 일치 여부, Ar 유량 측정값 비교. 판단은 엔지니어가 합니다."</p></div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- Step 3 -->
+  <div class="section-header">
+    <div class="time">08:30 – 09:30</div>
+    <h2>Step 3 — 가장자리 vs 중심 수율 비교 추가</h2>
+  </div>
+  <div class="prompt-wrap">
+    <div class="prompt-label prompt-extra-label">
+      <span>➕ 추가 입력할 프롬프트</span>
+    </div>
+    <div class="prompt-box extra">두 가지 추가해줘.
+
+1. 히트맵 아래에 "가장자리 다이 vs 중심 다이" 수율 비교 막대 차트 추가.
+   - 가장자리: Die_X=0 또는 Die_X=5 또는 Die_Y=0 또는 Die_Y=5
+   - 중심: Die_X=2~3, Die_Y=2~3
+   - 각 그룹의 평균 수율을 가로 막대로 비교해줘.
+
+2. 이상 다이(Yield_pct < 60) 4개를 빨간 테두리로 강조하고
+   각 다이 위에 "이상" 라벨을 표시해줘.</div>
+  </div>
+  <div class="narration">
+    <span class="narration-label">💬 발화 — 결과 나온 후</span>
+    "가장자리 평균이 79%, 중심 평균이 95%입니다.<br>
+    이 차이 16%포인트가 보고서에서 설명력이 됩니다.<br>
+    <strong>AI는 히트맵을 그리지만, 색 패턴의 의미를 읽는 것은 엔지니어의 몫입니다.</strong>"
+  </div>
+
+  <hr class="divider">
+
+  <!-- 마무리 -->
+  <div class="section-header">
+    <div class="time">09:30 – 10:00</div>
+    <h2>마무리 — 핵심 메시지</h2>
+  </div>
+  <div class="narration">
+    <span class="narration-label">💬 발화</span>
+    "오늘 시연에서 세 가지를 확인했습니다."
+  </div>
+  <div class="closing">
+    <h3>핵심 3가지</h3>
+    <div class="closing-point">
+      <div>1️⃣</div>
+      <p>데이터가 있어도 <strong>좌표 컬럼·기준값·출력 형식</strong>을 말하지 않으면 AI는 선택을 되돌려 보냅니다.</p>
+    </div>
+    <div class="closing-point">
+      <div>2️⃣</div>
+      <p>5요소 — 문제·데이터·기준·산출물·검증 — 을 모두 담으면 <strong>역질문 없이 인터랙티브 히트맵 + 원인 후보</strong>가 한 번에 나옵니다.</p>
+    </div>
+    <div class="closing-point">
+      <div>3️⃣</div>
+      <p>AI가 보여준 우하단 빨간 패턴이 <strong>타겟 침식인지 유량 분포인지</strong> 확정하는 것은 엔지니어가 공정 이력과 대조해서 합니다.</p>
+    </div>
+  </div>
+  <div class="key-message">
+    "AI는 색 지도를 그리지 않습니다.<br>패턴의 의미를 읽는 것은 엔지니어의 몫입니다."
+  </div>
+
+  <hr class="divider">
+
+  <div class="section-header" style="margin-top:0;"><h2>관련 자료</h2></div>
+  <div class="related-links">
+    <a class="related-link slide" href="https://heekeunlee.github.io/lecture05/" target="_blank">
+      <div class="link-label">LECTURE 05 · 강의 교안</div>
+      <div class="link-title">바이브 코딩 5강 — 수율 히트맵 & 웨이퍼 맵 시각화</div>
+      <div class="link-url">heekeunlee.github.io/lecture05/</div>
+    </a>
+    <a class="related-link script" href="https://heekeunlee.github.io/lecture_assist001/scripts/lecture05/" target="_blank">
+      <div class="link-label">LECTURE 05 · 강의 스크립트</div>
+      <div class="link-title">5강 스크립트 — 수율 히트맵 & 웨이퍼 맵</div>
+      <div class="link-url">heekeunlee.github.io/lecture_assist001/<br>scripts/lecture05/</div>
+    </a>
+  </div>
+
+</div>
+
+<script>
+function copyCSV() {
+  const text = document.getElementById('csvContent').innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.querySelector('.csv-copy-btn');
+    btn.textContent = '복사됨 ✓';
+    btn.style.background = '#3730a3';
+    setTimeout(() => { btn.textContent = '복사'; btn.style.background = '#4f46e5'; }, 2000);
+  });
+}
+</script>
+</body>
+</html>

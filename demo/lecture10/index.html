@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>10강 시연 가이드 — 데이터 기반 주간/월간 보고서 자동 생성</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: #f8fafc;
+    color: #1a1a1a;
+    font-family: -apple-system, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+    font-size: 16px; line-height: 1.8; padding-bottom: 80px;
+  }
+  .topbar {
+    position: sticky; top: 0; z-index: 100;
+    background: #fff; border-bottom: 2px solid #cbd5e1;
+    padding: 10px 18px; display: flex; align-items: center; justify-content: space-between;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+  .topbar-title { font-size: 14px; font-weight: 700; color: #0f172a; }
+  .topbar-links { display: flex; gap: 8px; }
+  .nav-link { font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 99px; text-decoration: none; border: 1.5px solid; white-space: nowrap; }
+  .nav-link.slide  { color: #1e40af; border-color: #1e40af; }
+  .nav-link.script { color: #1e3a5f; border-color: #1e3a5f; }
+  .content { max-width: 740px; margin: 0 auto; padding: 0 18px; }
+  .hero { background: linear-gradient(135deg, #0f172a 0%, #1e40af 100%); color: #fff; padding: 36px 24px 32px; }
+  .hero-badge { display: inline-block; background: rgba(255,255,255,0.2); border-radius: 99px; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; padding: 3px 12px; margin-bottom: 14px; }
+  .hero h1 { font-size: clamp(1.4rem, 4vw, 1.9rem); font-weight: 900; line-height: 1.3; margin-bottom: 10px; word-break: keep-all; border: none; color: #fff; padding: 0; }
+  .hero p { font-size: 0.95rem; color: rgba(255,255,255,0.82); word-break: keep-all; }
+  .hero-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+  .meta-tag { background: rgba(255,255,255,0.15); border-radius: 99px; font-size: 12px; font-weight: 600; padding: 4px 12px; color: #fff; }
+  .section-header { background: #f8fafc; border-left: 5px solid #1e40af; padding: 12px 18px; margin: 32px -18px 18px; }
+  .section-header h2 { font-size: 15px; font-weight: 800; color: #0f172a; line-height: 1.4; }
+  .section-header .time { font-size: 12px; color: #1e40af; font-weight: 600; margin-top: 2px; }
+  .timeline-table { width: 100%; border-collapse: collapse; font-size: 14px; margin: 16px 0; }
+  .timeline-table th { background: #0f172a; color: #fff; padding: 8px 12px; text-align: left; font-weight: 700; font-size: 12px; }
+  .timeline-table td { padding: 9px 12px; border-bottom: 1px solid #e2e8f0; vertical-align: middle; }
+  .timeline-table tr:last-child td { border-bottom: none; }
+  .timeline-table tr:nth-child(even) td { background: #f8fafc; }
+  .tl-time { color: #1e40af; font-weight: 800; font-size: 13px; white-space: nowrap; }
+  .tl-desc { color: #475569; font-size: 13px; }
+  .step-badge { display: inline-block; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 99px; white-space: nowrap; }
+  .badge-bad    { background: #fee2e2; color: #b91c1c; }
+  .badge-bridge { background: #fef3c7; color: #92400e; }
+  .badge-good   { background: #dcfce7; color: #166534; }
+  .badge-extra  { background: #e0f2fe; color: #0369a1; }
+  .badge-end    { background: #f3f4f6; color: #374151; }
+  .checklist { list-style: none; margin: 12px 0; }
+  .checklist li { display: flex; gap: 10px; align-items: flex-start; padding: 8px 0; border-bottom: 1px solid #e2e8f0; font-size: 14px; }
+  .checklist li:last-child { border-bottom: none; }
+  .check-box { flex-shrink: 0; width: 22px; height: 22px; border: 2px solid #94a3b8; border-radius: 5px; margin-top: 1px; }
+  .card { background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 18px; margin-bottom: 16px; }
+  .card h3 { font-size: 15px; font-weight: 700; margin-bottom: 8px; color: #0f172a; }
+  .narration { background: #f8fafc; border-left: 4px solid #3b82f6; border-radius: 0 10px 10px 0; padding: 14px 16px; font-size: 15px; line-height: 1.85; color: #0f172a; margin: 12px 0; word-break: keep-all; }
+  .narration strong { color: #1e40af; }
+  .narration-label { font-size: 11px; font-weight: 700; color: #1e40af; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 6px; display: block; }
+  .prompt-wrap { margin: 12px 0; }
+  .prompt-label { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+  .prompt-label span { font-size: 12px; font-weight: 700; letter-spacing: 0.06em; }
+  .prompt-bad-label span   { color: #b91c1c; }
+  .prompt-good-label span  { color: #166534; }
+  .prompt-extra-label span { color: #0369a1; }
+  .prompt-box { background: #0f172a; color: #e2e8f0; border-radius: 10px; padding: 16px 18px; font-size: 13px; line-height: 1.85; white-space: pre-wrap; word-break: break-word; font-family: 'Courier New','D2Coding',monospace; overflow-x: auto; }
+  .prompt-box.bad   { border-left: 4px solid #ef4444; }
+  .prompt-box.good  { border-left: 4px solid #22c55e; color: #a5f3fc; }
+  .prompt-box.extra { border-left: 4px solid #38bdf8; color: #bfdbfe; }
+  .prompt-box .kw   { color: #fbbf24; font-weight: 700; }
+  .prompt-box .val  { color: #86efac; }
+  .prompt-box .comment { color: #64748b; }
+  .ai-response { background: #fff; border: 1.5px solid #e2e8f0; border-radius: 12px; overflow: hidden; margin: 14px 0; }
+  .ai-response-header { background: #f8fafc; border-bottom: 1px solid #e2e8f0; padding: 10px 16px; display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; color: #475569; }
+  .ai-dot { width: 8px; height: 8px; border-radius: 50%; background: #94a3b8; }
+  .ai-response-body { padding: 16px; font-size: 13.5px; color: #334155; line-height: 1.85; }
+  .ai-response-body p { margin-bottom: 10px; }
+  .ai-response-body ul { padding-left: 18px; color: #64748b; }
+  .ai-response-body ul li { margin-bottom: 6px; }
+  .ai-question { color: #1d4ed8; font-weight: 600; }
+  .ai-tag-bad  { display: inline-block; font-size: 11px; font-weight: 700; background: #fee2e2; color: #b91c1c; padding: 2px 10px; border-radius: 99px; margin: 0 0 0 auto; }
+  .ai-tag-good { display: inline-block; font-size: 11px; font-weight: 700; background: #dcfce7; color: #166534; padding: 2px 10px; border-radius: 99px; margin: 0 0 0 auto; }
+  .html-preview { border: 2px solid #1e40af; border-radius: 14px; overflow: hidden; margin: 14px 0; background: #fff; }
+  .html-preview-header { background: #f8fafc; border-bottom: 1px solid #e2e8f0; padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; }
+  .html-preview-header span { font-size: 12px; font-weight: 700; color: #0f172a; }
+  .html-preview-body { padding: 18px; }
+  .report-header { background: #0f172a; color: #fff; border-radius: 10px; padding: 14px 18px; margin-bottom: 14px; }
+  .report-header-title { font-size: 16px; font-weight: 900; margin-bottom: 4px; }
+  .report-header-sub { font-size: 12px; color: #94a3b8; }
+  .kpi-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; margin-bottom: 14px; }
+  @media(max-width:520px){ .kpi-grid { grid-template-columns: repeat(2,1fr); } }
+  .kpi-card { border-radius: 10px; padding: 12px; text-align: center; border: 1px solid; }
+  .kpi-card.green { background: #f0fdf4; border-color: #bbf7d0; }
+  .kpi-card.red   { background: #fef2f2; border-color: #fca5a5; }
+  .kpi-card.yel   { background: #fefce8; border-color: #fde68a; }
+  .kpi-card.blue  { background: #eff6ff; border-color: #bfdbfe; }
+  .kpi-val { font-size: 1.3rem; font-weight: 900; line-height: 1.1; margin-bottom: 4px; }
+  .kpi-card.green .kpi-val { color: #166534; }
+  .kpi-card.red   .kpi-val { color: #991b1b; }
+  .kpi-card.yel   .kpi-val { color: #92400e; }
+  .kpi-card.blue  .kpi-val { color: #1d4ed8; }
+  .kpi-label { font-size: 10.5px; color: #64748b; font-weight: 600; word-break: keep-all; }
+  .kpi-change { font-size: 10px; font-weight: 700; margin-top: 2px; }
+  .kpi-card.green .kpi-change { color: #16a34a; }
+  .kpi-card.red   .kpi-change { color: #dc2626; }
+  .kpi-card.yel   .kpi-change { color: #d97706; }
+  .r-section-title { font-size: 13px; font-weight: 800; color: #0f172a; margin: 14px 0 8px; border-bottom: 1.5px solid #e2e8f0; padding-bottom: 4px; }
+  .report-section { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px; margin-bottom: 12px; }
+  .report-section-title { font-size: 12px; font-weight: 800; color: #1e40af; margin-bottom: 8px; letter-spacing: 0.06em; }
+  .report-section-body { font-size: 13px; color: #334155; line-height: 1.85; }
+  .report-section-body ul { padding-left: 16px; }
+  .report-section-body ul li { margin-bottom: 5px; }
+  .verify-box { background: #f0fdf4; border: 1.5px solid #86efac; border-radius: 8px; padding: 12px 14px; margin-top: 12px; }
+  .verify-title { font-weight: 800; color: #166534; font-size: 13px; margin-bottom: 6px; }
+  .verify-list { font-size: 12.5px; color: #1e293b; line-height: 1.9; }
+  .result-guide { margin: 12px 0; }
+  .result-item { display: flex; gap: 12px; align-items: flex-start; padding: 10px 0; border-bottom: 1px solid #e2e8f0; font-size: 14px; }
+  .result-item:last-child { border-bottom: none; }
+  .result-num { flex-shrink: 0; width: 26px; height: 26px; border-radius: 50%; background: #1e40af; color: #fff; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center; margin-top: 1px; }
+  .result-item strong { display: block; font-size: 14px; margin-bottom: 2px; }
+  .result-item p { color: #475569; font-size: 13px; margin: 0; }
+  .csv-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin: 12px 0; }
+  @media(max-width:520px){ .csv-grid { grid-template-columns: 1fr; } }
+  .csv-mini { border-radius: 8px; padding: 10px; border: 1.5px solid; }
+  .csv-mini.lot { background: #f0f9ff; border-color: #bae6fd; }
+  .csv-mini.def { background: #fff1f2; border-color: #fecdd3; }
+  .csv-mini.alm { background: #fefce8; border-color: #fde68a; }
+  .csv-mini-title { font-size: 11px; font-weight: 800; margin-bottom: 4px; }
+  .csv-mini.lot .csv-mini-title { color: #0284c7; }
+  .csv-mini.def .csv-mini-title { color: #e11d48; }
+  .csv-mini.alm .csv-mini-title { color: #d97706; }
+  .csv-mini-desc { font-size: 11px; color: #475569; line-height: 1.6; }
+  .closing { background: #0f172a; color: #fff; border-radius: 14px; padding: 24px 22px; margin: 24px 0; }
+  .closing h3 { font-size: 16px; font-weight: 800; margin-bottom: 14px; color: #93c5fd; }
+  .closing-point { display: flex; gap: 12px; align-items: flex-start; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.08); font-size: 14px; }
+  .closing-point:last-child { border-bottom: none; }
+  .closing-point p { color: #e2e8f0; line-height: 1.6; word-break: keep-all; }
+  .closing-point strong { color: #fff; }
+  .key-message { background: #fef3c7; border: 2px solid #f59e0b; border-radius: 12px; padding: 18px 20px; margin: 20px 0; font-size: 15px; font-weight: 700; color: #92400e; text-align: center; word-break: keep-all; line-height: 1.7; }
+  .related-links { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 20px 0; }
+  @media(max-width:480px){ .related-links { grid-template-columns: 1fr; } }
+  .related-link { display: block; text-decoration: none; border: 1.5px solid; border-radius: 10px; padding: 12px 14px; }
+  .related-link.slide  { border-color: #1e40af; background: #f8fafc; }
+  .related-link.script { border-color: #1e3a5f; background: #eff6ff; }
+  .related-link .link-label { font-size: 11px; font-weight: 700; letter-spacing: 0.06em; margin-bottom: 3px; }
+  .related-link.slide  .link-label { color: #1e40af; }
+  .related-link.script .link-label { color: #1e3a5f; }
+  .related-link .link-title { font-size: 13px; font-weight: 700; color: #1a1a1a; }
+  .related-link .link-url { font-size: 11px; color: #64748b; margin-top: 2px; word-break: break-all; }
+  .divider { border: none; border-top: 1px solid #e2e8f0; margin: 28px 0; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-title">10강 시연 가이드 · 데이터 기반 주간/월간 보고서 자동 생성</div>
+  <div class="topbar-links">
+    <a class="nav-link slide"  href="https://heekeunlee.github.io/lecture10/" target="_blank">강의 교안</a>
+    <a class="nav-link script" href="https://heekeunlee.github.io/lecture_assist001/scripts/lecture10/" target="_blank">강의 스크립트</a>
+  </div>
+</div>
+
+<!-- 히어로 -->
+<div class="hero">
+  <div class="content">
+    <div class="hero-badge">10강 · 부록 시연 영상 가이드</div>
+    <h1>CSV 3개 → 주간 공정 보고서<br>계산·시각화·서술·검증을 분리해서 지시한다</h1>
+    <p>같은 CSV 3개로 두 번 입력합니다.<br>
+    "보고서 만들어줘" vs 입력·계산·시각화·서술·검증을 분리한 5줄 지시.<br>
+    KPI 카드 + 원인 가설 + 검증 체크리스트가 나오는 과정을 보여주는 10분 시연입니다.</p>
+    <div class="hero-meta">
+      <span class="meta-tag">⏱ 10분</span>
+      <span class="meta-tag">Claude.ai / Claude Code</span>
+      <span class="meta-tag">lot_summary + defect_log + equipment_alarm</span>
+      <span class="meta-tag">HTML 보고서 + Markdown 초안</span>
+      <span class="meta-tag">회의용 1페이지 요약 자동 생성</span>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- 전체 타임라인 -->
+  <div class="section-header">
+    <div class="time">00:00 – 10:00</div>
+    <h2>전체 진행 순서 (10분)</h2>
+  </div>
+  <table class="timeline-table">
+    <thead><tr><th>시간</th><th>구간</th><th>내용</th></tr></thead>
+    <tbody>
+      <tr><td class="tl-time">00:00–01:00</td><td><span class="step-badge badge-end">인트로</span></td><td class="tl-desc">보고서의 핵심 — "숫자 근거 없는 단정 문장은 보고서가 아니다"</td></tr>
+      <tr><td class="tl-time">01:00–02:30</td><td><span class="step-badge badge-bad">Step 1</span></td><td class="tl-desc">막연한 보고서 생성 요청 → AI 역질문 5개</td></tr>
+      <tr><td class="tl-time">02:30–03:30</td><td><span class="step-badge badge-bridge">브리지</span></td><td class="tl-desc">5줄 지시 구조 — 입력/계산/시각화/서술/검증 분리</td></tr>
+      <tr><td class="tl-time">03:30–07:00</td><td><span class="step-badge badge-good">Step 2</span></td><td class="tl-desc">5줄 작업지시서 입력 → HTML 보고서 + 검증 체크리스트 생성</td></tr>
+      <tr><td class="tl-time">07:00–08:30</td><td><span class="step-badge badge-good">결과 설명</span></td><td class="tl-desc">KPI 카드·원인 가설·검증 체크리스트·누락 데이터 질문 짚기</td></tr>
+      <tr><td class="tl-time">08:30–09:30</td><td><span class="step-badge badge-extra">Step 3</span></td><td class="tl-desc">팀장용 회의 1페이지 요약 추가 요청</td></tr>
+      <tr><td class="tl-time">09:30–10:00</td><td><span class="step-badge badge-end">마무리</span></td><td class="tl-desc">"회의에서 바로 의사결정에 쓰일 수 있는지로 품질을 판단합니다"</td></tr>
+    </tbody>
+  </table>
+
+  <!-- 사전 준비 -->
+  <div class="section-header">
+    <div class="time">촬영 전 준비</div>
+    <h2>사전 준비 체크리스트</h2>
+  </div>
+  <div class="card">
+    <ul class="checklist">
+      <li><div class="check-box"></div><span>Claude.ai 또는 Claude Code 로그인 확인</span></li>
+      <li><div class="check-box"></div><span>Step 2 프롬프트를 메모장에 미리 복사해두기</span></li>
+      <li><div class="check-box"></div><span>CSV 3개 데이터(아래 박스)를 미리 복사해두기</span></li>
+      <li><div class="check-box"></div><span>브라우저 확대 125% — KPI 카드 숫자와 검증 체크리스트가 명확히 보여야 함</span></li>
+      <li><div class="check-box"></div><span>화면 녹화 1080p 이상 설정</span></li>
+    </ul>
+  </div>
+
+  <!-- 소스 데이터 -->
+  <div class="section-header">
+    <div class="time">촬영 전 준비 · 데이터</div>
+    <h2>소스 데이터 — CSV 3개 (주간 공정 데이터)</h2>
+  </div>
+
+  <div class="csv-grid">
+    <div class="csv-mini lot">
+      <div class="csv-mini-title">lot_summary.csv</div>
+      <div class="csv-mini-desc">lot_id, line, yield_pct, week<br>W4 평균 수율 82.3%<br>(전주 대비 -3.1%p)</div>
+    </div>
+    <div class="csv-mini def">
+      <div class="csv-mini-title">defect_log.csv</div>
+      <div class="csv-mini-desc">panel_id, defect_type, date<br>Scratch 1위(28건)<br>W4 급증 +75%</div>
+    </div>
+    <div class="csv-mini alm">
+      <div class="csv-mini-title">equipment_alarm.csv</div>
+      <div class="csv-mini-desc">equipment_id, alarm_code, date<br>VTE-03 E-472<br>W4 3회 발생</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-bottom:10px;">시연용 데이터 샘플 — 프롬프트에 함께 붙여넣기</h3>
+    <div style="background:#0f172a;color:#94a3b8;border-radius:10px;padding:14px;font-size:12px;line-height:1.8;font-family:'Courier New',monospace;margin-bottom:10px;border-left:4px solid #1e40af;">
+[lot_summary.csv]
+lot_id, line, yield_pct, week
+LOT-101, L1, 91, W3
+LOT-102, L2, 88, W3
+LOT-103, L1, 86, W4
+LOT-104, L2, 79, W4  ← 수율 하락
+LOT-105, L1, 83, W4
+LOT-106, L2, 75, W4  ← 수율 하락
+LOT-107, L1, 84, W4
+
+[defect_log.csv — 8강과 동일 데이터 사용]
+(date, panel_id, defect_type, line, process, severity)
+... W4 집중 Scratch 급증
+
+[equipment_alarm.csv]
+equipment_id, alarm_code, alarm_count, week
+VTE-03, E-472, 1, W3
+VTE-03, E-472, 3, W4  ← W4 급증
+VTE-02, E-312, 2, W4
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- 인트로 -->
+  <div class="section-header">
+    <div class="time">00:00 – 01:00</div>
+    <h2>인트로</h2>
+  </div>
+  <div class="narration">
+    <span class="narration-label">💬 발화</span>
+    "10강의 핵심은 하나입니다. <strong>보고서 자동화의 품질은 예쁜 화면이 아니라, 회의에서 바로 의사결정에 쓰일 수 있는지로 판단합니다.</strong><br>
+    CSV 3개가 있습니다. lot_summary, defect_log, equipment_alarm.<br>
+    지금부터 이 세 개를 어떻게 지시하느냐에 따라 보고서 품질이 어떻게 달라지는지 보여드리겠습니다."
+  </div>
+
+  <hr class="divider">
+
+  <!-- Step 1 -->
+  <div class="section-header">
+    <div class="time">01:00 – 02:30</div>
+    <h2>Step 1 — 막연한 보고서 생성 요청</h2>
+  </div>
+  <div class="prompt-wrap">
+    <div class="prompt-label prompt-bad-label">
+      <span>❌ 입력할 프롬프트</span>
+    </div>
+    <div class="prompt-box bad">이번 주 보고서 만들어줘.
+
+[lot_summary.csv, defect_log.csv, equipment_alarm.csv 데이터 붙여넣기]</div>
+  </div>
+
+  <div class="ai-response">
+    <div class="ai-response-header">
+      <div class="ai-dot"></div>
+      <span>Claude 응답 예측 — 막연한 프롬프트 입력 시</span>
+      <div class="ai-tag-bad">❌ 막연한 프롬프트 결과</div>
+    </div>
+    <div class="ai-response-body">
+      <p>보고서를 작성하기 전에 몇 가지를 결정해주셔야 합니다.</p>
+      <ul>
+        <li class="ai-question">보고서의 수신자가 누구인가요? 팀장, 엔지니어, 경영진 중 어떤 수준으로 작성할까요?</li>
+        <li class="ai-question">어떤 KPI를 중심으로 작성할까요? 수율, 불량, 설비 알람 모두 포함할까요?</li>
+        <li class="ai-question">전주 대비 비교를 포함할까요? 비교 기준 주차가 몇 주 전인가요?</li>
+        <li class="ai-question">HTML 보고서를 원하시나요, 아니면 Markdown 텍스트 초안인가요?</li>
+        <li class="ai-question">원인 분석을 포함할까요? 원인 가설을 단정 표현으로 쓸까요, 확인 필요 표현으로 쓸까요?</li>
+      </ul>
+      <p style="margin-top:12px; color:#94a3b8; font-size:12px;">참고로 W4 수율이 W3 대비 하락했고, Scratch 불량이 증가했으며, VTE-03 알람이 3회 발생했습니다. 전체적으로 W4가 좋지 않았습니다.</p>
+    </div>
+  </div>
+  <p style="font-size:12.5px; color:#ef4444; font-weight:700; margin:4px 0 0 4px;">
+    → 역질문 5개. 수신자·KPI·비교 기준·형식·원인 표현 방식 모두 되물음. "W4가 좋지 않았습니다" — 단정 표현으로 근거 없음.
+  </p>
+
+  <div class="narration">
+    <span class="narration-label">💬 발화 (30초)</span>
+    "<strong>수신자·KPI·비교 기준·형식·원인 표현 방식</strong>을 말하지 않으면<br>
+    AI는 선택을 사람에게 돌려보냅니다.<br>
+    그리고 막연하게 답변할 때는 근거 없는 단정 표현이 섞입니다.<br>
+    10강 5줄 작업지시서가 이것을 한 번에 해결합니다."
+  </div>
+
+  <hr class="divider">
+
+  <!-- 브리지 -->
+  <div class="section-header">
+    <div class="time">02:30 – 03:30</div>
+    <h2>브리지 — 5줄 지시 구조: 입력·계산·시각화·서술·검증 분리</h2>
+  </div>
+  <div class="narration">
+    <span class="narration-label">💬 발화</span>
+    "10강 5줄 작업지시서 구조입니다.<br>
+    1줄 — 역할 + 입력 CSV 3개 명시<br>
+    2줄 — 계산: 수율·Top 불량·OOC 설비·위험 등급<br>
+    3줄 — 서술 규칙: '숫자 근거가 있는 문장만, 원인 가설은 확인 필요 표현으로'<br>
+    4줄 — 형식: 'Markdown 보고서 + HTML 섹션 구조'<br>
+    5줄 — 검증: '마지막에 체크리스트와 누락 데이터 질문 생성'<br>
+    지금 이 다섯 줄을 모두 담아서 입력하겠습니다."
+  </div>
+
+  <hr class="divider">
+
+  <!-- Step 2 -->
+  <div class="section-header">
+    <div class="time">03:30 – 07:00</div>
+    <h2>Step 2 — 5줄 완성형 작업지시서 입력</h2>
+  </div>
+  <div class="prompt-wrap">
+    <div class="prompt-label prompt-good-label">
+      <span>✅ 입력할 프롬프트 (그대로 복사 · 붙여넣기)</span>
+    </div>
+    <div class="prompt-box good"><span class="val">너는 디스플레이 공정 엔지니어의 보고서 자동화 조교다.</span>
+아래 CSV 3개를 기준으로 <span class="val">주간 공정 보고서 초안</span>을 만든다.
+
+<span class="kw">1. 계산:</span>
+   - lot_summary에서 <span class="val">W4 평균 수율</span>과 <span class="val">W3 대비 변화율</span>을 계산
+   - defect_log에서 <span class="val">Top 3 불량 유형</span>과 주차별 트렌드
+   - equipment_alarm에서 <span class="val">W4 OOC 발생 설비</span>와 알람 건수 집계
+
+<span class="kw">2. 서술 규칙:</span>
+   - <span class="val">숫자 근거가 있는 문장만 작성</span>한다 (예: "W4 수율 82.3%, 전주 대비 -3.1%p")
+   - 원인 가설은 확정 표현이 아닌 <span class="val">"확인 필요 사항"</span>으로 쓴다
+
+<span class="kw">3. 형식:</span>
+   - <span class="val">HTML 보고서</span>: KPI 카드 + 수율 트렌드 차트 + 불량 파레토 + 설비 알람 테이블
+   - 수신자: <span class="val">팀장, 공정 엔지니어, 장비 담당자</span> 모두 읽을 수 있는 구조
+
+<span class="kw">4. 검증:</span>
+   - 마지막에 <span class="val">검증 체크리스트 5개</span>와 <span class="val">누락 데이터 질문 3개</span>를 만든다
+
+[CSV 데이터 붙여넣기]
+<span class="comment">--- lot_summary.csv ---</span>
+lot_id, line, yield_pct, week
+LOT-101, L1, 91, W3
+LOT-102, L2, 88, W3
+LOT-103, L1, 86, W4
+LOT-104, L2, 79, W4
+LOT-105, L1, 83, W4
+LOT-106, L2, 75, W4
+LOT-107, L1, 84, W4
+
+<span class="comment">--- equipment_alarm.csv ---</span>
+equipment_id, alarm_code, alarm_count, week
+VTE-03, E-472, 1, W3
+VTE-03, E-472, 3, W4
+VTE-02, E-312, 2, W4
+
+<span class="comment">--- defect_log.csv --- (8강 데이터와 동일)</span>
+(W1~W4 Scratch/Foreign_Particle/Edge_Chip/Mura 30건)</div>
+  </div>
+
+  <div class="narration">
+    <span class="narration-label">💬 발화 — 결과 생성 대기 중 (30초)</span>
+    "역할, 계산 지시, 서술 규칙, HTML 형식, 검증 체크리스트까지 모두 5줄에 담았습니다.<br>
+    AI가 역질문 없이 보고서를 바로 만듭니다."
+  </div>
+
+  <!-- 결과 예측 -->
+  <div class="html-preview">
+    <div class="html-preview-header">
+      <span>✅ Claude 결과 예측 — 주간 공정 보고서 출력 미리보기</span>
+      <div class="ai-tag-good">5줄 완성형 결과</div>
+    </div>
+    <div class="html-preview-body">
+
+      <!-- 보고서 헤더 -->
+      <div class="report-header">
+        <div class="report-header-title">주간 공정 현황 보고서 — W4 (2024년)</div>
+        <div class="report-header-sub">수신: 팀장 / 공정 엔지니어 / 장비 담당자 | 생성: AI 초안 (엔지니어 검토 후 배포)</div>
+      </div>
+
+      <!-- KPI 카드 -->
+      <div class="r-section-title">이번 주 KPI 요약</div>
+      <div class="kpi-grid">
+        <div class="kpi-card red">
+          <div class="kpi-val">82.3%</div>
+          <div class="kpi-label">W4 평균 수율</div>
+          <div class="kpi-change">▼ -3.1%p (W3: 85.4%)</div>
+        </div>
+        <div class="kpi-card red">
+          <div class="kpi-val">Scratch</div>
+          <div class="kpi-label">불량 1위 유형</div>
+          <div class="kpi-change">▲ +75% (W3→W4)</div>
+        </div>
+        <div class="kpi-card yel">
+          <div class="kpi-val">3건</div>
+          <div class="kpi-label">VTE-03 E-472 알람</div>
+          <div class="kpi-change">▲ +2건 (W3: 1건)</div>
+        </div>
+        <div class="kpi-card blue">
+          <div class="kpi-val">2개</div>
+          <div class="kpi-label">OOC 발생 설비</div>
+          <div class="kpi-change">VTE-03, VTE-02</div>
+        </div>
+      </div>
+
+      <!-- 주요 내용 섹션 -->
+      <div class="report-section">
+        <div class="report-section-title">수율 현황</div>
+        <div class="report-section-body">
+          W4 전체 LOT 5개 평균 수율 82.3% — W3 85.4% 대비 3.1%p 하락.<br>
+          L2 라인 LOT-104(79%), LOT-106(75%)에서 수율 저하 집중.
+          <br><br>
+          <span style="color:#d97706;font-weight:700;">⚠ 확인 필요:</span> L2 수율 하락이 Photo 공정 Scratch 증가와 연관될 가능성이 있으나, 공정 단계별 수율 데이터 없이는 인과관계를 확정할 수 없습니다.
+        </div>
+      </div>
+
+      <div class="report-section">
+        <div class="report-section-title">불량 현황</div>
+        <div class="report-section-body">
+          <ul>
+            <li><strong>Scratch</strong> 28건 (37%) — W4에서 전주 대비 +75% 급증. L1 Photo 공정 집중.</li>
+            <li><strong>Foreign Particle</strong> 21건 (65% 누적) — W4 severity Medium→High 상승.</li>
+            <li><strong>Edge Chip</strong> 14건 (84% 누적) — 안정적. 정기 PM 유지.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="report-section">
+        <div class="report-section-title">설비 알람</div>
+        <div class="report-section-body">
+          VTE-03 E-472(소스 히터 온도 이탈): W3 1건 → W4 3건으로 급증.<br>
+          VTE-02 E-312: W4 2건 신규 발생.<br>
+          <span style="color:#d97706;font-weight:700;">⚠ 확인 필요:</span> VTE-03 E-472와 Scratch 불량 급증의 시간적 연관성을 PM 이력과 함께 대조 필요.
+        </div>
+      </div>
+
+      <!-- 검증 체크리스트 -->
+      <div class="verify-box">
+        <div class="verify-title">✅ 검증 체크리스트 (배포 전 확인)</div>
+        <div class="verify-list">
+          □ lot_summary 7행 = 보고서 LOT 수와 일치하는가?<br>
+          □ 수율 82.3%가 7개 LOT 단순 평균인가 (가중 평균 적용 여부 확인)?<br>
+          □ Scratch +75%는 W3 4건→W4 7건 기준인가 (집계 기간 확인)?<br>
+          □ VTE-03 E-472 3건이 동일 Lot에서 발생했는가 아니면 다른 Lot인가?<br>
+          □ 원인 가설("연관 가능성")이 확정 표현으로 변경되지 않았는가?
+        </div>
+      </div>
+
+      <!-- 누락 데이터 -->
+      <div style="background:#fef2f2;border:1.5px solid #fca5a5;border-radius:8px;padding:12px;margin-top:10px;">
+        <div style="font-weight:800;color:#b91c1c;font-size:13px;margin-bottom:6px;">누락 데이터 질문 (AI가 자동 생성)</div>
+        <div style="font-size:12.5px;color:#334155;line-height:1.9;">
+          1. 공정 단계별 수율 데이터가 있나요? (인과관계 분석에 필요)<br>
+          2. VTE-03 E-472 알람 발생 시각별 lot_id가 있나요? (수율 연결 분석 가능)<br>
+          3. W3 이전 4주 데이터가 있나요? (트렌드 기준선 수립 필요)
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <p style="font-size:12.5px; color:#166534; font-weight:700; margin:4px 0 16px 4px;">
+    → KPI 카드 · 현황 섹션(근거 있는 문장만) · 검증 체크리스트 5개 · 누락 데이터 질문 3개 — 한 번에 완성. 역질문 0회.
+  </p>
+
+  <hr class="divider">
+
+  <!-- 결과 설명 -->
+  <div class="section-header">
+    <div class="time">07:00 – 08:30</div>
+    <h2>결과 설명 — 화면 짚어가며</h2>
+  </div>
+  <div class="card">
+    <h3>화면 스크롤하면서 이 순서로 짚어줍니다</h3>
+    <div class="result-guide">
+      <div class="result-item">
+        <div class="result-num">1</div>
+        <div><strong>KPI 카드 4개</strong>
+        <p>"수율 82.3%, Scratch 1위, VTE-03 E-472 3건, OOC 설비 2개. 회의 전 3분 안에 파악 가능합니다."</p></div>
+      </div>
+      <div class="result-item">
+        <div class="result-num">2</div>
+        <div><strong>"확인 필요" 표현</strong>
+        <p>"'연관될 가능성이 있으나 인과관계를 확정할 수 없습니다'. AI가 단정하지 않았습니다. 이게 중요합니다."</p></div>
+      </div>
+      <div class="result-item">
+        <div class="result-num">3</div>
+        <div><strong>검증 체크리스트 5개</strong>
+        <p>"Scratch +75%가 몇 건→몇 건인지 확인하라고 AI가 먼저 물어봅니다. 집계 기준이 틀릴 때 잡는 장치입니다."</p></div>
+      </div>
+      <div class="result-item">
+        <div class="result-num">4</div>
+        <div><strong>누락 데이터 질문 3개</strong>
+        <p>"인과관계 분석에 뭐가 더 필요한지 AI가 먼저 정리합니다. 다음 주 데이터 수집 계획이 됩니다."</p></div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- Step 3 -->
+  <div class="section-header">
+    <div class="time">08:30 – 09:30</div>
+    <h2>Step 3 — 팀장용 회의 1페이지 요약 추가</h2>
+  </div>
+  <div class="prompt-wrap">
+    <div class="prompt-label prompt-extra-label">
+      <span>➕ 추가 입력할 프롬프트</span>
+    </div>
+    <div class="prompt-box extra">보고서 맨 앞에 팀장용 Executive 1페이지 요약을 추가해줘.
+
+조건:
+1. 핵심 위험 3가지를 "위험 등급 / 항목 / 이번 주 수치 / 전주 대비 / 즉시 조치 여부"
+   형식의 표로 정리해줘.
+2. 숫자 근거가 없는 내용은 포함하지 말고,
+   원인 가설은 "확인 중" 또는 "분석 필요" 표현을 사용해줘.
+3. 회의 전 3분 안에 읽고 핵심 결정을 내릴 수 있어야 해.</div>
+  </div>
+  <div class="narration">
+    <span class="narration-label">💬 발화 — 결과 나온 후</span>
+    "팀장이 회의 전 3분 안에 보는 1페이지입니다.<br>
+    위험 등급·항목·수치·즉시 조치 여부가 한 표에 있습니다.<br>
+    <strong>보고서 자동화의 품질은 예쁜 화면이 아니라 회의에서 바로 의사결정에 쓰일 수 있는지로 판단합니다.</strong>"
+  </div>
+
+  <hr class="divider">
+
+  <!-- 마무리 -->
+  <div class="section-header">
+    <div class="time">09:30 – 10:00</div>
+    <h2>마무리 — 핵심 메시지</h2>
+  </div>
+  <div class="closing">
+    <h3>핵심 3가지</h3>
+    <div class="closing-point">
+      <div>1️⃣</div>
+      <p>수신자·KPI·서술 규칙·형식·검증 방법을 말하지 않으면 AI는 <strong>방향을 결정하지 않고</strong> 5개 역질문을 보냅니다.</p>
+    </div>
+    <div class="closing-point">
+      <div>2️⃣</div>
+      <p>5줄 지시(입력·계산·서술·형식·검증)로 <strong>KPI 카드 + 숫자 근거 기반 서술 + 검증 체크리스트 + 누락 데이터 질문</strong>이 한 번에 나옵니다.</p>
+    </div>
+    <div class="closing-point">
+      <div>3️⃣</div>
+      <p>AI가 작성한 보고서의 수치와 가설이 <strong>실제 현장 맥락과 맞는지</strong>는 엔지니어가 검증 체크리스트로 확인합니다.</p>
+    </div>
+  </div>
+  <div class="key-message">
+    "보고서 자동화의 품질은 예쁜 화면이 아니라<br>회의에서 바로 의사결정에 쓰일 수 있는지로 판단합니다."
+  </div>
+
+  <hr class="divider">
+
+  <!-- 전체 과정 정리 -->
+  <div class="section-header" style="margin-top:0;"><h2>1강~10강 전체 흐름 정리</h2></div>
+  <div class="card">
+    <h3 style="margin-bottom:12px;">10강이 완성되는 이유 — 1~9강이 쌓였기 때문</h3>
+    <div style="font-size:13px;color:#334155;line-height:2;">
+      <strong>1~2강</strong> — AI에게 정확히 지시하는 법 (바이브 코딩 + Pseudo-Prompt)<br>
+      <strong>3~4강</strong> — 데이터 시각화 + 정제 (CVD 대시보드 + 노이즈 제거)<br>
+      <strong>5~6강</strong> — 공간 분포 + 실시간 모니터링 (웨이퍼 히트맵 + OOC 감지)<br>
+      <strong>7~8강</strong> — 관계 분석 + 우선순위 결정 (산점도 + 파레토)<br>
+      <strong>9강</strong> — 문서 근거 기반 조치안 (환각 방지 기술 문서 요약)<br>
+      <strong>10강</strong> → 이 모든 것을 <span style="color:#1e40af;font-weight:800;">보고서 한 장으로 통합</span>
+    </div>
+  </div>
+
+  <div class="section-header"><h2>관련 자료</h2></div>
+  <div class="related-links">
+    <a class="related-link slide" href="https://heekeunlee.github.io/lecture10/" target="_blank">
+      <div class="link-label">LECTURE 10 · 강의 교안</div>
+      <div class="link-title">바이브 코딩 10강 — 보고서 자동 생성</div>
+      <div class="link-url">heekeunlee.github.io/lecture10/</div>
+    </a>
+    <a class="related-link script" href="https://heekeunlee.github.io/lecture_assist001/scripts/lecture10/" target="_blank">
+      <div class="link-label">LECTURE 10 · 강의 스크립트</div>
+      <div class="link-title">10강 스크립트 — 보고서 자동 생성</div>
+      <div class="link-url">heekeunlee.github.io/lecture_assist001/<br>scripts/lecture10/</div>
+    </a>
+  </div>
+
+</div>
+</body>
+</html>
